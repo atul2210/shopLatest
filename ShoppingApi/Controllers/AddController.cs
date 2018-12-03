@@ -10,9 +10,6 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using ShoppingApi.Model;
 using ShoppingApi.Data;
-
-
-
 using Microsoft.AspNetCore.Authorization;
 
 namespace ShoppingApi.Controllers
