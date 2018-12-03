@@ -332,7 +332,6 @@ namespace ShoppingApi.Data
         public RemoveItem RemoveItems(int itemId,int returnedItemQty,string sessionId,int checkedinId)
         {
             var connectionString = Startup.connectionstring;
-            
 
             using (var con = new ShoppingContext(connectionString))
             {
@@ -350,7 +349,7 @@ namespace ShoppingApi.Data
                     count = count,
                     successs = true
                 };
-                con.SaveChanges();
+               
                 return result;
 
             }
