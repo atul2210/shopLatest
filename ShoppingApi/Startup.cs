@@ -19,6 +19,8 @@ using ShoppingApi.Data;
 using System.Net.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Antiforgery;
+using ShoppingApi.Interfaces;
+
 
 namespace ShoppingApi
 {
@@ -152,6 +154,8 @@ namespace ShoppingApi
 
             services.AddDbContext<ShoppingContext>(options => options.UseSqlServer(connectionstring));
             services.AddSingleton<Microsoft.AspNetCore.Http.IHttpContextAccessor, Microsoft.AspNetCore.Http.HttpContextAccessor>();
+
+            services.AddTransient<Imenu, MenuOperation>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

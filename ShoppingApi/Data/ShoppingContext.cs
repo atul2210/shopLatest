@@ -27,8 +27,9 @@ namespace ShoppingApi.Data
         public Microsoft.EntityFrameworkCore.DbSet<itemMasterEntity> itemMasterEntity { get; set; }
         public Microsoft.EntityFrameworkCore.DbSet<ColorMasterEntity> ColorMasterEntity { get; set; }
         public Microsoft.EntityFrameworkCore.DbSet<UserRegistrationEntity> Users { get; set; }
+        public Microsoft.EntityFrameworkCore.DbSet<MenuEntity> Menu { get; set; }
 
-
+      
 
         private static DbContextOptions GetOptions(string connectionString)
         {
