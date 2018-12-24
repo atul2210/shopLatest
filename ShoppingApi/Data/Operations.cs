@@ -8,9 +8,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using ShoppingApi.Model;
 using ShoppingApi.PageQuery;
+using ShoppingApi.Interfaces;
+
 namespace ShoppingApi.Data
 {
-    public class Operations
+    public class Operations : Ioperation
     {
 
         public GetAllItems getItems(int categoryId, int pageIndex)

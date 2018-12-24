@@ -15,18 +15,6 @@ namespace ShoppingApi.Data
             var connectionString = Startup.connectionstring;
             var con = new ShoppingContext(connectionString);
             List<MenuModel> hierarchy = new List<MenuModel>();
-            //return hierarchy = con.Menu.Select(mm=>mm).ToList()
-            //     .Where(c => c.ParentId == 0)
-            //                .Select(c => new MenuModel()
-            //                {
-            //                    Id = c.Id,
-            //                    MenuName = c.MenuName,
-            //                    ParentId = c.ParentId,
-            //                    Children = GetChildren(hierarchy, c.Id)
-            //                }).ToList();
-
-
-
 
             return hierarchy = con.Menu
                              .Where(c => c.ParentId == 0)
@@ -35,6 +23,13 @@ namespace ShoppingApi.Data
                                  Id = c.Id,
                                  MenuName = c.MenuName,
                                  ParentId = c.ParentId,
+                                 MainMenuName = c.MainMenuName,
+                                 SubMenuName = c.SubMenuName,
+                                 MainTrigger = c.MainTrigger,
+                                 SubTrigger =  c.SubTrigger,
+                                 MainMenuId = c.MainMenuId,
+                                 SubMenuId = c.SubMenuId,
+                                 RouterLink = c.RouterLink,
                                  Children = GetChildren(hierarchy, c.Id)
                              }).ToList();
 
@@ -51,6 +46,13 @@ namespace ShoppingApi.Data
                         Id = c.Id,
                         MenuName = c.MenuName,
                         ParentId = c.ParentId,
+                        RouterLink = c.RouterLink,
+                        MainMenuName =c.MainMenuName,
+                        SubMenuName = c.SubMenuName,
+                        MainTrigger = c.MainTrigger,
+                        SubTrigger = c.SubTrigger,
+                        MainMenuId = c.MainMenuId,
+                        SubMenuId = c.SubMenuId,
                         Children = GetChildren(comments, c.Id)
                     }).ToList();
         }

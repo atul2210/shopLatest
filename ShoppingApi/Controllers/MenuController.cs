@@ -11,7 +11,7 @@ using ShoppingApi.Interfaces;
 namespace ShoppingApi.Controllers
 {
     [Produces("application/json")]
-    [Route("api/Menu")]
+    [Route("api")]
     public class MenuController : Controller
     {
         Imenu _imenu;
@@ -22,7 +22,7 @@ namespace ShoppingApi.Controllers
         }
 
         [AllowAnonymous]
-        [HttpGet, Route("/menuitems/")]
+        [HttpGet, Route("menu/menuitems/")]
         public ActionResult MenuItems()
         {
             return Ok(_imenu.getMenu());

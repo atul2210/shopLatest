@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using ShoppingApi.PageQuery;
-
+using ShoppingApi.Interfaces;
 
 namespace ShoppingApi.Controllers
 {
@@ -25,11 +25,13 @@ namespace ShoppingApi.Controllers
 
     public class ItemController : Controller
     {
-        Operations _operations;
-
-        public ItemController()
+        //Operations _operations;
+        Ioperation _operations;
+        public ItemController(Ioperation operations )
         {
-            _operations = new Operations();
+            // _operations = new Operations
+
+            _operations = operations;
         }
 
         //  [HttpGet, Route("items/AllItems/{categoryId},{pageIndex}")]
