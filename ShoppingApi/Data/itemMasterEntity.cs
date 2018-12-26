@@ -69,5 +69,8 @@ namespace ShoppingApi.Model
 
         [Column(TypeName = "int")]
         public int deliveryCharges { get; set; }
+
+        [Column(TypeName = "int")]
+        public int ColorId { get; set; }
     }
 }

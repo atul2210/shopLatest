@@ -125,6 +125,7 @@ namespace ShoppingApi.Data
                         items.deliveryCharges = Convert.ToInt32(dr["DeliveryCharges"].ToString());
                         items.availableQty = Convert.ToInt32(dr["AvailableQty"].ToString());
                         items.availableColor = dr["availableColor"].ToString();
+                        items.colorId = Convert.ToInt32(dr["ColorId"].ToString());
 
                     }
 
@@ -142,7 +143,7 @@ namespace ShoppingApi.Data
 
 
 
-        public AddToCart getAddToCart(int itemId, string IPAddress, int quantity, string color, string sessionid,double price,double offerprice,double deliverycharges)
+        public AddToCart getAddToCart(int itemId, string IPAddress, int quantity, string color, string sessionid,double price,double offerprice,double deliverycharges,int ColorId)
         {
             AddToCart items = null;
             try
@@ -164,7 +165,8 @@ namespace ShoppingApi.Data
                     cmd.Parameters.AddWithValue("@price", price);
                     cmd.Parameters.AddWithValue("@offerprice", offerprice);
                     cmd.Parameters.AddWithValue("@deliveryCharges", deliverycharges);
-                    
+                    cmd.Parameters.AddWithValue("@ColorId", ColorId);
+
 
                     con.Open();
                     SqlDataReader dr = cmd.ExecuteReader();
@@ -322,7 +324,8 @@ namespace ShoppingApi.Data
                 Price = x.Price,
                 ReserveQty = x.ReserveQty,
                 SizeId = x.SizeId,
-                itemid = x.ItemId
+                itemid = x.ItemId,
+                ColorId = x.ColorId
             })
             .ApplySorting(query)
             .Paging(query);

@@ -11,7 +11,7 @@ namespace ShoppingApi.Interfaces
     {
         GetAllItems getItems(int categoryId, int pageIndex);
         Items getItemDetail(int itemId);
-        AddToCart getAddToCart(int itemId, string IPAddress, int quantity, string color, string sessionid, double price, double offerprice, double deliverycharges);
+        AddToCart getAddToCart(int itemId, string IPAddress, int quantity, string color, string sessionid, double price, double offerprice, double deliverycharges,int ColorId);
         userDetails AuthenticateUser(string userId, string password);
         List<checkedInItem> getCheckInItem(string usersession);
         PageResult<ItemMaster> GetPageItemsList(PageAndSortedQuery<ItemDetailsQuery> query);

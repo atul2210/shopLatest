@@ -26,6 +26,7 @@ namespace ShoppingApi.Model
         public int rowNum { get; set; }
 
         public string availableColor { get; set; }
+        public int colorId { get; set; }
     }
 
     public class GetAllItems

@@ -90,7 +90,7 @@ namespace ShoppingApi.Controllers
         /// <returns></returns>t
         [HttpPost, Route("items/addCart/")]
         [AllowAnonymous]
-        public AddToCart adaddCart([FromQuery]  int itemid, [FromQuery]int quantity, [FromQuery]string color,string sessionId,double price,double offerprice,double deliverycharges)
+        public AddToCart adaddCart([FromQuery]  int itemid, [FromQuery]int quantity, [FromQuery]string color,string sessionId,double price,double offerprice,double deliverycharges,int ColorId)
         {
             AddToCart addCart = null;
            
@@ -106,7 +106,7 @@ namespace ShoppingApi.Controllers
 
                 }
                 ipAddress = HttpContext.Connection.RemoteIpAddress.ToString();
-                addCart = _operations.getAddToCart(itemid, ipAddress, quantity, color, sessionId, price,offerprice,deliverycharges);
+                addCart = _operations.getAddToCart(itemid, ipAddress, quantity, color, sessionId, price,offerprice,deliverycharges, ColorId);
 
 
             }
