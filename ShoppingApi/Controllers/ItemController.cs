@@ -179,10 +179,14 @@ namespace ShoppingApi.Controllers
 
 
         [AllowAnonymous]
-        [HttpPost, Route("items/RemoveItems/")]
-        public IActionResult RemoveItems(int itemId, int returnedItemQty,string sessionId, int checkedinId)
+        [HttpGet, Route("items/SearchItem/")]
+        public IActionResult SearchItems(PageAndSortedQuery<ItemDetailsQuery> query,string itemSearch)
         {
-            return Ok(_operations.RemoveItems(itemId, returnedItemQty,sessionId,checkedinId));
+            return Ok(_operations.Search(itemSearch,query));
         }
+
+       
+
+
     }
 }

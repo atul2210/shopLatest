@@ -396,7 +396,42 @@ namespace ShoppingApi.Data
             return success;
            
         }
-          
+
+
+        public PageResult<ItemMaster> Search(string SearchItem, PageAndSortedQuery<ItemDetailsQuery> query)
+        {
+            var connectionString = Startup.connectionstring;
+
+            var con = new ShoppingContext(connectionString);
+            var searchResult = con.itemMasterEntity.Where(x=>x.ItemName.Contains(SearchItem)).Select(x => new ItemMaster
+            {
+                ItemName = x.ItemName.Trim(),
+                Active = x.Active,
+                AvailableColor = x.AvailableColor.Trim(),
+                AvailableQty = x.AvailableQty,
+                brand = x.brand.Trim(),
+                CategoryId = x.CategoryId,
+                Color = x.Color.Trim(),
+                detailId = x.detailId,
+                image = x.image.Trim(),
+                InitialQty = x.InitialQty,
+                DeliveryCharges = x.deliveryCharges,
+                itemDescription = x.ItemDescripton.Trim(),
+                OfferPrice = x.OfferPrice,
+                Price = x.Price,
+                ReserveQty = x.ReserveQty,
+                SizeId = x.SizeId,
+                itemid = x.ItemId,
+                ColorId = x.ColorId
+            })
+            .ApplySorting(query)
+            .Paging(query);
+
+            return searchResult;
+
+        }
+
+
 
         }
 
