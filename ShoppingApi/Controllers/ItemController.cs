@@ -25,37 +25,28 @@ namespace ShoppingApi.Controllers
 
     public class ItemController : Controller
     {
-        //Operations _operations;
+    
         Ioperation _operations;
         public ItemController(Ioperation operations )
         {
-            // _operations = new Operations
-
             _operations = operations;
         }
 
-        //  [HttpGet, Route("items/AllItems/{categoryId},{pageIndex}")]
-       // [Authorize]
+     
        [AllowAnonymous]
         [HttpGet, Route("items/AllItems/")]
 
-        public GetAllItems AllItems(int categoryId, int pageIndex)
+        public IActionResult AllItems(int categoryId, PageAndSortedQuery<ItemDetailsQuery> query)
         {
-
-
-            GetAllItems items = null;
             try
             {
-                items = _operations.getItems(categoryId, pageIndex);
-                return items;
+                return Ok(_operations.getItems(categoryId, query));
             }
 
             catch (Exception ex)
             {
                 throw ex;
-
             }
-
         }
 
         [AllowAnonymous]
@@ -81,13 +72,6 @@ namespace ShoppingApi.Controllers
         }
 
 
-        /// <summary>
-        /// Saving add to cart items to DB table checkin and getting response.  
-        ///  // </summary>
-        /// <param name="itemid"></param>
-        /// <param name="quantity"></param>
-        /// <param name="color"></param>
-        /// <returns></returns>t
         [HttpPost, Route("items/addCart/")]
         [AllowAnonymous]
         public AddToCart adaddCart([FromQuery]  int itemid, [FromQuery]int quantity, [FromQuery]string color,string sessionId,double price,double offerprice,double deliverycharges,int ColorId)
@@ -123,7 +107,7 @@ namespace ShoppingApi.Controllers
         [AllowAnonymous]
         [HttpGet, Route("items/getcheckedinItem/")]
 
-        //public async List<Task<checkedInItem>> checkedInIten(string userSession)
+    
         public List<checkedInItem> checkedInIten(string userSession)
         {
             var data = _operations.getCheckInItem(userSession);
@@ -139,7 +123,7 @@ namespace ShoppingApi.Controllers
             PageResult<ItemMaster> data = null;
             try
             {
-                //data = _operations.GetPageItemsList(query);
+                
                return Ok(_operations.GetPageItemsList(query));
             }
 
@@ -156,7 +140,7 @@ namespace ShoppingApi.Controllers
         {
             string authToken = null;
 
-                     //  var claimData = new[] { new Claim(ClaimTypes.Name, "data.userId") };
+                    
             var claims = new[]
                 {
                     new Claim(ClaimTypes.Name, "aaaaa")

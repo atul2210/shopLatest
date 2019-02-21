@@ -20,7 +20,7 @@ using System.Net.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Antiforgery;
 using ShoppingApi.Interfaces;
-
+using ShoppingApi.Email;
 
 namespace ShoppingApi
 {
@@ -115,8 +115,8 @@ namespace ShoppingApi
                 };
 
             });
-            
-            
+
+            services.Configure<EmailSettings>(Configuration.GetSection("EmailSettings"));
 
             services.AddMvc();
 
@@ -157,7 +157,9 @@ namespace ShoppingApi
 
             services.AddTransient<Imenu, MenuOperation>();
             services.AddTransient<Ioperation, Operations>();
+            services.AddTransient<IEmailSender, AuthMessageSender>();
         }
+        
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         //public void Configure(IApplicationBuilder app, IHostingEnvironment env)
