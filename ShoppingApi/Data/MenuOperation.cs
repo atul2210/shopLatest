@@ -17,7 +17,7 @@ namespace ShoppingApi.Data
             List<MenuModel> hierarchy = new List<MenuModel>();
 
             return hierarchy = con.Menu
-                             .Where(c => c.ParentId == 0)
+                             .Where(c => c.ParentId == 0 && c.Status==true)
                              .Select(c => new MenuModel()
                              {
                                  Id = c.Id,
@@ -40,7 +40,7 @@ namespace ShoppingApi.Data
             var connectionString = Startup.connectionstring;
             var con = new ShoppingContext(connectionString);
             return con.Menu  //comments
-                    .Where(c => c.ParentId == parentId)
+                    .Where(c => c.ParentId == parentId && c.Status==true)
                     .Select(c => new MenuModel
                     {
                         Id = c.Id,

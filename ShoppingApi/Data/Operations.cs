@@ -17,7 +17,7 @@ namespace ShoppingApi.Data
 
        public PageResult<ItemMaster> getItems(int categoryId, PageAndSortedQuery<ItemDetailsQuery> query)
         {
-         /////   GetAllItems items = null;
+         
             try
             {
 

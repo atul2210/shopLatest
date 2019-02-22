@@ -36,11 +36,11 @@ namespace ShoppingApi.Controllers
        [AllowAnonymous]
         [HttpGet, Route("items/AllItems/")]
 
-        public IActionResult AllItems(int categoryId, PageAndSortedQuery<ItemDetailsQuery> query)
+        public  IActionResult AllItems(int categoryId, PageAndSortedQuery<ItemDetailsQuery> query)
         {
             try
             {
-                return Ok(_operations.getItems(categoryId, query));
+                return  Ok(_operations.getItems(categoryId, query));
             }
 
             catch (Exception ex)
@@ -51,7 +51,7 @@ namespace ShoppingApi.Controllers
 
         [AllowAnonymous]
         [HttpGet, Route("items/itemDetail/")]
-        [ValidateAntiForgeryToken]
+     //  [ValidateAntiForgeryToken]
         public Items itemDetail(int itemId)
         {
 
@@ -169,7 +169,12 @@ namespace ShoppingApi.Controllers
             return Ok(_operations.Search(itemSearch,query));
         }
 
-       
+        [AllowAnonymous]
+        [HttpPost, Route("items/RemoveItems/")]
+        public IActionResult RemoveItems(int itemId, int returnedItemQty, string sessionId, int checkedinId)
+        {
+            return Ok(_operations.RemoveItems(itemId, returnedItemQty, sessionId, checkedinId));
+        }
 
 
     }
