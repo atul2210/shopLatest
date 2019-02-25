@@ -9,7 +9,7 @@ namespace ShoppingApi.Interfaces
 {
     public interface Ioperation
     {
-        PageResult<ItemMaster> getItems(int categoryId, PageAndSortedQuery<ItemDetailsQuery> query);
+        PageResult<ItemMaster> getItems(int childmenuid, PageAndSortedQuery<ItemDetailsQuery> query);
         Items getItemDetail(int itemId);
         AddToCart getAddToCart(int itemId, string IPAddress, int quantity, string color, string sessionid, double price, double offerprice, double deliverycharges,int ColorId);
         userDetails AuthenticateUser(string userId, string password);

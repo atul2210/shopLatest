@@ -18,7 +18,7 @@ namespace ShoppingApi.Model
         public double SizeId { get; set; }
         public double Price { get; set; }
         public double OfferPrice { get; set; }
-        public int CategoryId { get; set; }
+        public int childmenuid { get; set; }
         public string Color { get; set; }
       
         public int? detailId { get; set; }

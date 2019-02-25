@@ -43,7 +43,7 @@ namespace ShoppingApi.Model
         public double OfferPrice { get; set; }
 
         [Column(TypeName = "int")]
-        public int CategoryId { get; set; }
+        public int childmenuid { get; set; }
 
         [Column(TypeName = "nvarchar(50)")]
         public int Image { get; set; }

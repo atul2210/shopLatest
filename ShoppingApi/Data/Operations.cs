@@ -15,7 +15,7 @@ namespace ShoppingApi.Data
     public class Operations : Ioperation
     {
 
-       public PageResult<ItemMaster> getItems(int categoryId, PageAndSortedQuery<ItemDetailsQuery> query)
+       public PageResult<ItemMaster> getItems(int childmenuid, PageAndSortedQuery<ItemDetailsQuery> query)
         {
          
             try
@@ -24,7 +24,7 @@ namespace ShoppingApi.Data
                 var connectionString = Startup.connectionstring;
 
                 var con = new ShoppingContext(connectionString);
-                var searchResult = con.itemMasterEntity.Where(m=>m.CategoryId==categoryId)
+                var searchResult = con.itemMasterEntity.Where(m=>m.childmenuid==childmenuid)
                 .Select(x => new ItemMaster
                 {
                     ItemName = x.ItemName.Trim(),
@@ -32,7 +32,7 @@ namespace ShoppingApi.Data
                     AvailableColor = x.AvailableColor.Trim(),
                     AvailableQty = x.AvailableQty,
                     brand = x.brand.Trim(),
-                    CategoryId = x.CategoryId,
+                    childmenuid = x.childmenuid,
                     Color = x.Color.Trim(),
                     detailId = x.detailId,
                     image = x.image.Trim(),
@@ -150,8 +150,8 @@ namespace ShoppingApi.Data
                         items.sizeName = dr["SizeName"].ToString();
                         items.price = Convert.ToDouble(dr["Price"].ToString());
                         items.offerPrice = Convert.ToDouble(dr["OfferPrice"].ToString());
-                        items.categoryName = dr["categoryName"].ToString();
-                        items.categoryId = Convert.ToInt32(dr["CategoryId"].ToString());
+                        items.categoryName = dr["MenuName"].ToString();
+                        items.categoryId = Convert.ToInt32(dr["id"].ToString());
                         items.imaggeUrl = dr["image"].ToString();
                         items.color = dr["Color"].ToString();
                         items.brand = dr["Brand"].ToString();
@@ -346,7 +346,7 @@ namespace ShoppingApi.Data
                 AvailableColor = x.AvailableColor.Trim(),
                 AvailableQty = x.AvailableQty,
                 brand = x.brand.Trim(),
-                CategoryId = x.CategoryId,
+                childmenuid = x.childmenuid,
                 Color = x.Color.Trim(),
                 detailId = x.detailId,
                 image = x.image.Trim(),
@@ -443,7 +443,7 @@ namespace ShoppingApi.Data
                 AvailableColor = x.AvailableColor.Trim(),
                 AvailableQty = x.AvailableQty,
                 brand = x.brand.Trim(),
-                CategoryId = x.CategoryId,
+                childmenuid = x.childmenuid,
                 Color = x.Color.Trim(),
                 detailId = x.detailId,
                 image = x.image.Trim(),

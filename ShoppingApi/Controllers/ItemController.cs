@@ -36,11 +36,11 @@ namespace ShoppingApi.Controllers
        [AllowAnonymous]
         [HttpGet, Route("items/AllItems/")]
 
-        public  IActionResult AllItems(int categoryId, PageAndSortedQuery<ItemDetailsQuery> query)
+        public  IActionResult AllItems(int ChildMenuId, PageAndSortedQuery<ItemDetailsQuery> query)
         {
             try
             {
-                return  Ok(_operations.getItems(categoryId, query));
+                return  Ok(_operations.getItems(ChildMenuId, query));
             }
 
             catch (Exception ex)
