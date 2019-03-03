@@ -24,7 +24,7 @@ namespace ShoppingApi.Data
                 var connectionString = Startup.connectionstring;
 
                 var con = new ShoppingContext(connectionString);
-                var searchResult = con.itemMasterEntity.Where(m=>m.childmenuid==childmenuid)
+                var searchResult = con.itemMasterEntity.Where(m=>m.ChildMenuId==childmenuid && m.Active==true && m.AvailableQty>0)
                 .Select(x => new ItemMaster
                 {
                     ItemName = x.ItemName.Trim(),
@@ -32,7 +32,7 @@ namespace ShoppingApi.Data
                     AvailableColor = x.AvailableColor.Trim(),
                     AvailableQty = x.AvailableQty,
                     brand = x.brand.Trim(),
-                    childmenuid = x.childmenuid,
+                    childmenuid = x.ChildMenuId,
                     Color = x.Color.Trim(),
                     detailId = x.detailId,
                     image = x.image.Trim(),
@@ -339,14 +339,14 @@ namespace ShoppingApi.Data
             var connectionString = Startup.connectionstring;
             
             var con = new ShoppingContext(connectionString);
-            var searchResult = con.itemMasterEntity.Select(x => new ItemMaster
+            var searchResult = con.itemMasterEntity.Where(m=>m.Active==true && m.AvailableQty>0).Select(x => new ItemMaster
             {
                 ItemName = x.ItemName.Trim(),
                 Active = x.Active,
                 AvailableColor = x.AvailableColor.Trim(),
                 AvailableQty = x.AvailableQty,
                 brand = x.brand.Trim(),
-                childmenuid = x.childmenuid,
+                childmenuid = x.ChildMenuId,
                 Color = x.Color.Trim(),
                 detailId = x.detailId,
                 image = x.image.Trim(),
@@ -436,14 +436,14 @@ namespace ShoppingApi.Data
             var connectionString = Startup.connectionstring;
 
             var con = new ShoppingContext(connectionString);
-            var searchResult = con.itemMasterEntity.Where(x=>x.ItemName.Contains(SearchItem)).Select(x => new ItemMaster
+            var searchResult = con.itemMasterEntity.Where(x=>x.ItemName.Contains(SearchItem) && x.Active==true && x.AvailableQty>0).Select(x => new ItemMaster
             {
                 ItemName = x.ItemName.Trim(),
                 Active = x.Active,
                 AvailableColor = x.AvailableColor.Trim(),
                 AvailableQty = x.AvailableQty,
                 brand = x.brand.Trim(),
-                childmenuid = x.childmenuid,
+                childmenuid = x.ChildMenuId,
                 Color = x.Color.Trim(),
                 detailId = x.detailId,
                 image = x.image.Trim(),
