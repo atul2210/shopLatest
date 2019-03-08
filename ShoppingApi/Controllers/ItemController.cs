@@ -176,6 +176,13 @@ namespace ShoppingApi.Controllers
             return Ok(_operations.RemoveItems(itemId, returnedItemQty, sessionId, checkedinId));
         }
 
+        [AllowAnonymous]
+        [HttpPost, Route("items/CheckoutPaymentReceived/")]
+        public IActionResult PaymentReceived([FromBody] List<PaymentReceived> paymentreceived)
+        {
+            //return Ok(paymentreceived);
+            return Ok(_operations.PaymentReceived(paymentreceived));
+        }
 
     }
 }

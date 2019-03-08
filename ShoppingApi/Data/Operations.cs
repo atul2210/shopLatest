@@ -465,11 +465,41 @@ namespace ShoppingApi.Data
         }
 
 
+       public bool PaymentReceived(List<PaymentReceived> PaymentReceived)
+        {
+            var connectionString = Startup.connectionstring;
+            bool success = false;
+            using (var con = new ShoppingContext(connectionString))
+            {
+                foreach (var item in PaymentReceived)
+                {
+                    var add = con.PaymentReceivedEntity.Add(new PaymentReceivedEntity
+                    {
+                        itemId=item.itemId,
+                        PaymentId= item.PaymentId,
+                        ReceivedFormEmailId= item.ReceivedFormEmailId,
+                        sessionid = item.sessionid,
+                        TotalOfferAmount = item.TotalOfferAmount,
+                        TotalPaymentAmount = item.TotalPaymentAmount
+
+                    });
+                    
+                }
+                con.SaveChanges();
+                success = true;
+            }
+
+            return success;
 
         }
 
 
-
-
     }
+
+
+
+
+
+
+}
 

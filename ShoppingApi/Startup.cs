@@ -35,7 +35,7 @@ namespace ShoppingApi
             .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
 
             smsSettings = builder.Build();
-          
+            var ss = env.IsDevelopment();
 
 
         }

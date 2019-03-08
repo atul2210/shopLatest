@@ -18,6 +18,6 @@ namespace ShoppingApi.Interfaces
         RemoveItem RemoveItems(int itemId, int returnedItemQty, string sessionId, int checkedinId);
         bool addUser(User user);
         PageResult<ItemMaster> Search(string SearchItem, PageAndSortedQuery<ItemDetailsQuery> query);
-
+        bool PaymentReceived(List<PaymentReceived> paymentreceived);
     }
 }
