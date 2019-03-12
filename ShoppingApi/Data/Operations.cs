@@ -465,7 +465,7 @@ namespace ShoppingApi.Data
         }
 
 
-       public bool PaymentReceived(List<PaymentReceived> PaymentReceived)
+       public bool PaymentReceived(string emailId, string UserSession, List<checkedInItem> PaymentReceived)
         {
             var connectionString = Startup.connectionstring;
             bool success = false;
@@ -476,11 +476,11 @@ namespace ShoppingApi.Data
                     var add = con.PaymentReceivedEntity.Add(new PaymentReceivedEntity
                     {
                         itemId=item.itemId,
-                        PaymentId= item.PaymentId,
-                        ReceivedFormEmailId= item.ReceivedFormEmailId,
-                        sessionid = item.sessionid,
-                        TotalOfferAmount = item.TotalOfferAmount,
-                        TotalPaymentAmount = item.TotalPaymentAmount
+                        //PaymentId= item.PaymentId,
+                        ReceivedFormEmailId= emailId,
+                        sessionid = UserSession,
+                        TotalOfferAmount = item.offerprice,
+                        TotalPaymentAmount = item.price
 
                     });
                     

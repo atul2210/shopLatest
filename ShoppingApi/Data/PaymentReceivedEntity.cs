@@ -19,6 +19,7 @@ namespace ShoppingApi.Data
 
         public string sessionid { get; set; }
 
+        
         [Column(TypeName = "money")]
         public double TotalPaymentAmount { get; set; }
 

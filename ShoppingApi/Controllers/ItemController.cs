@@ -178,10 +178,10 @@ namespace ShoppingApi.Controllers
 
         [AllowAnonymous]
         [HttpPost, Route("items/CheckoutPaymentReceived/")]
-        public IActionResult PaymentReceived([FromBody] List<PaymentReceived> paymentreceived)
+        public IActionResult PaymentReceived(string emailId, string UserSession, [FromBody] List<checkedInItem> paymentreceived)
         {
             //return Ok(paymentreceived);
-            return Ok(_operations.PaymentReceived(paymentreceived));
+            return Ok(_operations.PaymentReceived(emailId,UserSession, paymentreceived));
         }
 
     }
