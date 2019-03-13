@@ -376,7 +376,7 @@ namespace ShoppingApi.Data
                 var context = con.itemMasterEntity.Where(k=>k.Active==true).SingleOrDefault(m => m.ItemId == itemId);
                 context.ReserveQty = context.ReserveQty - returnedItemQty;
                 context.AvailableQty = context.AvailableQty + returnedItemQty;
-
+                con.SaveChanges();
                 var remove = con.CheckInEntity.Where(m => m.UserSessionId == sessionId && m.id== checkedinId).SingleOrDefault();
                 remove.Active = false;
                 con.SaveChanges();
