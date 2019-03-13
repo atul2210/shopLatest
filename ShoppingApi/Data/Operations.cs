@@ -478,6 +478,7 @@ namespace ShoppingApi.Data
                         itemId=item.itemId,
                         //PaymentId= item.PaymentId,
                         ReceivedFormEmailId= emailId,
+                        Quantity = item.quantity,
                         sessionid = UserSession,
                         TotalOfferAmount = item.offerprice,
                         TotalPaymentAmount = item.price
