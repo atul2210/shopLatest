@@ -9,7 +9,7 @@ using Microsoft.Extensions.Configuration;
 using ShoppingApi.Model;
 using ShoppingApi.PageQuery;
 using ShoppingApi.Interfaces;
-
+using ShoppingApi.Security.Hashing;
 namespace ShoppingApi.Data
 {
     public class Operations : Ioperation
@@ -239,6 +239,7 @@ namespace ShoppingApi.Data
 
             catch
             {
+
                 throw;
             }
             return items;
@@ -248,10 +249,12 @@ namespace ShoppingApi.Data
         {
             DataSet ds = new DataSet();
             userDetails lstToken = new userDetails();
+
             try
             {
 
                 var connectionString = Startup.connectionstring;
+                bool match = false;
                 using (SqlConnection con = new SqlConnection(connectionString))
                 {
                     SqlCommand cmd = new SqlCommand("authenticate", con);
@@ -259,8 +262,6 @@ namespace ShoppingApi.Data
 
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@email", userId);
-                    cmd.Parameters.AddWithValue("@password", password);
-
                     con.Open();
                     SqlDataAdapter adapter = new SqlDataAdapter(cmd);
 
@@ -270,12 +271,17 @@ namespace ShoppingApi.Data
                     con.Close();
                 }
 
+                if (ds.Tables[0].Rows.Count == 0) throw new Exception("Invalid User Id or Password, please try again.");
+
+
                 if (ds.Tables[0].Rows.Count > 0)
                 {
-
                     foreach (DataRow dr in ds.Tables[0].Rows)
                     {
-                        //@email,FirsName,MiddleName,LastName,Mobile,UlterNateMobile
+                        match = Hash.Validate(password, dr["salt"].ToString(), dr["hash"].ToString());
+
+                        if (match == false) throw new Exception("Invalid User Id or Password, please try again."); 
+
                         lstToken.details = new List<Token>();
                         lstToken.details.Add(new Token
                         {
@@ -283,11 +289,7 @@ namespace ShoppingApi.Data
                             lastName = dr["LastName"].ToString(),
                             username = dr["Email"].ToString(),
                             mobile = Convert.ToDouble(dr["Mobile"].ToString().Trim())
-
                         });
-
-
-
                     }
                 }
             }
@@ -400,12 +402,19 @@ namespace ShoppingApi.Data
             var connectionString = Startup.connectionstring;
             bool success = false;
 
+            var message = user.password;
+            var salt = Salt.Create();
+            var hash = Hash.Create(message, salt);
+
+
+
+
             using (var con = new ShoppingContext(connectionString))
             {
                 var entity = new UserRegistrationEntity
                 {
-                    Password = user.password,
-
+                    hash = hash,
+                    salt=salt,
                     FirsName = user.firstName,
                    
                     MiddleName = user.middleName,

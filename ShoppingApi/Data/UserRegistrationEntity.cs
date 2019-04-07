@@ -15,8 +15,11 @@ namespace ShoppingApi.Data
         [Key]
         public string Email { get; set; }
 
-        [Column(TypeName = "nvarchar(50)")]
-        public string Password { get; set; }
+        [Column(TypeName = "nvarchar(max)")]
+        public string salt { get; set; }
+
+        [Column(TypeName = "nvarchar(max)")]
+        public string hash { get; set; }
 
         [Column(TypeName = "nvarchar(50)")]
         public string FirsName { get; set; }

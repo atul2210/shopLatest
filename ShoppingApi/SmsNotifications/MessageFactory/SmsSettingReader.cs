@@ -12,7 +12,7 @@ namespace ShoppingApi.SmsNotifications.MessageFactory
         public string Messge { get; set; }
         public string BaseAddress { get; set; }
         public string senderId { get; set; }
-        public string message { get; set; }
+        public string Message { get; set; }
         public string route { get; set; }
     }
 }

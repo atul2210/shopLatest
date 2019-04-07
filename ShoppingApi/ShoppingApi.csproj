@@ -5,6 +5,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Include="HashAndSalt\Hash.cs" />
+    <Content Include="HashAndSalt\Salt.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="HashAndSalt\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
 

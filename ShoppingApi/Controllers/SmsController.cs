@@ -51,10 +51,10 @@ namespace ShoppingApi.Controllers
                 otp.smsUserId = appSettings.Value.UserId;//_configuration.GetSection("SmsAndOTP").GetSection("UserId").Value;
                 otp.password = appSettings.Value.Password; //_configuration.GetSection("SmsAndOTP").GetSection("Password").Value;
 
-                otp.message = appSettings.Value.message;
+                otp.message = appSettings.Value.Message;
                 otp.route = appSettings.Value.route;
                 otp.senderId = appSettings.Value.senderId;
-                var status = _msgFactory.SendOtp(1, MobileNumber, otp);
+               
 
                 return Ok(_msgFactory.SendOtp(1, MobileNumber, otp));
 
