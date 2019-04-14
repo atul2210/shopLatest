@@ -15,6 +15,7 @@ namespace ShoppingApi.Model
         public int senderAttemp { get; set; }
         public DateTime SenderDateTime { get; set; }
         public bool Active { get; set; }
+        public int LockHours { get; set; }
 
     }
 }

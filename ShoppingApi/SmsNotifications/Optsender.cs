@@ -67,28 +67,28 @@ namespace ShoppingApi.SmsNotifications
 
                         }
 
-                        else if (data.SenderIP != otpData.senderIP)
-                        {
-                            client.Dispose();
-                            throw new InvalidOperationException("Invalid IP");
-                        }
+                        //else if (data.SenderIP != otpData.senderIP)
+                        //{
+                        //    client.Dispose();
+                        //    throw new InvalidOperationException("Invalid IP");
+                        //}
 
 
                         //Request should come from same browser.
-                        else if (data.SenderBrowser != otpData.senderBrowser) throw new Exception("Invalid attemp from different browser");
+                      //  else if (data.SenderBrowser != otpData.senderBrowser) throw new Exception("Invalid attemp from different browser");
 
                         else if (data.SenderAttempt >= 3)  //only three attemps are allowed
                         {
                             var totalMinutes = DateTime.Now.Subtract(data.SenderDateTime).TotalMinutes;
-                            if (totalMinutes < 300)  // 5 hours
+                            if (totalMinutes < otpData.LockHours)  // 5 hours
                             {
                                 
                                 client.Dispose();
-                                throw (new InvalidOperationException("You account is locked, it will be unlocked after 5 hours"));
+                                throw (new InvalidOperationException("Your mobile number is locked, it will be unlocked after 5 hours"));
                             }
 
                             else
-                                System.Threading.Thread.Sleep(30000);
+                                System.Threading.Thread.Sleep(30000);// next request will be only after 30 seconds.
                             data.SenderAttempt = 1;  //reset attempt if difference is greater than 300 minutes i.e. 5 hours
                             data.SenderDateTime = DateTime.Now;
                             data.OtpNumber = otp;

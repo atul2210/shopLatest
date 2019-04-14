@@ -14,5 +14,6 @@ namespace ShoppingApi.SmsNotifications.MessageFactory
         public string senderId { get; set; }
         public string Message { get; set; }
         public string route { get; set; }
+        public int lockMinutes { get; set; }
     }
 }

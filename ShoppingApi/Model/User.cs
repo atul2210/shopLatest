@@ -19,6 +19,7 @@ namespace ShoppingApi.Model
         public string state { get; set; }
         public string address { get; set; }
         public string pin { get; set; }
+        public int EnterOPT { get; set; }
 
     }
 }

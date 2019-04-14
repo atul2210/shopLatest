@@ -24,17 +24,17 @@ namespace ShoppingApi.Controllers
         ImessageFactory _msgFactory = null;
         OtpSenderModel otpsender = null;
         private readonly IOptions<SmsSettingReader> appSettings;
-        IotpChecker _iotpChecker = null;
+       
 
 
 
-        public SmsController(IConfiguration configuration, IOptions<SmsSettingReader> app,IotpChecker iotpchecker)
+        public SmsController(IConfiguration configuration, IOptions<SmsSettingReader> app)
         {
             _configuration = configuration;
             otp = new OtpAndSms();
             _msgFactory = new MsgFactory();
             appSettings = app;
-            _iotpChecker = iotpchecker;
+          
 
         }
 
@@ -75,7 +75,8 @@ namespace ShoppingApi.Controllers
                         senderBrowser = browser,
                         senderIP = ipAddress,
                         Active = true,
-                        SenderDateTime = DateTime.Now
+                        SenderDateTime = DateTime.Now,
+                       LockHours = appSettings.Value.lockMinutes
                     };
 
                     }
