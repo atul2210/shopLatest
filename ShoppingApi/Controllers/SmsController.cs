@@ -44,54 +44,29 @@ namespace ShoppingApi.Controllers
         public async Task<IActionResult> SendOtp(string MobileNumber)
         {
             StringBuilder otpUrl = null;
-            int attempt = 1;
-           // otpsender = new OtpSenderModel();
-
-
-            string ipAddress = HttpContext.Connection.RemoteIpAddress.ToString();
-            string browser = Request.Headers["User-Agent"].ToString();
-
-
-
-
-            if (MobileNumber.Length >= 10 && MobileNumber.Length <= 12)
+            try
             {
-                
+                int attempt = 1;
+                // otpsender = new OtpSenderModel();
+               
 
-                otp.baseAddress = appSettings.Value.BaseAddress;  //_configuration.GetSection("SmsAndOTP").GetSection("BaseAddress").Value;
-                otp.smsUserId = appSettings.Value.UserId;//_configuration.GetSection("SmsAndOTP").GetSection("UserId").Value;
-                otp.password = appSettings.Value.Password; //_configuration.GetSection("SmsAndOTP").GetSection("Password").Value;
+                string ipAddress = HttpContext.Connection.RemoteIpAddress.ToString();
+                string browser = Request.Headers["User-Agent"].ToString();
 
-                otp.message = appSettings.Value.Message;
-                otp.route = appSettings.Value.route;
-                otp.senderId = appSettings.Value.senderId;
 
-                //otp sender data
 
-                List<OtpSenderModel> otpData = _iotpChecker.GetOtpSenderDetails(MobileNumber);
 
-                if(otpData.Count>0)
+                if (MobileNumber.Length >= 10 && MobileNumber.Length <= 12)
                 {
-                    attempt = otpData[0].senderAttemp;
-                    
-                    if(otpData[0].senderIP!= ipAddress)
-                    {
-                        throw new Exception("Invalid IP");
-                    }
-
-                    if(attempt>1 && attempt<=3)
-                    {
-                        Task.WaitAll(Task.Delay(30000));  // Next attemp will be allowed after 30 second.
-                        //System.Threading.Thread.Sleep(30000);
-                    }
-
-                    //only 3 attempts are allowed.
-                    if (attempt >= 3) throw new Exception("You have tried maximum attemps. Your account is locked. Please contact Customer Care");
-
-                    //Request should come from same browser.
-                    if (otpData[0].senderBrowser != browser) throw new Exception("Invalid attemp from different browser");
 
 
+                    otp.baseAddress = appSettings.Value.BaseAddress;  //_configuration.GetSection("SmsAndOTP").GetSection("BaseAddress").Value;
+                    otp.smsUserId = appSettings.Value.UserId;//_configuration.GetSection("SmsAndOTP").GetSection("UserId").Value;
+                    otp.password = appSettings.Value.Password; //_configuration.GetSection("SmsAndOTP").GetSection("Password").Value;
+
+                    otp.message = appSettings.Value.Message;
+                    otp.route = appSettings.Value.route;
+                    otp.senderId = appSettings.Value.senderId;
                     otpsender = new OtpSenderModel()
                     {
                         mobile = MobileNumber,
@@ -103,17 +78,24 @@ namespace ShoppingApi.Controllers
                         SenderDateTime = DateTime.Now
                     };
 
+                    }
+                var result = _msgFactory.SendOtp(1, MobileNumber, otp, otpsender);
+
+                if (result.IsFaulted)
+                {
+                    return Json(new { status = HttpStatusCode.BadRequest, message = result.Exception.Message });
                 }
-
-
-
-                return Ok(_msgFactory.SendOtp(1, MobileNumber, otp,otpsender));
+                return Ok(result);
+            }
+            
+            catch (Exception exp)
+            {
+                return Json(new { status = HttpStatusCode.BadRequest, message = exp.Message });
 
             }
-            else
-                return Json(new { status = HttpStatusCode.BadRequest, message = "Bad Request! chal bhaag yahan se" });
-            //return BadRequest("Oops  Something bad has happened"); 
 
+
+            
 
 
         }
