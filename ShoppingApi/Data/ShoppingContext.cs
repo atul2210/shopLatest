@@ -29,6 +29,8 @@ namespace ShoppingApi.Data
         public Microsoft.EntityFrameworkCore.DbSet<UserRegistrationEntity> Users { get; set; }
         public Microsoft.EntityFrameworkCore.DbSet<MenuEntity> Menu { get; set; }
         public Microsoft.EntityFrameworkCore.DbSet<PaymentReceivedEntity> PaymentReceivedEntity { get; set; }
+        public Microsoft.EntityFrameworkCore.DbSet<OtpMasterEntity> OtpMasterEntity { get; set; }
+        
 
 
 

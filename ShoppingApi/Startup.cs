@@ -158,6 +158,7 @@ namespace ShoppingApi
             services.AddTransient<Imenu, MenuOperation>();
             services.AddTransient<Ioperation, Operations>();
             services.AddTransient<IEmailSender, AuthMessageSender>();
+            services.AddTransient<IotpChecker, OtpChecker>();
         }
         
 

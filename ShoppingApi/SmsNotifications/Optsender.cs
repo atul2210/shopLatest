@@ -10,7 +10,7 @@ using System.Text;
 
 namespace ShoppingApi.SmsNotifications
 {
-    public class Otpsender : IsmsNotification<string,OtpAndSms>
+    public class Otpsender : IsmsNotification<string,OtpAndSms,OtpSenderModel>
     {
         private IConfiguration _configuration;
 
@@ -20,7 +20,7 @@ namespace ShoppingApi.SmsNotifications
 
         }
 
-        public async Task<int> SendOtp(string MobileNumber, OtpAndSms model)
+        public async Task<int> SendOtp(string MobileNumber, OtpAndSms model, OtpSenderModel otpData)
         {
             int otp = 0;
 
@@ -35,6 +35,13 @@ namespace ShoppingApi.SmsNotifications
                 int _max = 9999;
                 Random _rdm = new Random();
                 otp = _rdm.Next(_min, _max);
+                otpData.otpNumer = otp;
+
+                //
+
+
+                //db entry
+
             
                 model.smsUrl = model.baseAddress + "username=" + model.smsUserId + "&pass=" + model.password + "&route="+model.route +"&senderid="+model.senderId+ "&numbers=" + MobileNumber +
                    "&message=" + model.message + otp.ToString();
