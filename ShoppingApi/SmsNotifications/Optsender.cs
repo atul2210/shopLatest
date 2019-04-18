@@ -8,6 +8,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using ShoppingApi.Data;
+using ShoppingApi.Security.Hashing;
 
 namespace ShoppingApi.SmsNotifications
 {
@@ -21,6 +22,17 @@ namespace ShoppingApi.SmsNotifications
 
         }
 
+        private int GenerateOtp(int min,int max)
+        {
+           
+            int _min = 1000;
+            int _max = 9999;
+            Random _rdm = new Random();
+            return _rdm.Next(_min, _max);
+
+        }
+
+
         public async Task<int> SendOtp(string MobileNumber, OtpAndSms model, OtpSenderModel otpData)
         {
             int otp = 0;
@@ -33,10 +45,12 @@ namespace ShoppingApi.SmsNotifications
                     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                     //GET Method  
 
-                    int _min = 1000;
-                    int _max = 9999;
-                    Random _rdm = new Random();
-                    otp = _rdm.Next(_min, _max);
+                    //int _min = 1000;
+                    //int _max = 9999;
+                    //Random _rdm = new Random();
+                    //otp = _rdm.Next(_min, _max);
+
+                    otp = GenerateOtp(1,4);
 
 
                     //
@@ -135,6 +149,46 @@ namespace ShoppingApi.SmsNotifications
             return otp;
 
 
+        }
+
+        public async Task<string> SendEmail(string email)
+        {
+            string message = string.Empty;
+            try
+                {
+                var connectionString = Startup.connectionstring;
+                using (var con = new ShoppingContext(connectionString))
+                {
+                    var data = con.Users.Where(m => m.Email == email).SingleOrDefault();
+                    if (data == null)
+
+                    {
+                        throw new Exception("This Email is not registered with us");
+                    }
+
+                    message = "Welcome@";
+                   
+                    int otp = GenerateOtp(1, 4);
+
+                    message = message + otp.ToString();
+                    var salt = Salt.Create();
+                    var hash = Hash.Create(message, salt);
+                    //update database
+                    data.salt = salt;
+                    data.hash = hash;
+                    con.SaveChanges();
+
+
+                    //
+                    //send email here
+                    //
+                }
+            }
+            catch(Exception exp)
+            {
+                throw exp;
+            }
+                return "Your new password "+ message + "  has been emailed on  " + email + "." + "<br> Please log on and check" ;
         }
     }
 }

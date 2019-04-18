@@ -84,14 +84,15 @@ namespace ShoppingApi.Controllers
 
                 if (result.IsFaulted)
                 {
-                    return Json(new { status = HttpStatusCode.BadRequest, message = result.Exception.Message });
+/////  return Json(new { status = HttpStatusCode.BadRequest, message = result.Exception.Message });
+                    return BadRequest(result.Exception.Message);
                 }
                 return Ok(result);
             }
             
             catch (Exception exp)
             {
-                return Json(new { status = HttpStatusCode.BadRequest, message = exp.Message });
+                return BadRequest(exp.Message);
 
             }
 
@@ -101,6 +102,15 @@ namespace ShoppingApi.Controllers
 
         }
 
+        [AllowAnonymous]
+        [HttpGet, Route("sms/ResetPassword/")]
 
+        public async Task<IActionResult> ResetPassword(string email)
+        {
+
+            var result = _msgFactory.SendEmail(email);
+            return Ok(result);
+
+        }
     }
 }

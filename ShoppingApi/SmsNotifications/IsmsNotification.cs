@@ -11,6 +11,7 @@ namespace ShoppingApi.SmsNotifications
     {
         //  Task<bool> SendMessage(T MobileNumber,M model);
         Task<int> SendOtp(T MobileNumber, M model, O data);
+        Task<string> SendEmail(string email);
 
     }
 }

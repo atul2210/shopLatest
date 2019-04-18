@@ -4,17 +4,18 @@ using System.Linq;
 using System.Threading.Tasks;
 using ShoppingApi.Model;
 using System.Collections;
+using ShoppingApi.Security.Hashing;
 
 namespace ShoppingApi.SmsNotifications.MessageFactory
 {
-    public class MsgFactory: ImessageFactory
+    public class MsgFactory : ImessageFactory
     {
 
         public Task<int> SendOtp(int msgType, string mobile, OtpAndSms smsUrl, OtpSenderModel otpData)
         {
 
-            
-           IsmsNotification<string, OtpAndSms,OtpSenderModel> factory = null;
+
+            IsmsNotification<string, OtpAndSms, OtpSenderModel> factory = null;
             Task<int> otp = null;
             try
             {
@@ -47,6 +48,16 @@ namespace ShoppingApi.SmsNotifications.MessageFactory
             return otp;
         }
 
+        public async  Task<string> SendEmail(string emailId)
+        {
+
+            var connectionString = Startup.connectionstring;
+            IsmsNotification<string, OtpAndSms, OtpSenderModel> factory = null;
+            factory = new Otpsender();
+            return await factory.SendEmail(emailId);
+
+
+        }
     }
- }
+}
 

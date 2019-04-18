@@ -34,7 +34,7 @@ namespace ShoppingApi.Data
         public double Mobile { get; set; }
 
         [Column(TypeName = "numeric(18,0)")]
-        public double UlternateMobile { get; set; }
+        public double? UlternateMobile { get; set; }
 
         [Column(TypeName = "nvarchar(50)")]
         public string City { get; set; }

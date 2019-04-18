@@ -10,6 +10,7 @@ namespace ShoppingApi.SmsNotifications.MessageFactory
     {
         //IsmsNotification<string, OtpAndSms> SendOtp(int msgType, string mobile, OtpAndSms smsUrl);
         Task<int> SendOtp(int msgType, string mobile, OtpAndSms smsUrl, OtpSenderModel otpData);
+        Task<string> SendEmail(string emailId);
 
     }
 }
