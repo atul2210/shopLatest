@@ -54,10 +54,22 @@ namespace ShoppingApi.SmsNotifications.MessageFactory
             var connectionString = Startup.connectionstring;
             IsmsNotification<string, OtpAndSms, OtpSenderModel> factory = null;
             factory = new Otpsender();
-            return await factory.SendEmail(emailId);
+            return  factory.SendEmail(emailId);
 
 
         }
+
+        public async Task<string> ComparePassword(string emailId, string password, string confrmpassword)
+        {
+
+            var connectionString = Startup.connectionstring;
+            IsmsNotification<string, OtpAndSms, OtpSenderModel> factory = null;
+            factory = new Otpsender();
+            return  factory.ComparePassword(emailId,password, confrmpassword);
+
+
+        }
+
     }
 }
 

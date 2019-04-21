@@ -112,5 +112,32 @@ namespace ShoppingApi.Controllers
             return Ok(result);
 
         }
+
+
+        [AllowAnonymous]
+        [HttpGet, Route("sms/ChangePassword/")]
+
+        public async Task<IActionResult> ChangePassword(string email,string password,string confirmpassword)
+        {
+            try
+            {
+
+                var result = _msgFactory.ComparePassword(email, password, confirmpassword);
+
+                if (result.IsFaulted)
+                {
+                    return BadRequest(result.Result);
+                }
+
+                    return Ok(result);
+            }
+          
+
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+        }
     }
 }

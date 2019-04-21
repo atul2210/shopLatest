@@ -151,7 +151,7 @@ namespace ShoppingApi.SmsNotifications
 
         }
 
-        public async Task<string> SendEmail(string email)
+        public string SendEmail(string email)
         {
             string message = string.Empty;
             try
@@ -176,7 +176,7 @@ namespace ShoppingApi.SmsNotifications
                     //update database
                     data.salt = salt;
                     data.hash = hash;
-                    con.SaveChanges();
+                   con.SaveChanges();
 
 
                     //
@@ -188,7 +188,47 @@ namespace ShoppingApi.SmsNotifications
             {
                 throw exp;
             }
-                return "Your new password "+ message + "  has been emailed on  " + email + "." + "<br> Please log on and check" ;
+                return "Your new password has been emailed on  " + email + "." + "<br> Please log on and check" ;
         }
+
+        public string ComparePassword(string emailId, string password, string confrmpassword)
+        {
+            string status  = string.Empty;
+            try
+            {
+                if (!password.Equals(confrmpassword))
+                {
+                    throw new Exception("Confirm password is not matching. Please reenter");
+                }
+
+                var connectionString = Startup.connectionstring;
+                using (var con = new ShoppingContext(connectionString))
+                {
+                    var data = con.Users.Where(m => m.Email == emailId).SingleOrDefault();
+                    if (data == null)
+
+                    {
+                        throw new Exception("This Email is not registered with us");
+                    }
+                    var salt = Salt.Create();
+                    var hash = Hash.Create(password, salt);
+                    //update database
+                    data.salt = salt;
+                    data.hash = hash;
+                    con.SaveChanges();
+                    status = "Your password changed successfully";
+
+                }
+            }
+
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+
+            return status;
+
+        }
+
     }
 }
