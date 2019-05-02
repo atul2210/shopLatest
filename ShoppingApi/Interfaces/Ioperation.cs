@@ -19,5 +19,6 @@ namespace ShoppingApi.Interfaces
         bool addUser(User user);
         PageResult<ItemMaster> Search(string SearchItem, PageAndSortedQuery<ItemDetailsQuery> query);
         bool PaymentReceived(string emailId, string UserSession, List<checkedInItem> PaymentReceived);
+        Task<List<files>> getAllImmages(string filepath);
     }
 }

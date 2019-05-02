@@ -10,6 +10,9 @@ using ShoppingApi.Model;
 using ShoppingApi.PageQuery;
 using ShoppingApi.Interfaces;
 using ShoppingApi.Security.Hashing;
+using System.IO;
+using Microsoft.AspNetCore.Hosting;
+
 namespace ShoppingApi.Data
 {
     public class Operations : Ioperation
@@ -502,6 +505,26 @@ namespace ShoppingApi.Data
             return success;
 
         }
+
+
+        public async Task<List<files>> getAllImmages(string filepath)
+        {
+            DirectoryInfo di = new DirectoryInfo(filepath);
+
+            //Get All Files  
+            
+            List<files> files= di.GetFiles("*.*")
+                                // .Where(file => file.Name.EndsWith(".csv"))
+                                .Select(file => new files()
+                                {
+                                    fileName =  file.FullName
+
+                                }).ToList();
+
+            return files;
+
+        }
+
 
 
     }

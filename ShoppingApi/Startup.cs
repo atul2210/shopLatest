@@ -150,6 +150,7 @@ namespace ShoppingApi
 
             services.AddOptions();
             services.Configure<SmsNotifications.MessageFactory.SmsSettingReader>(Configuration.GetSection("SmsAndOTP"));
+            services.Configure<SmsNotifications.MessageFactory.fileSettingReader>(Configuration.GetSection("FileSettings"));
 
 
             services.AddDbContext<ShoppingContext>(options => options.UseSqlServer(connectionstring));

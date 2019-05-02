@@ -16,4 +16,10 @@ namespace ShoppingApi.SmsNotifications.MessageFactory
         public string route { get; set; }
         public int lockMinutes { get; set; }
     }
+
+    public class fileSettingReader
+    {
+        public string fileName { get; set; }
+    }
+
 }

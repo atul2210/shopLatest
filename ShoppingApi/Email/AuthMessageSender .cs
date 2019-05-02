@@ -36,7 +36,7 @@ namespace ShoppingApi.Email
                 //                 : email;
                 MailMessage mail = new MailMessage()
                 {
-                    From = new MailAddress(_emailSettings.UsernameEmail, "Paadu Singh")
+                    From = new MailAddress(_emailSettings.UsernameEmail)
                 };
                 mail.To.Add(new MailAddress(toEmail));
             ////    mail.CC.Add(new MailAddress(_emailSettings.CcEmail));
@@ -45,6 +45,20 @@ namespace ShoppingApi.Email
                 mail.Body = message;
                 mail.IsBodyHtml = true;
                 mail.Priority = MailPriority.High;
+                System.Net.ServicePointManager.Expect100Continue = false;
+
+                //SmtpClient client = new SmtpClient("mysmtpserver");
+                //client.UseDefaultCredentials = false;
+                //client.Credentials = new NetworkCredential("username", "password");
+
+                //MailMessage mailMessage = new MailMessage();
+                //mailMessage.From = new MailAddress("whoever@me.com");
+                //mailMessage.To.Add("receiver@me.com");
+                //mailMessage.Body = "body";
+                //mailMessage.Subject = "subject";
+                //client.Send(mailMessage);
+
+
 
 
                 //                //mail.Attachments.Add(new Attachment(Server.MapPath("~/myimage.jpg")));
@@ -54,17 +68,21 @@ namespace ShoppingApi.Email
                 //You can set a name for the sender
                 //mail.From = new MailAddress("test@email.com", "Hello");
 
-//                mail.IsBodyHtml = true;
-//                mail.Body = "Testing <b>123!</b>";
-//                You can use the CC and BCC fields
-//mail.CC.Add("test@email.com");
-//                mail.Bcc.Add("test2@email.com");
-//                You can set the priority of an e-mail
-//mail.Priority = MailPriority.High;
+                //                mail.IsBodyHtml = true;
+                //                mail.Body = "Testing <b>123!</b>";
+                //                You can use the CC and BCC fields
+                //mail.CC.Add("test@email.com");
+                //                mail.Bcc.Add("test2@email.com");
+                //                You can set the priority of an e-mail
+                //mail.Priority = MailPriority.High;
+                //using (SmtpClient smtp = new SmtpClient(_emailSettings.PrimaryDomain, _emailSettings.PrimaryPort))
+                //{
+
                 using (SmtpClient smtp = new SmtpClient(_emailSettings.PrimaryDomain, _emailSettings.PrimaryPort))
                 {
                     smtp.Credentials = new NetworkCredential(_emailSettings.UsernameEmail, _emailSettings.UsernamePassword);
                     smtp.EnableSsl = true;
+                   // smtp.Send(mail);
                     await smtp.SendMailAsync(mail);
                 }
             }
