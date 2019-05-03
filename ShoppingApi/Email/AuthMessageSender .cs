@@ -45,7 +45,8 @@ namespace ShoppingApi.Email
                 mail.Body = message;
                 mail.IsBodyHtml = true;
                 mail.Priority = MailPriority.High;
-                System.Net.ServicePointManager.Expect100Continue = false;
+
+                //System.Net.ServicePointManager.Expect100Continue = false;
 
                 //SmtpClient client = new SmtpClient("mysmtpserver");
                 //client.UseDefaultCredentials = false;
@@ -81,9 +82,11 @@ namespace ShoppingApi.Email
                 using (SmtpClient smtp = new SmtpClient(_emailSettings.PrimaryDomain, _emailSettings.PrimaryPort))
                 {
                     smtp.Credentials = new NetworkCredential(_emailSettings.UsernameEmail, _emailSettings.UsernamePassword);
-                    smtp.EnableSsl = true;
-                   // smtp.Send(mail);
-                    await smtp.SendMailAsync(mail);
+                    smtp.EnableSsl = false;
+                    smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
+                    smtp.UseDefaultCredentials = false;
+                    smtp.Send(mail);
+                  //  await smtp.SendMailAsync(mail);
                 }
             }
             catch (Exception ex)
