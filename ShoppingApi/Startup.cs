@@ -210,7 +210,7 @@ namespace ShoppingApi
 
 
 
-            app.UseAuthentication();   //added on 14 October 2018
+            app.UseAuthentication();   
             app.UseMvc();
 
         }
