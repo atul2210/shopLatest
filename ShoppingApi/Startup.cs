@@ -21,6 +21,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Antiforgery;
 using ShoppingApi.Interfaces;
 using ShoppingApi.Email;
+using ShoppingApi.Common;
 
 namespace ShoppingApi
 {
@@ -210,7 +211,9 @@ namespace ShoppingApi
 
 
 
-            app.UseAuthentication();   
+            app.UseAuthentication();
+            app.UseMiddleware(typeof(ErrorHandlingMiddleware));
+            
             app.UseMvc();
 
         }
