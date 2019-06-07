@@ -15,8 +15,10 @@ using ShoppingApi.Interfaces;
 
 namespace ShoppingApi.Controllers
 {
+    [AutoValidateAntiforgeryToken]
     [Produces("application/json")]
     [Route("api/")]
+
     public class SmsController : Controller
     {
         private IConfiguration _configuration;

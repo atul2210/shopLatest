@@ -16,6 +16,7 @@ namespace ShoppingApi.Controllers
 
     [Produces("application/json")]
     [Route("api/")]
+    [AutoValidateAntiforgeryToken]
     public class FileController : Controller
 
     {

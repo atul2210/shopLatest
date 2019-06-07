@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ShoppingApi.Controllers
 {
+    [AutoValidateAntiforgeryToken]
     [Route("api/[controller]")]
     public class ValuesController : Controller
     {

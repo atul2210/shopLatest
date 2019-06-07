@@ -12,6 +12,7 @@ using System.Net;
 
 namespace ShoppingApi.Controllers
 {
+    [AutoValidateAntiforgeryToken]
     [Produces("application/json")]
     [Route("api/")]
     public class UserController : Controller

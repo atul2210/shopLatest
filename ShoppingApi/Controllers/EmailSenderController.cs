@@ -9,6 +9,7 @@ using ShoppingApi.Email;
 
 namespace ShoppingApi.Controllers
 {
+    [AutoValidateAntiforgeryToken]
     [Produces("application/json")]
     [Route("api/EmailSender")]
     public class EmailSenderController : Controller
@@ -19,7 +20,7 @@ namespace ShoppingApi.Controllers
         {
             _emailSender = emailSender;
         }
-        [AllowAnonymous]
+        [Authorize]
         [HttpGet, Route("/SendEmail/")]
         public async Task TestAction(string ToEmail,string Subject,string body)
         {

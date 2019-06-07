@@ -117,10 +117,6 @@ namespace ShoppingApi
 
             });
 
-            services.Configure<EmailSettings>(Configuration.GetSection("EmailSettings"));
-
-            services.AddMvc();
-
             //xsrf AntiForgeryToken Feature
 
             services.AddAntiforgery(options =>
@@ -129,9 +125,13 @@ namespace ShoppingApi
 
                 options.CookiePath = "/";
                 options.FormFieldName = "AntiforgeryFieldname";
-               
+
 
             });
+            services.Configure<EmailSettings>(Configuration.GetSection("EmailSettings"));
+            services.AddCors();
+            services.AddMvc();
+
 
 
             //Add database services.
@@ -139,7 +139,7 @@ namespace ShoppingApi
            
 
             services.AddSingleton<IConfiguration>(Configuration);
-            services.AddCors();
+          
             // 
 
             services.AddSession(options =>
@@ -183,15 +183,15 @@ namespace ShoppingApi
                   "/swagger/help/swagger.json", "Safety for All API");
             });
 
-            app.UseCors(
-                  options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+            //app.UseCors(
+            //      options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().AllowCredentials());
 
             //This way Angulra is ready to read/access the cookies
             app.Use(async (context, next) =>
             {
                 string path = "/";
                 string path1 = context.Request.Path.Value;
-                if (path1 != null && path1.Contains("AllItemsOnPaging"))
+                if (path1 != null && path1.Contains("menu"))
                 {
                     // XSRF-TOKEN used by angular in the $http if provided
                     var tokens = antiforgery.GetAndStoreTokens(context);
@@ -209,7 +209,9 @@ namespace ShoppingApi
                 //return next();      
             });
 
-
+            app.UseCors(
+                 options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().AllowCredentials());
+           
 
             app.UseAuthentication();
             app.UseMiddleware(typeof(ErrorHandlingMiddleware));

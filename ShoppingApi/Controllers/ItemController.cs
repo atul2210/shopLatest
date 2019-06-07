@@ -21,7 +21,8 @@ namespace ShoppingApi.Controllers
    [Authorize]
     [Produces("application/json")]
     [Route("api/")]
-
+   // [ValidateAntiForgeryToken]
+    [AutoValidateAntiforgeryToken]
 
     public class ItemController : Controller
     {
@@ -73,6 +74,7 @@ namespace ShoppingApi.Controllers
 
 
         [HttpPost, Route("items/addCart/")]
+        [ValidateAntiForgeryToken]
         [AllowAnonymous]
         public AddToCart adaddCart([FromQuery]  int itemid, [FromQuery]int quantity, [FromQuery]string color,string sessionId,double price,double offerprice,double deliverycharges,int ColorId)
         {
@@ -169,14 +171,14 @@ namespace ShoppingApi.Controllers
             return Ok(_operations.Search(itemSearch,query));
         }
 
-        [AllowAnonymous]
+        [Authorize]
         [HttpPost, Route("items/RemoveItems/")]
         public IActionResult RemoveItems(int itemId, int returnedItemQty, string sessionId, int checkedinId)
         {
             return Ok(_operations.RemoveItems(itemId, returnedItemQty, sessionId, checkedinId));
         }
 
-        [AllowAnonymous]
+       [Authorize]
         [HttpPost, Route("items/CheckoutPaymentReceived/")]
         public IActionResult PaymentReceived(string emailId, string UserSession, [FromBody] List<checkedInItem> paymentreceived)
         {
