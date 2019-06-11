@@ -171,7 +171,7 @@ namespace ShoppingApi.Controllers
             return Ok(_operations.Search(itemSearch,query));
         }
 
-        [Authorize]
+        [AllowAnonymous]
         [HttpPost, Route("items/RemoveItems/")]
         public IActionResult RemoveItems(int itemId, int returnedItemQty, string sessionId, int checkedinId)
         {

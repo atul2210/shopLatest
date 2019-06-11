@@ -44,6 +44,7 @@ namespace ShoppingApi
         public IConfiguration Configuration { get; }
 
         public IConfigurationRoot smsSettings { get; set; }
+        readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
 
         //  public IConfiguration Configuration { get; set; }
@@ -63,7 +64,21 @@ namespace ShoppingApi
                 });
             });
 
-
+            services.AddCors(options =>
+            {
+                options.AddPolicy(MyAllowSpecificOrigins,
+                builder =>
+                {
+                    builder.WithOrigins("http://www.vidhim.com",
+                                        "http://localhost:4200")
+                                        .AllowAnyHeader()
+                                        .AllowAnyMethod()
+                                        .AllowCredentials();
+                                        
+                                        
+                                        
+                });
+            });
             //jwt 14 October 2018
             //////services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             //////    .AddJwtBearer(options =>
@@ -129,7 +144,7 @@ namespace ShoppingApi
 
             });
             services.Configure<EmailSettings>(Configuration.GetSection("EmailSettings"));
-            services.AddCors();
+         /////   services.AddCors();
             services.AddMvc();
 
 
@@ -173,7 +188,7 @@ namespace ShoppingApi
                 app.UseDeveloperExceptionPage();
             }
             //app.UseAuthentication(); //commented on 14 October 2018
-
+            app.UseCors(MyAllowSpecificOrigins);
             app.UseSession();
 
             app.UseSwagger();
@@ -182,6 +197,9 @@ namespace ShoppingApi
                 options.SwaggerEndpoint(
                   "/swagger/help/swagger.json", "Safety for All API");
             });
+            //app.UseCors(
+            //   options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().AllowCredentials());
+
 
             //app.UseCors(
             //      options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().AllowCredentials());
@@ -189,7 +207,7 @@ namespace ShoppingApi
             //This way Angulra is ready to read/access the cookies
             app.Use(async (context, next) =>
             {
-                string path = "/";
+                //string path = "/";
                 string path1 = context.Request.Path.Value;
                 if (path1 != null && path1.Contains("menu"))
                 {
@@ -198,9 +216,12 @@ namespace ShoppingApi
                     context.Response.Cookies.Append("XSRF-TOKEN",
                       tokens.RequestToken, new CookieOptions()
                       {
-                          HttpOnly = false
-
-                          //Secure = true
+                          Path = "/",
+                          HttpOnly = false,
+                          Expires = DateTime.Now.AddHours(10),
+                          
+                         
+                         
                       }
                     );
                 }
@@ -209,10 +230,8 @@ namespace ShoppingApi
                 //return next();      
             });
 
-            app.UseCors(
-                 options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().AllowCredentials());
            
-
+           
             app.UseAuthentication();
             app.UseMiddleware(typeof(ErrorHandlingMiddleware));
             
