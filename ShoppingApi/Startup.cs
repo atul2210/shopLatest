@@ -205,30 +205,30 @@ namespace ShoppingApi
             //      options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().AllowCredentials());
 
             //This way Angulra is ready to read/access the cookies
-            app.Use(async (context, next) =>
-            {
-                //string path = "/";
-                string path1 = context.Request.Path.Value;
-                if (path1 != null && path1.Contains("menu"))
-                {
-                    // XSRF-TOKEN used by angular in the $http if provided
-                    var tokens = antiforgery.GetAndStoreTokens(context);
-                    context.Response.Cookies.Append("XSRF-TOKEN",
-                      tokens.RequestToken, new CookieOptions()
-                      {
-                          Path = "/",
-                          HttpOnly = false,
-                          Expires = DateTime.Now.AddHours(10),
+            //app.Use(async (context, next) =>
+            //{
+            //    //string path = "/";
+            //    string path1 = context.Request.Path.Value;
+            //    if (path1 != null && path1.Contains("menu"))
+            //    {
+            //        // XSRF-TOKEN used by angular in the $http if provided
+            //        var tokens = antiforgery.GetAndStoreTokens(context);
+            //        context.Response.Cookies.Append("XSRF-TOKEN",
+            //          tokens.RequestToken, new CookieOptions()
+            //          {
+            //              Path = "/",
+            //              HttpOnly = false,
+            //              Expires = DateTime.Now.AddHours(10),
                           
                          
                          
-                      }
-                    );
-                }
+            //          }
+            //        );
+            //    }
 
-                await next();
-                //return next();      
-            });
+            //    await next();
+            //    //return next();      
+            //});
 
            
            
