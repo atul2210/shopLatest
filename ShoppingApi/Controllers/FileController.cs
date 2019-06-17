@@ -16,7 +16,7 @@ namespace ShoppingApi.Controllers
 
     [Produces("application/json")]
     [Route("api/")]
-    [AutoValidateAntiforgeryToken]
+   // [AutoValidateAntiforgeryToken]
     public class FileController : Controller
 
     {
@@ -36,6 +36,7 @@ namespace ShoppingApi.Controllers
 
         [AllowAnonymous]
         [HttpGet, Route("file/images/")]
+        [AutoValidateAntiforgeryToken]
         public async Task<IActionResult> getimages()
         {
             var webRoot = _env.WebRootPath;

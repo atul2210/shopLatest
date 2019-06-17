@@ -12,7 +12,7 @@ using System.Net;
 
 namespace ShoppingApi.Controllers
 {
-    [AutoValidateAntiforgeryToken]
+  //  [AutoValidateAntiforgeryToken]
     [Produces("application/json")]
     [Route("api/")]
     public class UserController : Controller
@@ -30,6 +30,7 @@ namespace ShoppingApi.Controllers
 
         [AllowAnonymous]
         [HttpPost, Route("User/NewUser/")]
+        [ValidateAntiForgeryToken]
         public IActionResult AddUser([FromBody] User userData)
         {
             var data = _iotpChecker.GetOtpSenderDetails(userData.mobile);

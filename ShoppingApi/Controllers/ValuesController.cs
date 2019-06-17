@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ShoppingApi.Controllers
 {
-    [AutoValidateAntiforgeryToken]
+   /// [AutoValidateAntiforgeryToken]
     [Route("api/[controller]")]
     public class ValuesController : Controller
     {
@@ -19,6 +19,7 @@ namespace ShoppingApi.Controllers
 
         // GET api/values/5
         [HttpGet("{id}")]
+        [AutoValidateAntiforgeryToken]
         public string Get(int id)
         {
             return "value";
@@ -26,18 +27,21 @@ namespace ShoppingApi.Controllers
 
         // POST api/values
         [HttpPost]
+        [AutoValidateAntiforgeryToken]
         public void Post([FromBody]string value)
         {
         }
 
         // PUT api/values/5
         [HttpPut("{id}")]
+        [AutoValidateAntiforgeryToken]
         public void Put(int id, [FromBody]string value)
         {
         }
 
         // DELETE api/values/5
         [HttpDelete("{id}")]
+        [AutoValidateAntiforgeryToken]
         public void Delete(int id)
         {
         }

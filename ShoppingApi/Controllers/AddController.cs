@@ -17,12 +17,12 @@ namespace ShoppingApi.Controllers
     [AllowAnonymous]
     [Produces("application/json")]
     [Route("api/token")]
-    [AutoValidateAntiforgeryToken]
+  //  [AutoValidateAntiforgeryToken]
     public class AddController : Controller
     {
 
         [HttpGet]
-       
+        [AutoValidateAntiforgeryToken]
         //public async Task<userDetails> token()
         public async Task<ActionResult> token()
 
@@ -96,7 +96,7 @@ namespace ShoppingApi.Controllers
 
         [Authorize]
         [HttpGet]
-       [ValidateAntiForgeryToken]
+        [AutoValidateAntiforgeryToken]
 
         [Route("api/checkout")]
         public IActionResult Checkout()

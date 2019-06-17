@@ -25,6 +25,7 @@ namespace ShoppingApi.Controllers
 
         [AllowAnonymous]
         [HttpGet, Route("menu/menuitems/")]
+        [IgnoreAntiforgeryToken]
         public ActionResult MenuItems()
         {
             var getcookies = Request.Cookies["XSRF-TOKEN"];

@@ -22,8 +22,8 @@ namespace ShoppingApi.Controllers
     [Produces("application/json")]
     [Route("api/")]
    // [ValidateAntiForgeryToken]
-    [AutoValidateAntiforgeryToken]
-
+  //  [AutoValidateAntiforgeryToken]
+   
     public class ItemController : Controller
     {
     
@@ -35,6 +35,7 @@ namespace ShoppingApi.Controllers
 
      
        [AllowAnonymous]
+        [AutoValidateAntiforgeryToken]
         [HttpGet, Route("items/AllItems/")]
 
         public  IActionResult AllItems(int ChildMenuId, PageAndSortedQuery<ItemDetailsQuery> query)
@@ -52,7 +53,8 @@ namespace ShoppingApi.Controllers
 
         [AllowAnonymous]
         [HttpGet, Route("items/itemDetail/")]
-     //  [ValidateAntiForgeryToken]
+              [AutoValidateAntiforgeryToken]
+        //  [ValidateAntiForgeryToken]
         public Items itemDetail(int itemId)
         {
 
@@ -108,8 +110,8 @@ namespace ShoppingApi.Controllers
 
         [AllowAnonymous]
         [HttpGet, Route("items/getcheckedinItem/")]
+        [AutoValidateAntiforgeryToken]
 
-    
         public List<checkedInItem> checkedInIten(string userSession)
         {
             var data = _operations.getCheckInItem(userSession);
@@ -118,7 +120,8 @@ namespace ShoppingApi.Controllers
 
         [AllowAnonymous]
         [HttpGet, Route("items/AllItemsOnPaging/")]
-       [Produces(typeof(PageResult<ItemMaster>))]
+             [AutoValidateAntiforgeryToken]
+        [Produces(typeof(PageResult<ItemMaster>))]
         public IActionResult AllItemsOnPaging(PageAndSortedQuery<ItemDetailsQuery> query)
 
         { 
@@ -166,6 +169,7 @@ namespace ShoppingApi.Controllers
 
         [AllowAnonymous]
         [HttpGet, Route("items/SearchItem/")]
+        [AutoValidateAntiforgeryToken]
         public IActionResult SearchItems(PageAndSortedQuery<ItemDetailsQuery> query,string itemSearch)
         {
             return Ok(_operations.Search(itemSearch,query));
@@ -173,6 +177,7 @@ namespace ShoppingApi.Controllers
 
         [AllowAnonymous]
         [HttpPost, Route("items/RemoveItems/")]
+        [ValidateAntiForgeryToken]
         public IActionResult RemoveItems(int itemId, int returnedItemQty, string sessionId, int checkedinId)
         {
             return Ok(_operations.RemoveItems(itemId, returnedItemQty, sessionId, checkedinId));
@@ -180,6 +185,7 @@ namespace ShoppingApi.Controllers
 
        [Authorize]
         [HttpPost, Route("items/CheckoutPaymentReceived/")]
+        [ValidateAntiForgeryToken]
         public IActionResult PaymentReceived(string emailId, string UserSession, [FromBody] List<checkedInItem> paymentreceived)
         {
             //return Ok(paymentreceived);

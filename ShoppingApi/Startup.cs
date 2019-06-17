@@ -145,7 +145,7 @@ namespace ShoppingApi
             });
             services.Configure<EmailSettings>(Configuration.GetSection("EmailSettings"));
          /////   services.AddCors();
-            services.AddMvc();
+            //services.AddMvc();
 
 
 
@@ -160,7 +160,7 @@ namespace ShoppingApi
             services.AddSession(options =>
             {
                 options.IdleTimeout = TimeSpan.FromMinutes(20);
-                options.CookieHttpOnly = true;
+                options.CookieHttpOnly = false;
 
             });
 
@@ -176,6 +176,15 @@ namespace ShoppingApi
             services.AddTransient<Ioperation, Operations>();
             services.AddTransient<IEmailSender, AuthMessageSender>();
             services.AddTransient<IotpChecker, OtpChecker>();
+
+            //  services.AddMvc();
+
+            services.AddMvc(options =>
+            {
+                options.Filters.Add(new Microsoft.AspNetCore.Mvc.ValidateAntiForgeryTokenAttribute());
+            });
+
+
         }
         
 

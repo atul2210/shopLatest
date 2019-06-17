@@ -15,7 +15,7 @@ using ShoppingApi.Interfaces;
 
 namespace ShoppingApi.Controllers
 {
-    [AutoValidateAntiforgeryToken]
+  //  [AutoValidateAntiforgeryToken]
     [Produces("application/json")]
     [Route("api/")]
 
@@ -42,7 +42,7 @@ namespace ShoppingApi.Controllers
 
         [AllowAnonymous]
         [HttpGet, Route("sms/Otpsender/")]
-
+        [AutoValidateAntiforgeryToken]
         public async Task<IActionResult> SendOtp(string MobileNumber)
         {
             StringBuilder otpUrl = null;
@@ -106,7 +106,7 @@ namespace ShoppingApi.Controllers
 
         [AllowAnonymous]
         [HttpGet, Route("sms/ResetPassword/")]
-
+        [AutoValidateAntiforgeryToken]
         public async Task<IActionResult> ResetPassword(string email)
         {
 
@@ -118,7 +118,7 @@ namespace ShoppingApi.Controllers
 
         [AllowAnonymous]
         [HttpGet, Route("sms/ChangePassword/")]
-
+        [AutoValidateAntiforgeryToken]
         public async Task<IActionResult> ChangePassword(string email,string password,string confirmpassword)
         {
             try
