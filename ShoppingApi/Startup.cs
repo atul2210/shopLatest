@@ -239,25 +239,25 @@ namespace ShoppingApi
             //    //return next();      
             //});
 
-            app.Use(
-           next =>
-           {
-               return async context =>
-               {
-                   var tokens = antiforgery.GetAndStoreTokens(context);
-                 //  var stopWatch = new System.Diagnostics.Stopwatch();
-                   //stopWatch.Start();
-                   context.Response.OnStarting(
-                       () =>
-                       {
-                           //stopWatch.Stop();
-                           context.Response.Headers.Add("XSRF-TOKENLoLo", tokens.RequestToken.ToString());
-                           return Task.CompletedTask;
-                       });
+           // app.Use(
+           //next =>
+           //{
+           //    return async context =>
+           //    {
+           //        var tokens = antiforgery.GetAndStoreTokens(context);
+           //      //  var stopWatch = new System.Diagnostics.Stopwatch();
+           //        //stopWatch.Start();
+           //        context.Response.OnStarting(
+           //            () =>
+           //            {
+           //                //stopWatch.Stop();
+           //                context.Response.Headers.Add("XSRF-TOKENLoLo", tokens.RequestToken.ToString());
+           //                return Task.CompletedTask;
+           //            });
 
-                   await next(context);
-               };
-           });
+           //        await next(context);
+           //    };
+           //});
 
 
             app.UseAuthentication();
