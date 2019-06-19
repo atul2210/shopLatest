@@ -28,21 +28,23 @@ namespace ShoppingApi.Controllers
         [IgnoreAntiforgeryToken]
         public ActionResult MenuItems()
         {
-            var getcookies = Request.Cookies["XSRF-TOKEN"];
-
-            if (getcookies == null)
-            {
-                var tokens = _antiForgery.GetAndStoreTokens(HttpContext);
-                Response.Cookies.Append("XSRF-TOKEN", tokens.RequestToken, new Microsoft.AspNetCore.Http.CookieOptions
-                {
-                    HttpOnly = false,
-                    Path = "/",
-                    Expires = DateTime.Now.AddHours(10),
-                    SameSite = SameSiteMode.Lax,
-                    Secure=false,
-                    
-                });
-            }
+            //var getcookies = Request.Cookies["XSRF-TOKEN"];
+            //if (getcookies == null)
+            //{
+            //    var tokens = _antiForgery.GetAndStoreTokens(HttpContext);
+              
+            //    Response.Cookies.Append("XSRF-TOKEN", tokens.RequestToken, new Microsoft.AspNetCore.Http.CookieOptions
+            //    {
+            //        HttpOnly = false,
+            //        /// Path = "/api",  //api folder must be created
+            //        Path = "/",
+            //        Expires = DateTime.Now.AddHours(10),
+            //        SameSite = SameSiteMode.Lax,
+            //        Secure=false,
+            //        //Domain = "localhost"//Request.Host.ToString(),
+                   
+            //    });
+            //}
             return Ok(_imenu.getMenu());
                     
 

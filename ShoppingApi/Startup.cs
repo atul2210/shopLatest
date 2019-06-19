@@ -73,10 +73,10 @@ namespace ShoppingApi
                                         "http://localhost:4200")
                                         .AllowAnyHeader()
                                         .AllowAnyMethod()
-                                        .AllowCredentials();
-                                        
-                                        
-                                        
+                                        .AllowCredentials()
+                                        .WithExposedHeaders("XSRF-TOKENLoLo");
+
+
                 });
             });
             //jwt 14 October 2018
@@ -228,9 +228,9 @@ namespace ShoppingApi
             //              Path = "/",
             //              HttpOnly = false,
             //              Expires = DateTime.Now.AddHours(10),
-                          
-                         
-                         
+
+
+
             //          }
             //        );
             //    }
@@ -239,8 +239,27 @@ namespace ShoppingApi
             //    //return next();      
             //});
 
-           
-           
+            app.Use(
+           next =>
+           {
+               return async context =>
+               {
+                   var tokens = antiforgery.GetAndStoreTokens(context);
+                 //  var stopWatch = new System.Diagnostics.Stopwatch();
+                   //stopWatch.Start();
+                   context.Response.OnStarting(
+                       () =>
+                       {
+                           //stopWatch.Stop();
+                           context.Response.Headers.Add("XSRF-TOKENLoLo", tokens.RequestToken.ToString());
+                           return Task.CompletedTask;
+                       });
+
+                   await next(context);
+               };
+           });
+
+
             app.UseAuthentication();
             app.UseMiddleware(typeof(ErrorHandlingMiddleware));
             
