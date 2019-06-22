@@ -44,7 +44,7 @@ namespace ShoppingApi
         public IConfiguration Configuration { get; }
 
         public IConfigurationRoot smsSettings { get; set; }
-        readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+        readonly string MyAllowSpecificOrigins = "localhost:44325";
 
 
         //  public IConfiguration Configuration { get; set; }

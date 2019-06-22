@@ -41,7 +41,8 @@ namespace ShoppingApi.Controllers
                     Expires = DateTime.Now.AddHours(10),
                     SameSite = SameSiteMode.Lax,
                     Secure = false,
-                 //   Domain = ".vidhim.com" 
+                   // Domain = "localhost" 
+
 
                 });
             }

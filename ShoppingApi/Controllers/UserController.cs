@@ -30,7 +30,9 @@ namespace ShoppingApi.Controllers
 
         [AllowAnonymous]
         [HttpPost, Route("User/NewUser/")]
-        [ValidateAntiForgeryToken]
+        //[ValidateAntiForgeryToken]
+
+        [IgnoreAntiforgeryToken]
         public IActionResult AddUser([FromBody] User userData)
         {
             var data = _iotpChecker.GetOtpSenderDetails(userData.mobile);

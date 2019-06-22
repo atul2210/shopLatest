@@ -27,21 +27,27 @@ namespace ShoppingApi.Controllers
 
         // POST api/values
         [HttpPost]
-        [AutoValidateAntiforgeryToken]
+        //[ValidateAntiForgeryToken]
+
+        [IgnoreAntiforgeryToken]
         public void Post([FromBody]string value)
         {
         }
 
         // PUT api/values/5
         [HttpPut("{id}")]
-        [AutoValidateAntiforgeryToken]
+        //[ValidateAntiForgeryToken]
+
+        [IgnoreAntiforgeryToken]
         public void Put(int id, [FromBody]string value)
         {
         }
 
         // DELETE api/values/5
         [HttpDelete("{id}")]
-        [AutoValidateAntiforgeryToken]
+        //[ValidateAntiForgeryToken]
+
+        [IgnoreAntiforgeryToken]
         public void Delete(int id)
         {
         }
