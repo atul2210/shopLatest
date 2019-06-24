@@ -188,7 +188,8 @@ namespace ShoppingApi.SmsNotifications
             {
                 throw exp;
             }
-                return "Your new password has been emailed on  " + email + "." + "<br> Please log on and check" ;
+            return message;
+               /// return "Your new password has been emailed on  " + email + "." + "<br> Please log on and check" ;
         }
 
         public string ComparePassword(string emailId, string password, string confrmpassword)
