@@ -12,13 +12,13 @@ namespace ShoppingApi.Common
     public class EmailSender
     {
        ////// IOptions<EmailSettings> emailSettings = null;
-        public EmailSender(IOptions<EmailSettings> emailSettings)
+        public EmailSender(EmailSettings emailSettings )
         {
-            _emailSettings = emailSettings.Value;
+          //  _emailSettings = emailSettings;
         }
-        public static EmailSettings _emailSettings; 
+      //  public static EmailSettings _emailSettings; 
 
-        public static Task SendEmailAsync(string toEmail, string subject, string message, IOptions<EmailSettings> emailSettings)
+        public static Task SendEmailAsync(string toEmail, string subject, string message, EmailSettings emailSettings)
         {
             Execute(toEmail, subject, message,emailSettings).Wait();
             return Task.FromResult(0);
@@ -27,7 +27,7 @@ namespace ShoppingApi.Common
 
 
 
-        public static async Task Execute(string toEmail, string subject, string message, IOptions<EmailSettings> emailSettings)
+        public static async Task Execute(string toEmail, string subject, string message, EmailSettings emailSettings)
         {
             try
             {
@@ -38,9 +38,10 @@ namespace ShoppingApi.Common
                 //                 : email;
                 MailMessage mail = new MailMessage()
                 {
-                    From = new MailAddress(_emailSettings.UsernameEmail)
+                    From = new MailAddress(emailSettings.UsernameEmail)
                 };
                 mail.To.Add(new MailAddress(toEmail));
+
                 ////    mail.CC.Add(new MailAddress(_emailSettings.CcEmail));
 
                 mail.Subject = "Vidhimas Shopping " + subject;
@@ -81,9 +82,9 @@ namespace ShoppingApi.Common
                 //using (SmtpClient smtp = new SmtpClient(_emailSettings.PrimaryDomain, _emailSettings.PrimaryPort))
                 //{
 
-                using (SmtpClient smtp = new SmtpClient(_emailSettings.PrimaryDomain, _emailSettings.PrimaryPort))
+                using (SmtpClient smtp = new SmtpClient(emailSettings.PrimaryDomain, emailSettings.PrimaryPort))
                 {
-                    smtp.Credentials = new NetworkCredential(_emailSettings.UsernameEmail, _emailSettings.UsernamePassword);
+                    smtp.Credentials = new NetworkCredential(emailSettings.UsernameEmail, emailSettings.UsernamePassword);
                     smtp.EnableSsl = false;
                     smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
                     smtp.UseDefaultCredentials = false;
@@ -93,7 +94,7 @@ namespace ShoppingApi.Common
             }
             catch (Exception ex)
             {
-                //do something here
+                throw ;
             }
         }
 
