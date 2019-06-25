@@ -163,7 +163,7 @@ namespace ShoppingApi.SmsNotifications
                     if (data == null)
 
                     {
-                        throw new Exception("This Email is not registered with us");
+                        return "This Email is not registered with us";
                     }
 
                     message = "Welcome@";
@@ -177,18 +177,13 @@ namespace ShoppingApi.SmsNotifications
                     data.salt = salt;
                     data.hash = hash;
                    con.SaveChanges();
-
-
-                    //
-                    //send email here
-                    //
                 }
             }
             catch(Exception exp)
             {
                 throw exp;
             }
-            return message;
+            return "Your Passwowrd has been emailed to  " + email;
                /// return "Your new password has been emailed on  " + email + "." + "<br> Please log on and check" ;
         }
 

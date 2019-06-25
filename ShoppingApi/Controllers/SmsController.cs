@@ -134,8 +134,10 @@ namespace ShoppingApi.Controllers
                 };
 
 
-
-                await EmailSender.SendEmailAsync(email, "Password Reset - Vidhim Shoppings", result.Result, emailsettin);
+                if (result.Result != "This Email is not registered with us")
+                {
+                    await EmailSender.SendEmailAsync(email, "Password Reset - Vidhim Shoppings", result.Result, emailsettin);
+                }
             }
             catch(Exception e)
             {
