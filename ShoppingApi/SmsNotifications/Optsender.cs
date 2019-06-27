@@ -183,7 +183,7 @@ namespace ShoppingApi.SmsNotifications
             {
                 throw exp;
             }
-            return "Your Passwowrd has been emailed to  " + email;
+            return message;
                /// return "Your new password has been emailed on  " + email + "." + "<br> Please log on and check" ;
         }
 

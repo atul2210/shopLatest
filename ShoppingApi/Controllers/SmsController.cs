@@ -133,17 +133,17 @@ namespace ShoppingApi.Controllers
 
                 };
 
-
+                string emailBody = "Your new password for Vidhim Shopping is  " + result.Result;
                 if (result.Result != "This Email is not registered with us")
                 {
-                    await EmailSender.SendEmailAsync(email, "Password Reset - Vidhim Shoppings", result.Result, emailsettin);
+                    await EmailSender.SendEmailAsync(email, "Password Reset - Vidhim Shoppings", emailBody, emailsettin);
                 }
             }
             catch(Exception e)
             {
                 throw e;
             }
-            return Ok(result);
+            return Ok("Your Password has been emailed to " + email + "." );
 
         }
 
