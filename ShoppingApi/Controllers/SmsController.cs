@@ -18,7 +18,7 @@ using ShoppingApi.Common;
 
 namespace ShoppingApi.Controllers
 {
-  //  [AutoValidateAntiforgeryToken]
+    [AutoValidateAntiforgeryToken]
     [Produces("application/json")]
     [Route("api/")]
 
