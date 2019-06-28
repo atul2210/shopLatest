@@ -45,7 +45,8 @@ namespace ShoppingApi.Controllers
 
         [AllowAnonymous]
         [HttpGet, Route("sms/Otpsender/")]
-        [AutoValidateAntiforgeryToken]
+       [AutoValidateAntiforgeryToken]
+       // [IgnoreAntiforgeryToken]
         public async Task<IActionResult> SendOtp(string MobileNumber)
         {
             StringBuilder otpUrl = null;
@@ -110,6 +111,7 @@ namespace ShoppingApi.Controllers
         [AllowAnonymous]
         [HttpGet, Route("sms/ResetPassword/")]
         [AutoValidateAntiforgeryToken]
+        //[IgnoreAntiforgeryToken]
         public async Task<IActionResult> ResetPassword(string email)
         {
             var result = _msgFactory.SendEmail(email);
@@ -143,14 +145,17 @@ namespace ShoppingApi.Controllers
             {
                 throw e;
             }
-            return Ok("Your Password has been emailed to " + email + "." );
+            //  return Ok("Your Password has been emailed to " + email + "." );
+         
+            return Ok(result);
 
         }
 
 
         [AllowAnonymous]
         [HttpGet, Route("sms/ChangePassword/")]
-        [AutoValidateAntiforgeryToken]
+       [AutoValidateAntiforgeryToken]
+       // [IgnoreAntiforgeryToken]
         public async Task<IActionResult> ChangePassword(string email,string password,string confirmpassword)
         {
             try
