@@ -11,12 +11,12 @@ namespace ShoppingApi.SmsNotifications.MessageFactory
     public class MsgFactory : ImessageFactory
     {
 
-        public Task<int> SendOtp(int msgType, string mobile, OtpAndSms smsUrl, OtpSenderModel otpData)
+        public async Task<int> SendOtp(int msgType, string mobile, OtpAndSms smsUrl, OtpSenderModel otpData)
         {
 
 
             IsmsNotification<string, OtpAndSms, OtpSenderModel> factory = null;
-            Task<int> otp = null;
+           
             try
             {
 
@@ -38,14 +38,15 @@ namespace ShoppingApi.SmsNotifications.MessageFactory
 
                 }
 
-                otp = factory.SendOtp(mobile, smsUrl, otpData);
+              var otp = await factory.SendOtp(mobile, smsUrl, otpData);
+              return otp;
             }
             catch
             {
                 throw;
 
             }
-            return otp;
+           
         }
 
         public async  Task<string> SendEmail(string emailId)
