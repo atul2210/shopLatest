@@ -14,7 +14,16 @@ namespace ShoppingApi.Data
             var connectionString = Startup.connectionstring;
             var con = new ShoppingContext(connectionString);
             //return con.OtpMasterEntity.Where(m => m.Mobile == MobileNumer && m.Active==true && m.SenderDateTime== DateTime.Now )
-            return con.OtpMasterEntity.Where(m => m.Mobile == MobileNumer && m.Active == true)
+            //List<OtpSenderModel> top1 = con.OtpMasterEntity.Where(mm => mm.Mobile == MobileNumer).Take(1)
+            //    .Select(xx => new OtpSenderModel()
+            //    {
+            //        mobile = xx.Mobile,
+            //        SenderDateTime = xx.SenderDateTime
+            //    }).ToList();
+
+
+
+           List<OtpSenderModel> top1  = con.OtpMasterEntity.Where(m => m.Mobile == MobileNumer && m.Active == true ).OrderByDescending(aa=>aa.SenderDateTime).Take(1)
            .Select(x => new OtpSenderModel()
            {
                mobile = x.Mobile,
@@ -27,6 +36,25 @@ namespace ShoppingApi.Data
                otpNumer = x.OtpNumber
 
            }).ToList();  // need to use first and default
+
+            // var otpDate = top1[0].SenderDateTime.Date;
+            //System.TimeSpan OtpTime = DateTime.Now.Subtract(otpDate);
+            //if(DateTime.Now.Date!=otpDate)
+            //{
+
+
+            //}
+            if (top1.Count > 0)
+            {
+                if (top1[0].senderAttemp == 3)
+                {
+                    throw new Exception("This is email is locked.  Will be unlock after 5 hours");
+
+                }
+            }
+
+
+            return top1;
 
         }
 

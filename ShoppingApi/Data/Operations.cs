@@ -424,7 +424,7 @@ namespace ShoppingApi.Data
                     LastName = user.lastName,
                     Email = user.emailId,
                     Mobile =  Convert.ToDouble(user.mobile),
-                    UlternateMobile= Convert.ToDouble(user.ulternateMobile),
+                    UlternateMobile= user.ulternateMobile.Length>0? Convert.ToDouble(user.ulternateMobile):0,
                     Address = user.address,
                     City = user.city,
                     Pin = user.pin,
