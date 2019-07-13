@@ -114,7 +114,10 @@ namespace ShoppingApi.Controllers
         //[IgnoreAntiforgeryToken]
         public async Task<IActionResult> ResetPassword(string email)
         {
-            var result = _msgFactory.SendEmail(email);
+            string result = await _msgFactory.SendEmail(email);
+            string[] pwd = result.Split("#");
+
+
             try
             {
                 
@@ -135,8 +138,8 @@ namespace ShoppingApi.Controllers
 
                 };
 
-                string emailBody = "Your new password for Vidhim Shopping is  " + result.Result;
-                if (result.Result != "This Email is not registered with us")
+                string emailBody = "Your new password for Vidhim Shopping is  " + pwd[1];
+                if (pwd[0] != "This Email is not registered with us")
                 {
                     await EmailSender.SendEmailAsync(email, "Password Reset - Vidhim Shoppings", emailBody, emailsettin);
                 }
@@ -147,7 +150,7 @@ namespace ShoppingApi.Controllers
             }
             //  return Ok("Your Password has been emailed to " + email + "." );
          
-            return Ok(result);
+            return Ok(pwd[0]);
 
         }
 

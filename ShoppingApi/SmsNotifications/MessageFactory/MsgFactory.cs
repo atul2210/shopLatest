@@ -51,12 +51,13 @@ namespace ShoppingApi.SmsNotifications.MessageFactory
 
         public async  Task<string> SendEmail(string emailId)
         {
+            string password = null;
             try
             {
                 var connectionString = Startup.connectionstring;
                 IsmsNotification<string, OtpAndSms, OtpSenderModel> factory = null;
                 factory = new Otpsender();
-                factory.SendEmail(emailId);
+                password =  factory.SendEmail(emailId);
             }
 
             catch
@@ -64,7 +65,7 @@ namespace ShoppingApi.SmsNotifications.MessageFactory
                 throw;
 
             }
-            return "Your password has been emailed to  " + emailId;
+            return "Your password has been emailed to  " + emailId+"#"+password ;
         }
 
         public async Task<string> ComparePassword(string emailId, string password, string confrmpassword)
