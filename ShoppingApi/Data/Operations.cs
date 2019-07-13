@@ -12,6 +12,9 @@ using ShoppingApi.Interfaces;
 using ShoppingApi.Security.Hashing;
 using System.IO;
 using Microsoft.AspNetCore.Hosting;
+using ShoppingApi.Common;
+using ShoppingApi.Email;
+using System.Text;
 
 namespace ShoppingApi.Data
 {
@@ -477,12 +480,21 @@ namespace ShoppingApi.Data
         }
 
 
-       public bool PaymentReceived(string emailId, string UserSession, List<checkedInItem> PaymentReceived)
+       public bool PaymentReceived(string emailId, string UserSession, List<checkedInItem> PaymentReceived, EmailSettings emailSettings)
         {
             var connectionString = Startup.connectionstring;
+            StringBuilder emailBody = new StringBuilder("Congratulations!! Your order is confirmed <br><br><br>  "); 
             bool success = false;
             using (var con = new ShoppingContext(connectionString))
             {
+                emailBody.Append("<html> ");
+                emailBody.Append("<head>");
+                emailBody.Append("<style type='text/css'> </style> </head>");
+
+                emailBody.Append("<body>");
+
+                emailBody.Append("<table class='auto' border='1' width='100%'>");
+                emailBody.Append("<caption> Your Order Details:- </caption>");
                 foreach (var item in PaymentReceived)
                 {
                     var add = con.PaymentReceivedEntity.Add(new PaymentReceivedEntity
@@ -494,10 +506,48 @@ namespace ShoppingApi.Data
                         sessionid = UserSession,
                         TotalOfferAmount = item.offerprice,
                         TotalPaymentAmount = item.price
-
                     });
-                    
+
+                    emailBody.Append("<tr>");
+                    emailBody.Append("<td width='50%'>Description: </td>");
+                    emailBody.Append("<td width='50%'>" + item.itemname+"</td>"  );
+                    emailBody.Append("</tr>");
+
+                    emailBody.Append("<tr>");
+                    emailBody.Append("<td width='50%'>Quanity: </td>");
+                    emailBody.Append("<td width='50%'>" + item.quantity + "</td>");
+                    emailBody.Append("</tr>");
+
+                    emailBody.Append("<tr>");
+                    emailBody.Append("<td width='50%'>Delivery Charges: </td>");
+                    emailBody.Append("<td width='50%'>" + item.deliveryCharges + "</td>");
+                    emailBody.Append("</tr>");
+
+                    emailBody.Append("<tr>");
+                    emailBody.Append("<td width='50%'>Price: </td>");
+                    emailBody.Append("<td width='50%'> ₹ " + item.price + "</td>");
+                    emailBody.Append("</tr>");
+
+                    emailBody.Append("<tr>");
+                    emailBody.Append("<td width='50%'>Offer Price: </td>");
+                    emailBody.Append("<td width='50%'>₹ " + item.offerprice + "</td>");
+
+                    emailBody.Append("</tr>");
+
+
+
                 }
+
+
+
+
+                emailBody.Append("</table><br> <br>");
+                
+                emailBody.Append("<p>Thank You !!" +'\n' + "Happy Shopping!!!</p>");
+                emailBody.Append("</body></html>");
+              
+
+                EmailSender.SendEmailAsync(emailId,"Vidhimas Shopping - Order Confirmation", emailBody.ToString(),  emailSettings);
                 con.SaveChanges();
                 success = true;
             }

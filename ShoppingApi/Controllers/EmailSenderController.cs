@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using ShoppingApi.Email;
 
 namespace ShoppingApi.Controllers
@@ -15,10 +17,11 @@ namespace ShoppingApi.Controllers
     public class EmailSenderController : Controller
     {
         private readonly IEmailSender _emailSender;
-
-        public EmailSenderController(IEmailSender emailSender)
+        private IOptions<EmailSettings> _emailSettings;
+        public EmailSenderController(IEmailSender emailSender, IOptions<EmailSettings> emailSettings)
         {
             _emailSender = emailSender;
+            _emailSettings = emailSettings;
         }
         [Authorize]
         [AutoValidateAntiforgeryToken]

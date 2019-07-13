@@ -15,6 +15,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using ShoppingApi.PageQuery;
 using ShoppingApi.Interfaces;
+using ShoppingApi.Email;
+using Microsoft.Extensions.Options;
 
 namespace ShoppingApi.Controllers
 {
@@ -26,11 +28,12 @@ namespace ShoppingApi.Controllers
    
     public class ItemController : Controller
     {
-    
+        private IOptions<EmailSettings> _emailSettings;
         Ioperation _operations;
-        public ItemController(Ioperation operations )
+        public ItemController(Ioperation operations, IOptions<EmailSettings> emailSettings)
         {
             _operations = operations;
+            _emailSettings = emailSettings;
         }
 
      
@@ -194,8 +197,25 @@ namespace ShoppingApi.Controllers
         [IgnoreAntiforgeryToken]
         public IActionResult PaymentReceived(string emailId, string UserSession, [FromBody] List<checkedInItem> paymentreceived)
         {
+            var emailsettin = new EmailSettings()
+
+            {
+                UsernameEmail = _emailSettings.Value.UsernameEmail,
+                CcEmail = _emailSettings.Value.CcEmail,
+                FromEmail = _emailSettings.Value.FromEmail,
+                PrimaryDomain = _emailSettings.Value.PrimaryDomain,
+                PrimaryPort = _emailSettings.Value.PrimaryPort,
+                SecondaryPort = _emailSettings.Value.SecondaryPort,
+                SecondayDomain = _emailSettings.Value.SecondayDomain,
+                ToEmail = _emailSettings.Value.ToEmail,
+                UsernamePassword = _emailSettings.Value.UsernamePassword
+
+
+            };
+
+           
             //return Ok(paymentreceived);
-            return Ok(_operations.PaymentReceived(emailId,UserSession, paymentreceived));
+            return Ok(_operations.PaymentReceived(emailId,UserSession, paymentreceived, emailsettin));
         }
 
     }

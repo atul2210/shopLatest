@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
+using ShoppingApi.Email;
 namespace ShoppingApi.Interfaces
 {
     public interface Ioperation
@@ -18,7 +18,7 @@ namespace ShoppingApi.Interfaces
         RemoveItem RemoveItems(int itemId, int returnedItemQty, string sessionId, int checkedinId);
         bool addUser(User user);
         PageResult<ItemMaster> Search(string SearchItem, PageAndSortedQuery<ItemDetailsQuery> query);
-        bool PaymentReceived(string emailId, string UserSession, List<checkedInItem> PaymentReceived);
+        bool PaymentReceived(string emailId, string UserSession, List<checkedInItem> PaymentReceived,EmailSettings emailSettings);
         Task<List<files>> getAllImmages(string filepath);
     }
 }
