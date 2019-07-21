@@ -485,6 +485,7 @@ namespace ShoppingApi.Data
             var connectionString = Startup.connectionstring;
             StringBuilder emailBody = new StringBuilder("Congratulations!! Your order is confirmed <br><br><br>  "); 
             bool success = false;
+            double paymentAmount = 0,OfferAmount =0;
             using (var con = new ShoppingContext(connectionString))
             {
                 emailBody.Append("<html> ");
@@ -508,6 +509,8 @@ namespace ShoppingApi.Data
                         TotalPaymentAmount = item.price
                     });
 
+                    paymentAmount = paymentAmount + item.offerprice;
+                    OfferAmount = OfferAmount + item.offerprice;
                     emailBody.Append("<tr>");
                     emailBody.Append("<td width='50%'>Description: </td>");
                     emailBody.Append("<td width='50%'>" + item.itemname+"</td>"  );
@@ -520,7 +523,7 @@ namespace ShoppingApi.Data
 
                     emailBody.Append("<tr>");
                     emailBody.Append("<td width='50%'>Delivery Charges: </td>");
-                    emailBody.Append("<td width='50%'>" + item.deliveryCharges + "</td>");
+                    emailBody.Append("<td width='50%'> ₹ " + item.deliveryCharges + "</td>");
                     emailBody.Append("</tr>");
 
                     emailBody.Append("<tr>");
@@ -542,7 +545,10 @@ namespace ShoppingApi.Data
 
 
                 emailBody.Append("</table><br> <br>");
-                
+                emailBody.Append("<p>Total Amount ₹ " + Convert.ToDecimal(paymentAmount) + "</p><br>");
+                emailBody.Append("<p>Total Amount Payable ₹ " + Convert.ToDecimal(OfferAmount) +"</p><br>");
+                emailBody.Append("<p>Total Saving ₹ " + Convert.ToDecimal(paymentAmount-OfferAmount) + "</p><br>");
+
                 emailBody.Append("<p>Thank You !!" +'\n' + "Happy Shopping!!!</p>");
                 emailBody.Append("</body></html>");
               
