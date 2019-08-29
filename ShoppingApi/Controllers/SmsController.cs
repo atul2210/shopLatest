@@ -86,14 +86,9 @@ namespace ShoppingApi.Controllers
                     };
 
                     }
-                var result = _msgFactory.SendOtp(1, MobileNumber, otp, otpsender);
+                var result = await _msgFactory.SendOtp(1, MobileNumber, otp, otpsender);
 
-                if (result.IsFaulted)
-                {
-/////  return Json(new { status = HttpStatusCode.BadRequest, message = result.Exception.Message });
-                    return BadRequest(result.Exception.Message);
-                }
-                return Ok(result);
+                return Ok();
             }
             
             catch (Exception exp)
@@ -101,11 +96,6 @@ namespace ShoppingApi.Controllers
                 return BadRequest(exp.Message);
 
             }
-
-
-            
-
-
         }
 
         [AllowAnonymous]
