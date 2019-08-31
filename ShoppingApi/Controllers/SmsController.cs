@@ -58,12 +58,17 @@ namespace ShoppingApi.Controllers
 
                 string ipAddress = HttpContext.Connection.RemoteIpAddress.ToString();
                 string browser = Request.Headers["User-Agent"].ToString();
+                var pasrseMobile = Int64.Parse(MobileNumber);
 
-
-
-
-                if (MobileNumber.Length >= 10 && MobileNumber.Length <= 12)
+                if (MobileNumber.Length >= 10)
                 {
+                    return BadRequest("Enter 10 digits mobile number.");
+                }
+
+
+
+                //if (MobileNumber.Length >= 10 && MobileNumber.Length <= 12)
+                //{
 
 
                     otp.baseAddress = appSettings.Value.BaseAddress;  //_configuration.GetSection("SmsAndOTP").GetSection("BaseAddress").Value;
@@ -85,7 +90,7 @@ namespace ShoppingApi.Controllers
                        LockHours = appSettings.Value.lockMinutes
                     };
 
-                    }
+                    //}
                 var result = await _msgFactory.SendOtp(1, MobileNumber, otp, otpsender);
 
                 return Ok();
