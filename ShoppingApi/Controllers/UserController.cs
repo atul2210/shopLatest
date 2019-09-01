@@ -38,10 +38,16 @@ namespace ShoppingApi.Controllers
             var data = _iotpChecker.GetOtpSenderDetails(userData.mobile);
             string ipAddress = HttpContext.Connection.RemoteIpAddress.ToString();
             string browser = Request.Headers["User-Agent"].ToString();
-            int otpEnter = userData.EnterOPT; 
+            int otpEnter = userData.EnterOPT;
+            string mobile = userData.mobile;
+            var parse = Int64.Parse(mobile); //checking only integer digits are entered not string value
 
             try
             {
+                if (mobile.Length != 10)
+                {
+                    return BadRequest("Enter 10 digits mobile number.");
+                }
 
                 if (data.Count > 0)
                 {
