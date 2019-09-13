@@ -60,7 +60,7 @@ namespace ShoppingApi.Controllers
                 string browser = Request.Headers["User-Agent"].ToString();
                 var pasrseMobile = Int64.Parse(MobileNumber);
 
-                if (MobileNumber.Length >= 10)
+                if (MobileNumber.Length != 10)
                 {
                     return BadRequest("Enter 10 digits mobile number.");
                 }
