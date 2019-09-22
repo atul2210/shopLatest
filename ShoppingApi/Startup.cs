@@ -262,7 +262,8 @@ namespace ShoppingApi
 
             app.UseAuthentication();
             app.UseMiddleware(typeof(ErrorHandlingMiddleware));
-            
+            app.UseMiddleware<IpCheckerMiddleware>(Configuration["AdminSafeList"]);
+            app.UseMvc();
             app.UseMvc();
 
         }
