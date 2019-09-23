@@ -69,7 +69,7 @@ namespace ShoppingApi
                 options.AddPolicy(MyAllowSpecificOrigins,
                 builder =>
                 {
-                    builder.WithOrigins("http://www.vidhim.com",
+                    builder.WithOrigins("https://www.vidhim.com",
                                         "http://localhost:4200")
                                         .AllowAnyHeader()
                                         .AllowAnyMethod()
