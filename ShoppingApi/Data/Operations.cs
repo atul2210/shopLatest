@@ -182,64 +182,82 @@ namespace ShoppingApi.Data
 
 
 
-        public AddToCart getAddToCart(int itemId, string IPAddress, int quantity, string color, string sessionid,double price,double offerprice,double deliverycharges,int ColorId)
+        public AddToCart getAddToCart(int itemId, string IPAddress, int quantity, string sessionid)
         {
+
+
             AddToCart items = null;
             try
             {
-
                 var connectionString = Startup.connectionstring;
-                using (SqlConnection con = new SqlConnection(connectionString))
+                var condb = new ShoppingContext(connectionString);
+
+
+                //cross check if someone change quantity,price,officeprice using fiddler
+
+                var inputItems = condb.itemMasterEntity.Where(x => x.ItemId == itemId && x.Active == true)
+                                    .Select(m => new AddToCart
+                                    {
+                                       
+                                        ColorName = m.Color,
+                                        price = m.Price,
+                                        offerPrice = m.OfferPrice,
+                                        DeliveryCharges = m.deliveryCharges,
+                                        colorId = m.ColorId
+                                    }).FirstOrDefault();
+
+                if(inputItems!=null)
                 {
-                    SqlCommand cmd = new SqlCommand("AddToCart", con);
-                    SqlDataAdapter da = new SqlDataAdapter(cmd);
-
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@itemId", itemId);
-                    cmd.Parameters.AddWithValue("@IPAddress", IPAddress);
-                    cmd.Parameters.AddWithValue("@Quantity", quantity);
-                    cmd.Parameters.AddWithValue("@Color", color);
-                    cmd.Parameters.AddWithValue("@sessionid", sessionid);
-
-                    cmd.Parameters.AddWithValue("@price", price);
-                    cmd.Parameters.AddWithValue("@offerprice", offerprice);
-                    cmd.Parameters.AddWithValue("@deliveryCharges", deliverycharges);
-                    cmd.Parameters.AddWithValue("@ColorId", ColorId);
-
-
-                    con.Open();
-                    SqlDataReader dr = cmd.ExecuteReader();
-
-                    items = new AddToCart();
-                   
-                    while (dr.Read())
+                    using (SqlConnection con = new SqlConnection(connectionString))
                     {
+                        SqlCommand cmd = new SqlCommand("AddToCart", con);
+                        SqlDataAdapter da = new SqlDataAdapter(cmd);
 
-                        items.itemid = Convert.ToInt32(dr["itemId"].ToString());
-                        items.itemName = dr["itemName"].ToString();
-                        items.itemDescription = dr["ItemDescripton"].ToString();
-                        items.sizeId = Convert.ToInt32(dr["SizeId"].ToString());
-                        items.sizeName = dr["SizeName"].ToString();
-                        items.price = Convert.ToDouble(dr["Price"].ToString());
-                        items.offerPrice = Convert.ToDouble(dr["OfferPrice"].ToString());
-                        items.ColorName = dr["ColorName"].ToString().Trim();
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@itemId", itemId);
+                        cmd.Parameters.AddWithValue("@IPAddress", IPAddress);
+                        cmd.Parameters.AddWithValue("@Quantity", quantity);
+                        cmd.Parameters.AddWithValue("@Color", inputItems.ColorName);
+                        cmd.Parameters.AddWithValue("@sessionid", sessionid);
 
-                        items.DeliveryCharges = Convert.ToInt32(dr["DeliveryCharges"].ToString());
-                        items.quantity = Convert.ToInt32(dr["quantity"].ToString());
-                        items.sessionIdToken= dr["userSessionId"].ToString();
+                        cmd.Parameters.AddWithValue("@price", inputItems.price);
+                        cmd.Parameters.AddWithValue("@offerprice", inputItems.offerPrice);
+                        cmd.Parameters.AddWithValue("@deliveryCharges", inputItems.DeliveryCharges);
+                        cmd.Parameters.AddWithValue("@ColorId", inputItems.colorId);
 
 
+                        con.Open();
+                        SqlDataReader dr = cmd.ExecuteReader();
+
+                        items = new AddToCart();
+
+                        while (dr.Read())
+                        {
+
+                            items.itemid = Convert.ToInt32(dr["itemId"].ToString());
+                            items.itemName = dr["itemName"].ToString();
+                            items.itemDescription = dr["ItemDescripton"].ToString();
+                            items.sizeId = Convert.ToInt32(dr["SizeId"].ToString());
+                            items.sizeName = dr["SizeName"].ToString();
+                            items.price = Convert.ToDouble(dr["Price"].ToString());
+                            items.offerPrice = Convert.ToDouble(dr["OfferPrice"].ToString());
+                            items.ColorName = dr["ColorName"].ToString().Trim();
+
+                            items.DeliveryCharges = Convert.ToInt32(dr["DeliveryCharges"].ToString());
+                            items.quantity = Convert.ToInt32(dr["quantity"].ToString());
+                            items.sessionIdToken = dr["userSessionId"].ToString();
+
+
+                        }
+
+                        dr.NextResult();
+                        while (dr.Read())
+                        {
+                            items.count = Convert.ToInt32(dr[0].ToString());
+                        }
+
+                        con.Close();
                     }
-
-                    dr.NextResult();
-                    while (dr.Read())
-                    {
-                        items.count = Convert.ToInt32(dr[0].ToString());
-                    }
-
-                    
-
-                    con.Close();
                 }
             }
 
@@ -581,8 +599,7 @@ namespace ShoppingApi.Data
 
         }
 
-
-
+      
     }
 
 

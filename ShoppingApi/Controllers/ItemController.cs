@@ -83,7 +83,7 @@ namespace ShoppingApi.Controllers
 
             [IgnoreAntiforgeryToken]
         [AllowAnonymous]
-        public AddToCart adaddCart([FromQuery]  int itemid, [FromQuery]int quantity, [FromQuery]string color,string sessionId,double price,double offerprice,double deliverycharges,int ColorId)
+        public AddToCart adaddCart([FromQuery]  int itemid, [FromQuery]int quantity, string sessionId)
         {
             AddToCart addCart = null;
            
@@ -99,7 +99,7 @@ namespace ShoppingApi.Controllers
 
                 }
                 ipAddress = HttpContext.Connection.RemoteIpAddress.ToString();
-                addCart = _operations.getAddToCart(itemid, ipAddress, quantity, color, sessionId, price,offerprice,deliverycharges, ColorId);
+                addCart = _operations.getAddToCart(itemid, ipAddress, quantity,sessionId);
 
 
             }

@@ -19,7 +19,7 @@ namespace ShoppingApi.Model
         public int sizeId { get; set; }
         public string ColorName { get; set; }
         public string sessionIdToken { get; set; }
-
+        public int colorId { get; set; }
         public int count { get; set; }
 
 
