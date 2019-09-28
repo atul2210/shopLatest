@@ -17,6 +17,7 @@ using ShoppingApi.PageQuery;
 using ShoppingApi.Interfaces;
 using ShoppingApi.Email;
 using Microsoft.Extensions.Options;
+using ShoppingApi.Common;
 
 namespace ShoppingApi.Controllers
 {
@@ -190,32 +191,45 @@ namespace ShoppingApi.Controllers
             return Ok(_operations.RemoveItems(itemId, returnedItemQty, sessionId, checkedinId));
         }
 
-       [Authorize]
+        [Authorize]
         [HttpPost, Route("items/CheckoutPaymentReceived/")]
         //[ValidateAntiForgeryToken]
 
         [IgnoreAntiforgeryToken]
         public IActionResult PaymentReceived(string emailId, string UserSession, [FromBody] List<checkedInItem> paymentreceived)
         {
-            var emailsettin = new EmailSettings()
-
+            if(emailId==null || emailId==string.Empty || emailId=="undefined")
             {
-                UsernameEmail = _emailSettings.Value.UsernameEmail,
-                CcEmail = _emailSettings.Value.CcEmail,
-                FromEmail = _emailSettings.Value.FromEmail,
-                PrimaryDomain = _emailSettings.Value.PrimaryDomain,
-                PrimaryPort = _emailSettings.Value.PrimaryPort,
-                SecondaryPort = _emailSettings.Value.SecondaryPort,
-                SecondayDomain = _emailSettings.Value.SecondayDomain,
-                ToEmail = emailId,//_emailSettings.Value.ToEmail,
-                UsernamePassword = _emailSettings.Value.UsernamePassword
+                return BadRequest("Invalid Email id.  Please login again");
+            }
+
+            if (EmailValidator.IsValidEmail(emailId))
+            {
+                var emailsettin = new EmailSettings()
+
+                {
+                    UsernameEmail = _emailSettings.Value.UsernameEmail,
+                    CcEmail = _emailSettings.Value.CcEmail,
+                    FromEmail = _emailSettings.Value.FromEmail,
+                    PrimaryDomain = _emailSettings.Value.PrimaryDomain,
+                    PrimaryPort = _emailSettings.Value.PrimaryPort,
+                    SecondaryPort = _emailSettings.Value.SecondaryPort,
+                    SecondayDomain = _emailSettings.Value.SecondayDomain,
+                    ToEmail = emailId,//_emailSettings.Value.ToEmail,
+                    UsernamePassword = _emailSettings.Value.UsernamePassword
 
 
-            };
+                };
+                return Ok(_operations.PaymentReceived(emailId, UserSession, paymentreceived, emailsettin));
+            }
+            else
+            {
+                return BadRequest("Invalid Email id.  Please login again");
 
+            }
            
             //return Ok(paymentreceived);
-            return Ok(_operations.PaymentReceived(emailId,UserSession, paymentreceived, emailsettin));
+          
         }
 
     }
