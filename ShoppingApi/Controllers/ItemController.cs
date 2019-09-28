@@ -82,7 +82,7 @@ namespace ShoppingApi.Controllers
         //[ValidateAntiForgeryToken]
 
             [IgnoreAntiforgeryToken]
-        [AllowAnonymous]
+        [Authorize]
         public AddToCart adaddCart([FromQuery]  int itemid, [FromQuery]int quantity, string sessionId)
         {
             AddToCart addCart = null;
@@ -113,7 +113,7 @@ namespace ShoppingApi.Controllers
 
         }
 
-        [AllowAnonymous]
+        [Authorize]
         [HttpGet, Route("items/getcheckedinItem/")]
         [AutoValidateAntiforgeryToken]
 
@@ -180,7 +180,7 @@ namespace ShoppingApi.Controllers
             return Ok(_operations.Search(itemSearch,query));
         }
 
-        [AllowAnonymous]
+        [Authorize]
         [HttpPost, Route("items/RemoveItems/")]
         //[ValidateAntiForgeryToken]
 
@@ -207,7 +207,7 @@ namespace ShoppingApi.Controllers
                 PrimaryPort = _emailSettings.Value.PrimaryPort,
                 SecondaryPort = _emailSettings.Value.SecondaryPort,
                 SecondayDomain = _emailSettings.Value.SecondayDomain,
-                ToEmail = _emailSettings.Value.ToEmail,
+                ToEmail = emailId,//_emailSettings.Value.ToEmail,
                 UsernamePassword = _emailSettings.Value.UsernamePassword
 
 
