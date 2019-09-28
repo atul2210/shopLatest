@@ -74,7 +74,9 @@ namespace ShoppingApi.Controllers
                     return Ok(new
                     {
                         authToken,
-                        expiration = token.ValidTo
+                        expiration = token.ValidTo,
+                        fullname=lstToken.details[0].lastName +", "+ lstToken.details[0].firstName,
+                        Email= lstToken.details[0].username
                     });
 
                 }
