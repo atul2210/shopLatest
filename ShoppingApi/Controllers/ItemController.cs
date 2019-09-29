@@ -31,10 +31,12 @@ namespace ShoppingApi.Controllers
     {
         private IOptions<EmailSettings> _emailSettings;
         Ioperation _operations;
-        public ItemController(Ioperation operations, IOptions<EmailSettings> emailSettings)
+        IUserSession _iusersession;
+        public ItemController(Ioperation operations, IOptions<EmailSettings> emailSettings, IUserSession iusersession)
         {
             _operations = operations;
             _emailSettings = emailSettings;
+            _iusersession = iusersession;
         }
 
      
@@ -82,27 +84,16 @@ namespace ShoppingApi.Controllers
         [HttpPost, Route("items/addCart/")]
         //[ValidateAntiForgeryToken]
 
-            [IgnoreAntiforgeryToken]
+        [IgnoreAntiforgeryToken]
         [Authorize]
         public AddToCart adaddCart([FromQuery]  int itemid, [FromQuery]int quantity, string sessionId)
         {
             AddToCart addCart = null;
-           
-        
-
             string ipAddress = string.Empty;
             try
             {
-
-                if (sessionId== "null" || sessionId == null || sessionId == string.Empty || sessionId == "")
-                {
-                    sessionId = getToken(); ;
-
-                }
                 ipAddress = HttpContext.Connection.RemoteIpAddress.ToString();
                 addCart = _operations.getAddToCart(itemid, ipAddress, quantity,sessionId);
-
-
             }
 
             catch (Exception ex)
@@ -202,8 +193,9 @@ namespace ShoppingApi.Controllers
             {
                 return BadRequest("Invalid Email id.  Please login again");
             }
+            List<UserSessionDto> sessionData = _iusersession.GetUserSession(UserSession);
 
-            if (EmailValidator.IsValidEmail(emailId))
+            if (EmailValidator.IsValidEmail(sessionData[0].UserId))
             {
                 var emailsettin = new EmailSettings()
 
@@ -215,7 +207,7 @@ namespace ShoppingApi.Controllers
                     PrimaryPort = _emailSettings.Value.PrimaryPort,
                     SecondaryPort = _emailSettings.Value.SecondaryPort,
                     SecondayDomain = _emailSettings.Value.SecondayDomain,
-                    ToEmail = emailId,//_emailSettings.Value.ToEmail,
+                    ToEmail = sessionData[0].UserId,//_emailSettings.Value.ToEmail,
                     UsernamePassword = _emailSettings.Value.UsernamePassword
 
 

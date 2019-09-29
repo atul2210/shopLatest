@@ -11,6 +11,7 @@ using System.Text;
 using ShoppingApi.Model;
 using ShoppingApi.Data;
 using Microsoft.AspNetCore.Authorization;
+using ShoppingApi.Interfaces;
 
 namespace ShoppingApi.Controllers
 {
@@ -20,6 +21,14 @@ namespace ShoppingApi.Controllers
   //  [AutoValidateAntiforgeryToken]
     public class AddController : Controller
     {
+        IUserSession _iusersession;
+        public AddController(IUserSession iusersession)
+        {
+            _iusersession = iusersession;
+        }
+
+
+
 
         [HttpGet]
         [AutoValidateAntiforgeryToken]
@@ -71,6 +80,9 @@ namespace ShoppingApi.Controllers
 
                     authToken = new JwtSecurityTokenHandler().WriteToken(token);
                     lstToken.details[0].token = authToken;
+                    _iusersession.AddUserSession(authToken, lstToken.details[0].username.ToString());
+
+
                     return Ok(new
                     {
                         authToken,

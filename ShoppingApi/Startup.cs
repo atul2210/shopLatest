@@ -176,7 +176,8 @@ namespace ShoppingApi
             services.AddTransient<Ioperation, Operations>();
             services.AddTransient<IEmailSender, AuthMessageSender>();
             services.AddTransient<IotpChecker, OtpChecker>();
-
+            services.AddTransient<IUserSession, UserSessionOperations>();
+            
             //  services.AddMvc();
 
             services.AddMvc(options =>
