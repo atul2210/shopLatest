@@ -177,9 +177,9 @@ namespace ShoppingApi
             services.AddTransient<IEmailSender, AuthMessageSender>();
             services.AddTransient<IotpChecker, OtpChecker>();
             services.AddTransient<IUserSession, UserSessionOperations>();
-            
-            //  services.AddMvc();
 
+            //  services.AddMvc();
+            services.AddResponseCaching();
             services.AddMvc(options =>
             {
                 options.Filters.Add(new Microsoft.AspNetCore.Mvc.ValidateAntiForgeryTokenAttribute());
@@ -264,7 +264,7 @@ namespace ShoppingApi
             app.UseAuthentication();
             app.UseMiddleware(typeof(ErrorHandlingMiddleware));
             app.UseMiddleware<IpCheckerMiddleware>(Configuration["AdminSafeList"]);
-            app.UseMvc();
+            app.UseResponseCaching();
             app.UseMvc();
 
         }

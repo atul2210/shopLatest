@@ -43,7 +43,7 @@ namespace ShoppingApi.Controllers
        [AllowAnonymous]
         [AutoValidateAntiforgeryToken]
         [HttpGet, Route("items/AllItems/")]
-
+        [ResponseCache(Duration = 50)]
         public  IActionResult AllItems(int ChildMenuId, PageAndSortedQuery<ItemDetailsQuery> query)
         {
             try
@@ -118,6 +118,7 @@ namespace ShoppingApi.Controllers
         [AllowAnonymous]
         [HttpGet, Route("items/AllItemsOnPaging/")]
              [AutoValidateAntiforgeryToken]
+        [ResponseCache(Duration = 50)]
         [Produces(typeof(PageResult<ItemMaster>))]
         public IActionResult AllItemsOnPaging(PageAndSortedQuery<ItemDetailsQuery> query)
 
