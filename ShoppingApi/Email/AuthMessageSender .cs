@@ -25,59 +25,19 @@ namespace ShoppingApi.Email
 
         }
 
-
-
         public async Task Execute(string toEmail, string subject, string message)
         {
             try
             {
-                //string toEmail = string.IsNullOrEmpty(email)
-                //                 ? _emailSettings.ToEmail
-                //                 : email;
                 MailMessage mail = new MailMessage()
                 {
                     From = new MailAddress(_emailSettings.UsernameEmail)
                 };
                 mail.To.Add(new MailAddress(toEmail));
-            ////    mail.CC.Add(new MailAddress(_emailSettings.CcEmail));
-
                 mail.Subject = "Vidhimas Shopping " + subject;
                 mail.Body = message;
                 mail.IsBodyHtml = true;
                 mail.Priority = MailPriority.High;
-
-                //System.Net.ServicePointManager.Expect100Continue = false;
-
-                //SmtpClient client = new SmtpClient("mysmtpserver");
-                //client.UseDefaultCredentials = false;
-                //client.Credentials = new NetworkCredential("username", "password");
-
-                //MailMessage mailMessage = new MailMessage();
-                //mailMessage.From = new MailAddress("whoever@me.com");
-                //mailMessage.To.Add("receiver@me.com");
-                //mailMessage.Body = "body";
-                //mailMessage.Subject = "subject";
-                //client.Send(mailMessage);
-
-
-
-
-                //                //mail.Attachments.Add(new Attachment(Server.MapPath("~/myimage.jpg")));
-                //                You can send to more than one person at the same time
-                //                mail.To.Add("test@email.com");
-                //                mail.To.Add("test2@email.com");
-                //You can set a name for the sender
-                //mail.From = new MailAddress("test@email.com", "Hello");
-
-                //                mail.IsBodyHtml = true;
-                //                mail.Body = "Testing <b>123!</b>";
-                //                You can use the CC and BCC fields
-                //mail.CC.Add("test@email.com");
-                //                mail.Bcc.Add("test2@email.com");
-                //                You can set the priority of an e-mail
-                //mail.Priority = MailPriority.High;
-                //using (SmtpClient smtp = new SmtpClient(_emailSettings.PrimaryDomain, _emailSettings.PrimaryPort))
-                //{
 
                 using (SmtpClient smtp = new SmtpClient(_emailSettings.PrimaryDomain, _emailSettings.PrimaryPort))
                 {
@@ -86,7 +46,7 @@ namespace ShoppingApi.Email
                     smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
                     smtp.UseDefaultCredentials = false;
                     smtp.Send(mail);
-                  //  await smtp.SendMailAsync(mail);
+               
                 }
             }
             catch (Exception ex)

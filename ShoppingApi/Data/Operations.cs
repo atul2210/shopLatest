@@ -504,6 +504,7 @@ namespace ShoppingApi.Data
             StringBuilder emailBody = new StringBuilder("Congratulations!! Your order is confirmed <br><br><br>  "); 
             bool success = false;
             double paymentAmount = 0,OfferAmount =0;
+            double deliveryCharges=0;
             using (var con = new ShoppingContext(connectionString))
             {
                 emailBody.Append("<html> ");
@@ -511,7 +512,7 @@ namespace ShoppingApi.Data
                 emailBody.Append("<style type='text/css'> </style> </head>");
 
                 emailBody.Append("<body>");
-
+                emailBody.Append("<h4>" + "Date: " + DateTime.Now.ToString("dddd, dd MMMM yyyy") + "</hr><br>");
                 emailBody.Append("<table class='auto' border='1' width='100%'>");
                 emailBody.Append("<caption> Your Order Details:- </caption>");
                 foreach (var item in PaymentReceived)
@@ -519,14 +520,13 @@ namespace ShoppingApi.Data
                     var add = con.PaymentReceivedEntity.Add(new PaymentReceivedEntity
                     {
                         itemId=item.itemId,
-                        //PaymentId= item.PaymentId,
                         ReceivedFormEmailId= emailId,
                         Quantity = item.quantity,
                         sessionid = UserSession,
                         TotalOfferAmount = item.offerprice,
                         TotalPaymentAmount = item.price
                     });
-
+                    deliveryCharges = Convert.ToDouble(item.deliveryCharges);
                     paymentAmount = paymentAmount + item.offerprice;
                     OfferAmount = OfferAmount + item.offerprice;
                     emailBody.Append("<tr>");
@@ -540,18 +540,18 @@ namespace ShoppingApi.Data
                     emailBody.Append("</tr>");
 
                     emailBody.Append("<tr>");
-                    emailBody.Append("<td width='50%'>Delivery Charges: </td>");
-                    emailBody.Append("<td width='50%'> ₹ " + item.deliveryCharges + "</td>");
+                    //emailBody.Append("<td width='50%'>Delivery Charges: </td>");
+                   // emailBody.Append("<td width='50%'> ₹ " + item.deliveryCharges + "</td>");
                     emailBody.Append("</tr>");
 
                     emailBody.Append("<tr>");
                     emailBody.Append("<td width='50%'>Price: </td>");
-                    emailBody.Append("<td width='50%'> ₹ " + item.price + "</td>");
+                    emailBody.Append("<td width='50%'> ₹ " + string.Format(String.Format("{0:N2}", item.price)) + "</td>");
                     emailBody.Append("</tr>");
 
                     emailBody.Append("<tr>");
                     emailBody.Append("<td width='50%'>Offer Price: </td>");
-                    emailBody.Append("<td width='50%'>₹ " + item.offerprice + "</td>");
+                    emailBody.Append("<td width='50%'>₹ " + string.Format(String.Format("{0:N2}", item.offerprice)) + "</td>");
 
                     emailBody.Append("</tr>");
 
@@ -560,14 +560,15 @@ namespace ShoppingApi.Data
                 }
 
 
+                OfferAmount = OfferAmount + deliveryCharges;
 
+                emailBody.Append("</table><br>");
+                emailBody.Append("<p>Delivery Charges ₹ " + string.Format(String.Format("{0:N2}", deliveryCharges))  + "</p><br>");
+                emailBody.Append("<p>Total Amount ₹ " + string.Format(string.Format("{0:N2}", Convert.ToDecimal(paymentAmount))) + "</p><br>");
+                emailBody.Append("<p>Total Offered Amount Payble including Delivery Charges ₹ " + string.Format(string.Format("{0:N2}", Convert.ToDecimal(OfferAmount))) +"</p><br>");
+                emailBody.Append("<p>Total Saving ₹ " + string.Format(string.Format("{0:N2}", Convert.ToDecimal(paymentAmount-(OfferAmount- deliveryCharges)))) + "</p><br>");
 
-                emailBody.Append("</table><br> <br>");
-                emailBody.Append("<p>Total Amount ₹ " + Convert.ToDecimal(paymentAmount) + "</p><br>");
-                emailBody.Append("<p>Total Amount Payable ₹ " + Convert.ToDecimal(OfferAmount) +"</p><br>");
-                emailBody.Append("<p>Total Saving ₹ " + Convert.ToDecimal(paymentAmount-OfferAmount) + "</p><br>");
-
-                emailBody.Append("<p>Thank You !!" +'\n' + "Happy Shopping!!!</p>");
+                emailBody.Append("<p>Thank You !!  Happy Shopping!!!</p>");
                 emailBody.Append("</body></html>");
               
 
