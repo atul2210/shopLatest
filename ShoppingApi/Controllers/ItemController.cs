@@ -118,7 +118,7 @@ namespace ShoppingApi.Controllers
         [AllowAnonymous]
         [HttpGet, Route("items/AllItemsOnPaging/")]
              [AutoValidateAntiforgeryToken]
-        [ResponseCache(Duration = 50)]
+        //[ResponseCache(Duration = 50)]
         [Produces(typeof(PageResult<ItemMaster>))]
         public IActionResult AllItemsOnPaging(PageAndSortedQuery<ItemDetailsQuery> query)
 

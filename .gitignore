@@ -11,3 +11,4 @@
 /ShoppingApi/Properties/PublishProfiles
 *.user
 /Data
+/ShoppingApi/libman.json
