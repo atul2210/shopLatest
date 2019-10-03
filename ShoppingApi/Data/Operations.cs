@@ -203,10 +203,11 @@ namespace ShoppingApi.Data
                                         price = m.Price,
                                         offerPrice = m.OfferPrice,
                                         DeliveryCharges = m.deliveryCharges,
-                                        colorId = m.ColorId
+                                        colorId = m.ColorId,
+                                        quantity=m.AvailableQty
                                     }).FirstOrDefault();
 
-                if(inputItems!=null)
+                if(inputItems!=null && inputItems.quantity>0)
                 {
                     using (SqlConnection con = new SqlConnection(connectionString))
                     {
