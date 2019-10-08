@@ -32,6 +32,7 @@ namespace ShoppingApi.Data
         public Microsoft.EntityFrameworkCore.DbSet<OtpMasterEntity> OtpMasterEntity { get; set; }
         public Microsoft.EntityFrameworkCore.DbSet<ErrorLoggerEntity> ErrorLoggerEntity { get; set; }
         public Microsoft.EntityFrameworkCore.DbSet<UserSessionEntity> UserSessionEntity { get; set; }
+        public Microsoft.EntityFrameworkCore.DbSet<SizeMasterEntity> SizeMasterEntity { get; set; }
 
 
         private static DbContextOptions GetOptions(string connectionString)

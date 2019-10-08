@@ -307,29 +307,41 @@ namespace ShoppingApi.Data
             var connectionString = Startup.connectionstring;
             
             var con = new ShoppingContext(connectionString);
-            var searchResult = con.itemMasterEntity.Where(m=>m.Active==true && m.AvailableQty>0).Select(x => new ItemMaster
-            {
-                ItemName = x.ItemName.Trim(),
-                Active = x.Active,
-                AvailableColor = x.AvailableColor.Trim(),
-                AvailableQty = x.AvailableQty,
-                brand = x.brand.Trim(),
-                childmenuid = x.ChildMenuId,
-                Color = x.Color.Trim(),
-                detailId = x.detailId,
-                image = x.image.Trim(),
-                InitialQty = x.InitialQty,
-                DeliveryCharges = x.deliveryCharges,
-                itemDescription = x.ItemDescripton.Trim(),
-                OfferPrice = x.OfferPrice,
-                Price = x.Price,
-                ReserveQty = x.ReserveQty,
-                SizeId = x.SizeId,
-                itemid = x.ItemId,
-                ColorId = x.ColorId
-            })
-            .ApplySorting(query)
-            .Paging(query);
+            var searchResult = con.itemMasterEntity.Where(m => m.Active == true && m.AvailableQty > 0).Join(con.ColorMasterEntity,item=>item.ColorId,clr=>clr.Colorid,
+                (item,clr)=> new
+                {
+                    item,clr   
+                })
+                .Join(con.SizeMasterEntity, cm=>cm.item.SizeId, size=>size.SizeId,
+                  (cm, size) => new { cm, size })
+
+                .Select(x => new ItemMaster
+                 {
+                        ItemName = x.cm.item.ItemName.Trim(),
+                        Active = x.cm.item.Active,
+                        AvailableColor = x.cm.item.AvailableColor.Trim(),
+                        AvailableQty = x.cm.item.AvailableQty,
+                        brand = x.cm.item.brand.Trim(),
+                        childmenuid = x.cm.item.ChildMenuId,
+                        Color = x.cm.clr.ColorName.Trim(),
+                        detailId = x.cm.item.detailId,
+                        image = x.cm.item.image.Trim(),
+                        InitialQty = x.cm.item.InitialQty,
+                        DeliveryCharges = x.cm.item.deliveryCharges,
+                        itemDescription = x.cm.item.ItemDescripton.Trim(),
+                        OfferPrice = x.cm.item.OfferPrice,
+                        Price = x.cm.item.Price,
+                        ReserveQty = x.cm.item.ReserveQty,
+                        SizeId = x.cm.item.SizeId,
+                        itemid = x.cm.item.ItemId,
+                        ColorId = x.cm.item.ColorId,
+                        SizeName=x.size.SizeName
+                    })
+                  .ApplySorting(query)
+                  .Paging(query);
+
+
+           
 
             return searchResult;
         }
