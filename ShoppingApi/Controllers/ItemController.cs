@@ -213,7 +213,17 @@ namespace ShoppingApi.Controllers
 
 
                 };
-                return Ok(_operations.PaymentReceived(emailId, UserSession, paymentreceived, emailsettin));
+
+
+
+
+
+                _operations.PaymentReceived(emailId, UserSession, paymentreceived, emailsettin);
+                foreach (var item in paymentreceived)
+                {
+                    //_operations.RemoveItems(item.itemId, returnedItemQty, UserSession, checkedinId);
+                }
+                return Ok();
             }
             else
             {

@@ -99,7 +99,7 @@ namespace ShoppingApi.Controllers
 
             catch (Exception ex)
             {
-                var s = ex.Message;
+                return BadRequest();
             }
 
 
