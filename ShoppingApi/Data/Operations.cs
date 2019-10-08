@@ -56,65 +56,6 @@ namespace ShoppingApi.Data
                 .Paging(query);
 
                 return searchResult;
-
-
-
-
-                //var connectionString = Startup.connectionstring;
-                //using (SqlConnection con = new SqlConnection(connectionString))
-                //{
-                //    SqlCommand cmd = new SqlCommand("GetAllItems", con);
-                //    SqlDataAdapter da = new SqlDataAdapter(cmd);
-
-                //    cmd.CommandType = CommandType.StoredProcedure;
-                //    cmd.Parameters.AddWithValue("@categoryid", categoryId);
-                //    cmd.Parameters.AddWithValue("@page", pageIndex);
-
-
-                //    con.Open();
-                //    SqlDataReader dr = cmd.ExecuteReader();
-                //    items = new GetAllItems();
-                //    items.allItems = new List<Items>();
-
-
-                //    while (dr.Read())
-                //    {
-                //        items.count = Convert.ToInt32(dr[0].ToString());
-                //    }
-
-                //    dr.NextResult();
-
-                //    while (dr.Read())
-                //    {
-
-                //        items.allItems.Add(new Items
-                //        {
-
-                //            itemid = Convert.ToInt32(dr["itemId"].ToString()),
-                //            itemName = dr["itemName"].ToString(),
-                //            itemDescription = dr["ItemDescripton"].ToString(),
-
-                //            sizeId = Convert.ToInt32(dr["SizeId"].ToString()),
-                //            sizeName = dr["SizeName"].ToString(),
-                //            price = Convert.ToDouble(dr["Price"].ToString()),
-                //            offerPrice = Convert.ToDouble(dr["OfferPrice"].ToString()),
-                //            categoryName = dr["categoryName"].ToString(),
-                //            categoryId = Convert.ToInt32(dr["CategoryId"].ToString()),
-                //            imaggeUrl = dr["image"].ToString(),
-                //            rowNum = Convert.ToInt32(dr["RowNum"].ToString()),
-                //            color = dr["color"].ToString(),
-                //            brand = dr["Brand"].ToString(),
-                //            deliveryCharges = Convert.ToInt32(dr["DeliveryCharges"].ToString()),
-                //            availableQty = Convert.ToInt32(dr["AvailableQty"].ToString()),
-                //            availableColor = dr["availableColor"].ToString()
-                //        });
-
-
-
-                //   }
-
-
-                //  con.Close();
             }
             
 
@@ -600,9 +541,25 @@ namespace ShoppingApi.Data
             return files;
 
         }
+        public void DeActivatesAfterPaymentReceived(string sessionId)
+        {
+            var connectionString = Startup.connectionstring;
 
-      
+            using (var con = new ShoppingContext(connectionString))
+            {
+                var remove = con.CheckInEntity.Where(m => m.UserSessionId == sessionId).ToList();
+                foreach (var item in remove)
+                {
+                    item.Active = false;
+                }
+                con.SaveChanges();
+            }
+        }
+
     }
+
+
+ 
 
 
 

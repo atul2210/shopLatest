@@ -219,10 +219,7 @@ namespace ShoppingApi.Controllers
 
 
                 _operations.PaymentReceived(emailId, UserSession, paymentreceived, emailsettin);
-                foreach (var item in paymentreceived)
-                {
-                    //_operations.RemoveItems(item.itemId, returnedItemQty, UserSession, checkedinId);
-                }
+                _operations.DeActivatesAfterPaymentReceived(UserSession);
                 return Ok();
             }
             else
