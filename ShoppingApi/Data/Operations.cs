@@ -50,7 +50,10 @@ namespace ShoppingApi.Data
                     ReserveQty = x.ReserveQty,
                     SizeId = x.SizeId,
                     itemid = x.ItemId,
-                    ColorId = x.ColorId
+                    ColorId = x.ColorId,
+                    Image1 = x.Image1 == null ? " " : Convert.ToBase64String(x.Image1),
+                   // Image2 = x.Image1 == null ? " " : Convert.ToBase64String(x.Image2),
+                   // Image3 = x.Image1 == null ? " " : Convert.ToBase64String(x.Image3),
                 })
                 .ApplySorting(query)
                 .Paging(query);
@@ -335,8 +338,11 @@ namespace ShoppingApi.Data
                         SizeId = x.cm.item.SizeId,
                         itemid = x.cm.item.ItemId,
                         ColorId = x.cm.item.ColorId,
-                        SizeName=x.size.SizeName
-                    })
+                        SizeName=x.size.SizeName,
+                    Image1 = x.cm.item.Image1==null?" ":Convert.ToBase64String(x.cm.item.Image1),
+                  //  Image2 = x.cm.item.Image1 == null ? " " : Convert.ToBase64String(x.cm.item.Image2),
+                  //  Image3 = x.cm.item.Image1 == null ? " " :  Convert.ToBase64String(x.cm.item.Image3),
+                })
                   .ApplySorting(query)
                   .Paging(query);
 

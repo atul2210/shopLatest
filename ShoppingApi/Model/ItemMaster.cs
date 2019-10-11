@@ -29,5 +29,13 @@ namespace ShoppingApi.Model
         public int ColorId { get; set; }
         public string SizeName { get; set; }
 
+
+       
+        public string Image1 { get; set; }
+        public string Image2 { get; set; }
+        public string Image3 { get; set; }
+
+
+
     }
 }

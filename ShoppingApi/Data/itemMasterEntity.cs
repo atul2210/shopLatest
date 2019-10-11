@@ -72,5 +72,19 @@ namespace ShoppingApi.Model
 
         [Column(TypeName = "int")]
         public int ColorId { get; set; }
+
+
+        [Column(TypeName = "varbinary(max)")]
+        public Byte[] Image1 { get; set; }
+
+        [Column(TypeName = "varbinary(max)")]
+        public Byte[] Image2 { get; set; }
+
+        [Column(TypeName = "varbinary(max)")]
+        public Byte[] Image3 { get; set; }
+
+
+
+
     }
 }
