@@ -294,7 +294,11 @@ namespace ShoppingApi.Data
                     deliveryCharges = m.cm.checkin.DeliveryCharges,
                   
                     brand = m.cm.item.brand,
-                    id = m.cm.checkin.id
+                    id = m.cm.checkin.id,
+                    image1 = m.cm.item.Image1 == null ? " " : Convert.ToBase64String(m.cm.item.Image1),
+                    //  Image2 = m.cm.item.Image1 == null ? " " : Convert.ToBase64String(m.cm.item.Image2),
+                    //  Image3 = m.cm.item.Image1 == null ? " " :  Convert.ToBase64String(m.cm.item.Image3),
+
 
                 }).ToList();
             return data;
