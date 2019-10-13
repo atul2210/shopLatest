@@ -45,9 +45,6 @@ namespace ShoppingApi.Model
         [Column(TypeName = "int")]
         public int ChildMenuId{ get; set; }
 
-        [Column(TypeName = "nvarchar(50)")]
-        public int Image { get; set; }
-
         //Column(TypeName = "nvarchar(50)")]
         public string Color { get; set; }
 

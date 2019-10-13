@@ -73,56 +73,96 @@ namespace ShoppingApi.Data
         public Items getItemDetail(int itemId)
         {
             Items items = null;
+           
             try
             {
 
                 var connectionString = Startup.connectionstring;
-                using (SqlConnection con = new SqlConnection(connectionString))
+                var con = new ShoppingContext(connectionString);
+
+                items = con.itemMasterEntity.Where(m => m.ItemId == itemId && m.AvailableQty > 0 && m.Active == true).Join(con.ColorMasterEntity, item => item.ColorId, clr => clr.Colorid,
+                (item, clr) => new
                 {
-                    SqlCommand cmd = new SqlCommand("GetItemDetail", con);
-                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+                    item,
+                    clr
+                })
+                .Join(con.SizeMasterEntity, cm => cm.item.SizeId, size => size.SizeId,
+                  (cm, size) => new { cm, size })
 
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@itemId", itemId);
-
-                    con.Open();
-                    SqlDataReader dr = cmd.ExecuteReader();
-
-                    items = new Items();
-
-                    while (dr.Read())
-                    {
-
-                        items.itemid = Convert.ToInt32(dr["itemId"].ToString());
-                        items.itemName = dr["itemName"].ToString();
-                        items.itemDescription = dr["ItemDescripton"].ToString();
-                        items.sizeId = Convert.ToInt32(dr["SizeId"].ToString());
-                        items.sizeName = dr["SizeName"].ToString();
-                        items.price = Convert.ToDouble(dr["Price"].ToString());
-                        items.offerPrice = Convert.ToDouble(dr["OfferPrice"].ToString());
-                        items.categoryName = dr["MenuName"].ToString();
-                        items.categoryId = Convert.ToInt32(dr["id"].ToString());
-                        items.imaggeUrl = dr["image"].ToString();
-                        items.color = dr["Color"].ToString();
-                        items.brand = dr["Brand"].ToString();
-                        items.deliveryCharges = Convert.ToInt32(dr["DeliveryCharges"].ToString());
-                        items.availableQty = Convert.ToInt32(dr["AvailableQty"].ToString());
-                        items.availableColor = dr["availableColor"].ToString();
-                        items.colorId = Convert.ToInt32(dr["ColorId"].ToString());
-
-                    }
+                .Select(x => new Items
+                {
+                    itemid = x.cm.item.ItemId,
+                    itemName = x.cm.item.ItemName.Trim(),
+                    itemDescription = x.cm.item.AvailableColor.Trim(),
+                    sizeId = x.cm.item.AvailableQty,
+                    sizeName = x.size.SizeName,
+                    price = x.cm.item.Price,
+                    offerPrice = x.cm.item.OfferPrice,
+                    color = x.cm.clr.ColorName,
+                    brand = x.cm.item.brand.Trim(),
+                    deliveryCharges = x.cm.item.deliveryCharges,
+                    availableQty = x.cm.item.AvailableQty,
+                    availableColor = x.cm.item.AvailableColor,
+                    colorId = x.cm.clr.Colorid,
+                    Image1 = x.cm.item.Image1 == null ? " " : Convert.ToBase64String(x.cm.item.Image1),
+                    //  Image2 = x.cm.item.Image1 == null ? " " : Convert.ToBase64String(x.cm.item.Image2),
+                    //  Image3 = x.cm.item.Image1 == null ? " " :  Convert.ToBase64String(x.cm.item.Image3),
+                }).AsQueryable().SingleOrDefault();
 
 
-                    con.Close();
-                }
+                con.Dispose();
+
+
+
+                //using (SqlConnection con = new SqlConnection(connectionString))
+                //{
+                //    SqlCommand cmd = new SqlCommand("GetItemDetail", con);
+                //    SqlDataAdapter da = new SqlDataAdapter(cmd);
+
+                //    cmd.CommandType = CommandType.StoredProcedure;
+                //    cmd.Parameters.AddWithValue("@itemId", itemId);
+
+                //    con.Open();
+                //    SqlDataReader dr = cmd.ExecuteReader();
+
+                //    items = new Items();
+
+                //    while (dr.Read())
+                //    {
+
+                //        items.itemid = Convert.ToInt32(dr["itemId"].ToString());
+                //        items.itemName = dr["itemName"].ToString();
+                //        items.itemDescription = dr["ItemDescripton"].ToString();
+                //        items.sizeId = Convert.ToInt32(dr["SizeId"].ToString());
+                //        items.sizeName = dr["SizeName"].ToString();
+                //        items.price = Convert.ToDouble(dr["Price"].ToString());
+                //        items.offerPrice = Convert.ToDouble(dr["OfferPrice"].ToString());
+                //        items.categoryName = dr["MenuName"].ToString();
+                //        items.categoryId = Convert.ToInt32(dr["id"].ToString());
+                //        items.imaggeUrl = dr["image"].ToString();
+                //        items.color = dr["Color"].ToString();
+                //        items.brand = dr["Brand"].ToString();
+                //        items.deliveryCharges = Convert.ToInt32(dr["DeliveryCharges"].ToString());
+                //        items.availableQty = Convert.ToInt32(dr["AvailableQty"].ToString());
+                //        items.availableColor = dr["availableColor"].ToString();
+                //        items.colorId = Convert.ToInt32(dr["ColorId"].ToString());
+
+                //    }
+
+
+                //    con.Close();
+                //}
             }
 
             catch
             {
+               
                 throw;
             }
+           
             return items;
         }
+        
 
 
 
@@ -143,7 +183,7 @@ namespace ShoppingApi.Data
                                     .Select(m => new AddToCart
                                     {
                                        
-                                        ColorName = m.Color,
+                                       
                                         price = m.Price,
                                         offerPrice = m.OfferPrice,
                                         DeliveryCharges = m.deliveryCharges,
@@ -162,7 +202,6 @@ namespace ShoppingApi.Data
                         cmd.Parameters.AddWithValue("@itemId", itemId);
                         cmd.Parameters.AddWithValue("@IPAddress", IPAddress);
                         cmd.Parameters.AddWithValue("@Quantity", quantity);
-                        cmd.Parameters.AddWithValue("@Color", inputItems.ColorName);
                         cmd.Parameters.AddWithValue("@sessionid", sessionid);
 
                         cmd.Parameters.AddWithValue("@price", inputItems.price);
@@ -359,7 +398,7 @@ namespace ShoppingApi.Data
 
             using (var con = new ShoppingContext(connectionString))
             {
-                var context = con.itemMasterEntity.Where(k=>k.Active==true).SingleOrDefault(m => m.ItemId == itemId);
+                var context = con.itemMasterEntity.Where(k=>k.Active==true && k.ItemId == itemId).SingleOrDefault();
                 context.ReserveQty = context.ReserveQty - returnedItemQty;
                 context.AvailableQty = context.AvailableQty + returnedItemQty;
                 con.SaveChanges();
