@@ -39,9 +39,8 @@ namespace ShoppingApi.Data
                     AvailableQty = x.AvailableQty,
                     brand = x.brand.Trim(),
                     childmenuid = x.ChildMenuId,
-                    Color = x.Color.Trim(),
+                
                     detailId = x.detailId,
-                    image = x.image.Trim(),
                     InitialQty = x.InitialQty,
                     DeliveryCharges = x.deliveryCharges,
                     itemDescription = x.ItemDescripton.Trim(),
@@ -108,50 +107,8 @@ namespace ShoppingApi.Data
                     //  Image2 = x.cm.item.Image1 == null ? " " : Convert.ToBase64String(x.cm.item.Image2),
                     //  Image3 = x.cm.item.Image1 == null ? " " :  Convert.ToBase64String(x.cm.item.Image3),
                 }).AsQueryable().SingleOrDefault();
-
-
                 con.Dispose();
-
-
-
-                //using (SqlConnection con = new SqlConnection(connectionString))
-                //{
-                //    SqlCommand cmd = new SqlCommand("GetItemDetail", con);
-                //    SqlDataAdapter da = new SqlDataAdapter(cmd);
-
-                //    cmd.CommandType = CommandType.StoredProcedure;
-                //    cmd.Parameters.AddWithValue("@itemId", itemId);
-
-                //    con.Open();
-                //    SqlDataReader dr = cmd.ExecuteReader();
-
-                //    items = new Items();
-
-                //    while (dr.Read())
-                //    {
-
-                //        items.itemid = Convert.ToInt32(dr["itemId"].ToString());
-                //        items.itemName = dr["itemName"].ToString();
-                //        items.itemDescription = dr["ItemDescripton"].ToString();
-                //        items.sizeId = Convert.ToInt32(dr["SizeId"].ToString());
-                //        items.sizeName = dr["SizeName"].ToString();
-                //        items.price = Convert.ToDouble(dr["Price"].ToString());
-                //        items.offerPrice = Convert.ToDouble(dr["OfferPrice"].ToString());
-                //        items.categoryName = dr["MenuName"].ToString();
-                //        items.categoryId = Convert.ToInt32(dr["id"].ToString());
-                //        items.imaggeUrl = dr["image"].ToString();
-                //        items.color = dr["Color"].ToString();
-                //        items.brand = dr["Brand"].ToString();
-                //        items.deliveryCharges = Convert.ToInt32(dr["DeliveryCharges"].ToString());
-                //        items.availableQty = Convert.ToInt32(dr["AvailableQty"].ToString());
-                //        items.availableColor = dr["availableColor"].ToString();
-                //        items.colorId = Convert.ToInt32(dr["ColorId"].ToString());
-
-                //    }
-
-
-                //    con.Close();
-                //}
+               
             }
 
             catch
@@ -335,7 +292,7 @@ namespace ShoppingApi.Data
                     price = m.cm.checkin.Price,
                     offerprice = m.cm.checkin.OfferPrice,
                     deliveryCharges = m.cm.checkin.DeliveryCharges,
-                    imageUrl = m.cm.item.image,
+                  
                     brand = m.cm.item.brand,
                     id = m.cm.checkin.id
 
@@ -367,7 +324,7 @@ namespace ShoppingApi.Data
                         childmenuid = x.cm.item.ChildMenuId,
                         Color = x.cm.clr.ColorName.Trim(),
                         detailId = x.cm.item.detailId,
-                        image = x.cm.item.image.Trim(),
+                      
                         InitialQty = x.cm.item.InitialQty,
                         DeliveryCharges = x.cm.item.deliveryCharges,
                         itemDescription = x.cm.item.ItemDescripton.Trim(),
@@ -488,7 +445,7 @@ namespace ShoppingApi.Data
                    childmenuid = x.cm.item.ChildMenuId,
                    Color = x.cm.clr.ColorName.Trim(),
                    detailId = x.cm.item.detailId,
-                   image = x.cm.item.image.Trim(),
+                   
                    InitialQty = x.cm.item.InitialQty,
                    DeliveryCharges = x.cm.item.deliveryCharges,
                    itemDescription = x.cm.item.ItemDescripton.Trim(),

@@ -27,7 +27,7 @@ namespace ShoppingApi.Model
         public double price { get; set; }
         public double offerprice { get; set; }
         public double deliveryCharges { get; set; }
-        public string imageUrl { get; set; }
+        
         public string brand { get; set; }
     }
 

@@ -45,8 +45,6 @@ namespace ShoppingApi.Model
         [Column(TypeName = "int")]
         public int ChildMenuId{ get; set; }
 
-        //Column(TypeName = "nvarchar(50)")]
-        public string Color { get; set; }
 
         [Column(TypeName = "nvarchar(50)")]
         public int Brand { get; set; }
@@ -60,7 +58,7 @@ namespace ShoppingApi.Model
         [Column(TypeName = "bit")]
         public bool Active { get; set; }
 
-        public string image { get; set; }
+       
 
         public string brand { get; set; }
 

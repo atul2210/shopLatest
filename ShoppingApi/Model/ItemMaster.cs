@@ -24,7 +24,7 @@ namespace ShoppingApi.Model
         public int? detailId { get; set; }
         public int DeliveryCharges { get; set; }
         public bool Active { get; set; }
-        public string image { get; set; }
+        
         public string brand { get; set; }
         public int ColorId { get; set; }
         public string SizeName { get; set; }

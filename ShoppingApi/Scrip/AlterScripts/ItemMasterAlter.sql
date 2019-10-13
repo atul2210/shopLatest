@@ -6,8 +6,8 @@ ALTER  TABLE ItemMaster
 
 	
 ---delete coloumn image and color from itemmaster
-ALTER TABLE itemmaster DROP image
-ALTER TABLE itemmaster DROP color
+ALTER TABLE  ItemMaster DROP COLUMN  [image]
+ALTER TABLE itemmaster DROP COLUMN  color
 
 	---sample script for insert/update image
 	
