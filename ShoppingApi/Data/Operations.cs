@@ -92,7 +92,7 @@ namespace ShoppingApi.Data
                 {
                     itemid = x.cm.item.ItemId,
                     itemName = x.cm.item.ItemName.Trim(),
-                    itemDescription = x.cm.item.AvailableColor.Trim(),
+                    itemDescription = x.cm.item.ItemDescripton.Trim(),
                     sizeId = x.cm.item.AvailableQty,
                     sizeName = x.size.SizeName,
                     price = x.cm.item.Price,
