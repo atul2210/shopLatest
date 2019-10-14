@@ -29,10 +29,7 @@ namespace ShoppingApi.Model
         public double deliveryCharges { get; set; }
         
         public string brand { get; set; }
-
-
         public string image1 { get; set; }
-
         public string image2 { get; set; }
         public string image3 { get; set; }
 
