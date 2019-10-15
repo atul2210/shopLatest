@@ -111,7 +111,10 @@ namespace ShoppingApi.Controllers
         {
             string result = await _msgFactory.SendEmail(email);
             string[] pwd = result.Split("#");
-
+            if (pwd[1] == "This Email is not registered with us")
+            {
+                return Ok(pwd[1]);
+            }
 
             try
             {
