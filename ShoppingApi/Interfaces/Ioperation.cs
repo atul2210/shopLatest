@@ -22,5 +22,6 @@ namespace ShoppingApi.Interfaces
         bool PaymentReceived(string emailId, string UserSession, List<checkedInItem> PaymentReceived,EmailSettings emailSettings);
         Task<List<files>> getAllImmages(string filepath);
         void DeActivatesAfterPaymentReceived(string sessionId);
+        Task<User> GetAddress(string EmailId);
     }
 }

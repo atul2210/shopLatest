@@ -15,7 +15,7 @@ using Microsoft.AspNetCore.Hosting;
 using ShoppingApi.Common;
 using ShoppingApi.Email;
 using System.Text;
-
+using Microsoft.EntityFrameworkCore;
 namespace ShoppingApi.Data
 {
     public class Operations : Ioperation
@@ -587,6 +587,27 @@ namespace ShoppingApi.Data
                 }
                 con.SaveChanges();
             }
+        }
+
+        public async Task<User> GetAddress(string EmailId)
+        {
+            var connectionString = Startup.connectionstring;
+            var con = new ShoppingContext(connectionString);
+            var data = con.Users.Where(usr => usr.Email == EmailId)
+                 .Select(k => new User()
+                 {
+                     firstName = k.FirsName,
+                     middleName = k.MiddleName,
+                     lastName = k.LastName,
+                     address = k.Address,
+                     city = k.City,
+                     pin = k.Pin,
+                     mobile = k.Mobile.ToString()
+
+                 }
+
+                 ).FirstOrDefaultAsync();
+            return await data;
         }
 
     }

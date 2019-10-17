@@ -67,5 +67,12 @@ namespace ShoppingApi.Controllers
             return Ok(_operations.addUser(userData));
         }
 
+        [HttpGet, Route("User/Address/")]
+        public async Task<ActionResult> GetUserAddress(string Email)
+        {
+            return  Ok(await _operations.GetAddress(Email));
+           
+        }
+
     }
 }
