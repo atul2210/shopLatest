@@ -188,12 +188,9 @@ namespace ShoppingApi.Controllers
         //[ValidateAntiForgeryToken]
 
         [IgnoreAntiforgeryToken]
-        public IActionResult PaymentReceived(string emailId, string UserSession, [FromBody] List<checkedInItem> paymentreceived)
+        public IActionResult PaymentReceived(string UserSession)
         {
-            if(emailId==null || emailId==string.Empty || emailId=="undefined")
-            {
-                return BadRequest("Invalid Email id.  Please login again");
-            }
+         
             List<UserSessionDto> sessionData = _iusersession.GetUserSession(UserSession);
 
             if (EmailValidator.IsValidEmail(sessionData[0].UserId))
@@ -214,13 +211,16 @@ namespace ShoppingApi.Controllers
 
                 };
 
+                if (emailsettin.ToEmail == null || emailsettin.ToEmail == string.Empty || emailsettin.ToEmail == "undefined")
+                {
+                    return BadRequest("Invalid Email id.  Please login again");
+                }
 
 
 
-
-                _operations.PaymentReceived(emailId, UserSession, paymentreceived, emailsettin);
+                _operations.PaymentReceived(emailsettin.ToEmail,UserSession, emailsettin);
                 _operations.DeActivatesAfterPaymentReceived(UserSession);
-                return Ok();
+                return Ok("Order Placed successfully.");
             }
             else
             {

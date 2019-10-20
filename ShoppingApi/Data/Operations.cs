@@ -473,13 +473,29 @@ namespace ShoppingApi.Data
         }
 
 
-       public bool PaymentReceived(string emailId, string UserSession, List<checkedInItem> PaymentReceived, EmailSettings emailSettings)
+       public bool PaymentReceived(string emailId, string UserSession, EmailSettings emailSettings)
         {
             var connectionString = Startup.connectionstring;
             StringBuilder emailBody = new StringBuilder("Congratulations!! Your order is confirmed <br><br><br>  "); 
             bool success = false;
             double paymentAmount = 0,OfferAmount =0;
             double deliveryCharges=0;
+            var conn = new ShoppingContext(connectionString);
+            var pmt = conn.CheckInEntity.Where(m => m.UserSessionId == UserSession && m.Active == true)
+                        .Join(conn.itemMasterEntity, item => item.itemId, chk => chk.ItemId,
+                          (chk,item) => new
+                          {
+                              chk,
+                              item
+                              
+                          });
+
+
+
+                ;
+
+
+
             using (var con = new ShoppingContext(connectionString))
             {
                 emailBody.Append("<html> ");
@@ -490,28 +506,28 @@ namespace ShoppingApi.Data
                 emailBody.Append("<h4>" + "Date: " + DateTime.Now.ToString("dddd, dd MMMM yyyy") + "</hr><br>");
                 emailBody.Append("<table class='auto' border='1' width='100%'>");
                 emailBody.Append("<caption> Your Order Details:- </caption>");
-                foreach (var item in PaymentReceived)
+                foreach (var items in pmt)
                 {
                     var add = con.PaymentReceivedEntity.Add(new PaymentReceivedEntity
                     {
-                        itemId=item.itemId,
+                        itemId=items.chk.itemId,
                         ReceivedFormEmailId= emailId,
-                        Quantity = item.quantity,
+                        Quantity = items.chk.Quantity,
                         sessionid = UserSession,
-                        TotalOfferAmount = item.offerprice,
-                        TotalPaymentAmount = item.price
+                        TotalOfferAmount = items.chk.OfferPrice,
+                        TotalPaymentAmount = items.chk.Price
                     });
-                    deliveryCharges = Convert.ToDouble(item.deliveryCharges);
-                    paymentAmount = paymentAmount + item.offerprice;
-                    OfferAmount = OfferAmount + item.offerprice;
+                    deliveryCharges = Convert.ToDouble(items.chk.DeliveryCharges);
+                    paymentAmount = paymentAmount + items.chk.OfferPrice;
+                    OfferAmount = OfferAmount + items.chk.OfferPrice;
                     emailBody.Append("<tr>");
                     emailBody.Append("<td width='50%'>Description: </td>");
-                    emailBody.Append("<td width='50%'>" + item.itemname+"</td>"  );
+                    emailBody.Append("<td width='50%'>" + items.item.ItemName+"</td>"  );
                     emailBody.Append("</tr>");
 
                     emailBody.Append("<tr>");
                     emailBody.Append("<td width='50%'>Quanity: </td>");
-                    emailBody.Append("<td width='50%'>" + item.quantity + "</td>");
+                    emailBody.Append("<td width='50%'>" + items.chk.Quantity + "</td>");
                     emailBody.Append("</tr>");
 
                     emailBody.Append("<tr>");
@@ -521,12 +537,12 @@ namespace ShoppingApi.Data
 
                     emailBody.Append("<tr>");
                     emailBody.Append("<td width='50%'>Price: </td>");
-                    emailBody.Append("<td width='50%'> ₹ " + string.Format(String.Format("{0:N2}", item.price)) + "</td>");
+                    emailBody.Append("<td width='50%'> ₹ " + string.Format(String.Format("{0:N2}", items.chk.Price)) + "</td>");
                     emailBody.Append("</tr>");
 
                     emailBody.Append("<tr>");
                     emailBody.Append("<td width='50%'>Offer Price: </td>");
-                    emailBody.Append("<td width='50%'>₹ " + string.Format(String.Format("{0:N2}", item.offerprice)) + "</td>");
+                    emailBody.Append("<td width='50%'>₹ " + string.Format(String.Format("{0:N2}", items.chk.OfferPrice)) + "</td>");
 
                     emailBody.Append("</tr>");
 
@@ -589,25 +605,35 @@ namespace ShoppingApi.Data
             }
         }
 
-        public async Task<User> GetAddress(string EmailId)
+        public async Task<User> GetAddress(string usersession)
         {
             var connectionString = Startup.connectionstring;
             var con = new ShoppingContext(connectionString);
-            var data = con.Users.Where(usr => usr.Email == EmailId)
-                 .Select(k => new User()
-                 {
-                     firstName = k.FirsName,
-                     middleName = k.MiddleName,
-                     lastName = k.LastName,
-                     address = k.Address,
-                     city = k.City,
-                     pin = k.Pin,
-                     mobile = k.Mobile.ToString()
 
-                 }
+            var  user = await con.UserSessionEntity.Where(m => m.Active == true && m.SessionKey == usersession).FirstOrDefaultAsync();
 
-                 ).FirstOrDefaultAsync();
-            return await data;
+
+            if (user != null)
+            {
+                var data = con.Users.Where(usr => usr.Email == user.UserId)
+                     .Select(k => new User()
+                     {
+                         firstName = k.FirsName,
+                         middleName = k.MiddleName,
+                         lastName = k.LastName,
+                         address = k.Address,
+                         city = k.City,
+                         pin = k.Pin,
+                         mobile = k.Mobile.ToString(),
+                         emailId=k.Email,
+                         state=k.State
+
+                     }
+
+                     ).FirstOrDefaultAsync();
+                return await data;
+            }
+            return null;
         }
 
     }

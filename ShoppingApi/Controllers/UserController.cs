@@ -68,9 +68,9 @@ namespace ShoppingApi.Controllers
         }
 
         [HttpGet, Route("User/Address/")]
-        public async Task<ActionResult> GetUserAddress(string Email)
+        public async Task<ActionResult> GetUserAddress(string usersession)
         {
-            return  Ok(await _operations.GetAddress(Email));
+            return  Ok(await _operations.GetAddress(usersession));
            
         }
 
