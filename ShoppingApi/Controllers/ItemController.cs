@@ -32,11 +32,13 @@ namespace ShoppingApi.Controllers
         private IOptions<EmailSettings> _emailSettings;
         Ioperation _operations;
         IUserSession _iusersession;
-        public ItemController(Ioperation operations, IOptions<EmailSettings> emailSettings, IUserSession iusersession)
+        private IConfiguration _iConfiguration;
+        public ItemController(Ioperation operations, IOptions<EmailSettings> emailSettings, IUserSession iusersession, IConfiguration iConfiguration)
         {
             _operations = operations;
             _emailSettings = emailSettings;
             _iusersession = iusersession;
+            _iConfiguration = iConfiguration;
         }
 
      
@@ -188,7 +190,7 @@ namespace ShoppingApi.Controllers
         //[ValidateAntiForgeryToken]
 
         [IgnoreAntiforgeryToken]
-        public IActionResult PaymentReceived(string UserSession)
+        public IActionResult PaymentReceived(string UserSession,[FromBody] User user )
         {
          
             List<UserSessionDto> sessionData = _iusersession.GetUserSession(UserSession);
@@ -207,8 +209,6 @@ namespace ShoppingApi.Controllers
                     SecondayDomain = _emailSettings.Value.SecondayDomain,
                     ToEmail = sessionData[0].UserId,//_emailSettings.Value.ToEmail,
                     UsernamePassword = _emailSettings.Value.UsernamePassword
-
-
                 };
 
                 if (emailsettin.ToEmail == null || emailsettin.ToEmail == string.Empty || emailsettin.ToEmail == "undefined")
@@ -216,9 +216,9 @@ namespace ShoppingApi.Controllers
                     return BadRequest("Invalid Email id.  Please login again");
                 }
 
+                bool sendEmail = Convert.ToBoolean(_iConfiguration.GetSection("SendMail").Value);
 
-
-                _operations.PaymentReceived(emailsettin.ToEmail,UserSession, emailsettin);
+                _operations.PaymentReceived(emailsettin.ToEmail,UserSession, emailsettin, user,sendEmail);
                 _operations.DeActivatesAfterPaymentReceived(UserSession);
                 return Ok("Order Placed successfully.");
             }

@@ -473,7 +473,7 @@ namespace ShoppingApi.Data
         }
 
 
-       public bool PaymentReceived(string emailId, string UserSession, EmailSettings emailSettings)
+       public bool PaymentReceived(string emailId, string UserSession, EmailSettings emailSettings,User user, bool sendEmail)
         {
             var connectionString = Startup.connectionstring;
             StringBuilder emailBody = new StringBuilder("Congratulations!! Your order is confirmed <br><br><br>  "); 
@@ -515,7 +515,15 @@ namespace ShoppingApi.Data
                         Quantity = items.chk.Quantity,
                         sessionid = UserSession,
                         TotalOfferAmount = items.chk.OfferPrice,
-                        TotalPaymentAmount = items.chk.Price
+                        TotalPaymentAmount = items.chk.Price,
+                        FirstName=user.firstName,
+                        LastName=user.lastName,
+                        Address=user.address,
+                        MiddleName = user.middleName,
+                        City=user.city,
+                        Pin=user.pin,
+                        State=user.state
+                        
                     });
                     deliveryCharges = Convert.ToDouble(items.chk.DeliveryCharges);
                     paymentAmount = paymentAmount + items.chk.OfferPrice;
@@ -562,8 +570,11 @@ namespace ShoppingApi.Data
                 emailBody.Append("<p>Thank You !!  Happy Shopping!!!</p>");
                 emailBody.Append("</body></html>");
               
+                if(sendEmail==true)
+                {
+                    EmailSender.SendEmailAsync(emailId, "Vidhimas Shopping - Order Confirmation", emailBody.ToString(), emailSettings);
+                }
 
-                EmailSender.SendEmailAsync(emailId,"Vidhimas Shopping - Order Confirmation", emailBody.ToString(),  emailSettings);
                 con.SaveChanges();
                 success = true;
             }
