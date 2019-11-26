@@ -64,7 +64,7 @@ namespace ShoppingApi.Controllers
                     };
 
                     var keyname = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("abcabcabcabcabcabcabcabcabcabc"));
-                   ///////// var signInCred = new SigningCredentials(keyname, SecurityAlgorithms.HmacSha256Signature);
+                  
                    
                     var token = new JwtSecurityToken(
                         issuer: "lowCart.com",
