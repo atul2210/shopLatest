@@ -70,7 +70,7 @@ namespace ShoppingApi.Model
 
 
         [Column(TypeName = "varbinary(max)")]
-        public Byte[] Image1 { get; set; }
+        public string Image1 { get; set; }
 
         [Column(TypeName = "varbinary(max)")]
         public Byte[] Image2 { get; set; }
