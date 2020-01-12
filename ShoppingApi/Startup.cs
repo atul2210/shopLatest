@@ -22,6 +22,8 @@ using Microsoft.AspNetCore.Antiforgery;
 using ShoppingApi.Interfaces;
 using ShoppingApi.Email;
 using ShoppingApi.Common;
+using Microsoft.AspNetCore.ResponseCompression;
+using System.IO.Compression;
 
 namespace ShoppingApi
 {
@@ -180,6 +182,13 @@ namespace ShoppingApi
 
             //  services.AddMvc();
             services.AddResponseCaching();
+            services.AddResponseCompression(opt =>
+            {
+                opt.Providers.Add<GzipCompressionProvider>();
+                opt.EnableForHttps = true;
+            });
+            services.Configure<GzipCompressionProviderOptions>(options => options.Level =
+            CompressionLevel.Fastest);
             services.AddMvc(options =>
             {
                 options.Filters.Add(new Microsoft.AspNetCore.Mvc.ValidateAntiForgeryTokenAttribute());
@@ -264,7 +273,7 @@ namespace ShoppingApi
             app.UseAuthentication();
             app.UseMiddleware(typeof(ErrorHandlingMiddleware));
             app.UseMiddleware<IpCheckerMiddleware>(Configuration["AdminSafeList"]);
-            
+            app.UseResponseCompression();
             app.UseMvc();
 
         }
