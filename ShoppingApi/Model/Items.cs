@@ -27,7 +27,7 @@ namespace ShoppingApi.Model
 
         public string availableColor { get; set; }
         public int colorId { get; set; }
-        public string Image1 { get; set; }
+        public byte[] Image1 { get; set; }
         public string Image2 { get; set; }
         public string Image3 { get; set; }
 
