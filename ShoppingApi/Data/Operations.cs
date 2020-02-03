@@ -20,8 +20,7 @@ namespace ShoppingApi.Data
 {
     public class Operations : Ioperation
     {
-
-       public PageResult<ItemMaster> getItems(int childmenuid, PageAndSortedQuery<ItemDetailsQuery> query)
+        public PageResult<ItemMaster> getItems(int childmenuid, PageAndSortedQuery<ItemDetailsQuery> query)
         {
          
             try
@@ -52,7 +51,7 @@ namespace ShoppingApi.Data
                     ColorId = x.ColorId,
 //                    Image1 = x.Image1 == null ? " " : Convert.ToBase64String(x.Image1),
                   
-                    Image1 = "data:image/jpeg;base64," + Convert.ToBase64String(File.ReadAllBytes(x.Image1)), //x.cm.item.Image1 == null ? " " : x.cm.item.Image1, //System.IO.File.ReadAllBytes(x.Image1) //x.Image1 == null ? " ": x.Image1,
+                    Image1 = GetBase64Image(x.Image1) //"data:image/jpeg;base64," + Convert.ToBase64String(File.ReadAllBytes(x.Image1)), //x.cm.item.Image1 == null ? " " : x.cm.item.Image1, //System.IO.File.ReadAllBytes(x.Image1) //x.Image1 == null ? " ": x.Image1,
 
                     // Image2 = x.Image1 == null ? " " : Convert.ToBase64String(x.Image2),
                     // Image3 = x.Image1 == null ? " " : Convert.ToBase64String(x.Image3),
@@ -106,7 +105,7 @@ namespace ShoppingApi.Data
                     availableQty = x.cm.item.AvailableQty,
                     availableColor = x.cm.item.AvailableColor,
                     colorId = x.cm.clr.Colorid,
-                    Image1 = System.IO.File.ReadAllBytes(x.cm.item.Image1)///x.cm.item.Image1 == null ? " " : x.cm.item.Image1
+                    Image1 = GetBase64Image(x.cm.item.Image1) // System.IO.File.ReadAllBytes(x.cm.item.Image1)///x.cm.item.Image1 == null ? " " : x.cm.item.Image1
                     //Image1 = x.cm.item.Image1 == null ? " " : Convert.ToBase64String(x.cm.item.Image1),
                     //  Image2 = x.cm.item.Image1 == null ? " " : Convert.ToBase64String(x.cm.item.Image2),
                     //  Image3 = x.cm.item.Image1 == null ? " " :  Convert.ToBase64String(x.cm.item.Image3),
@@ -300,7 +299,7 @@ namespace ShoppingApi.Data
                     brand = m.cm.item.brand,
                     id = m.cm.checkin.id,
                     //image1 = m.cm.item.Image1 == null ? " " : Convert.ToBase64String(m.cm.item.Image1),
-                    image1 = m.cm.item.Image1 == null ? " " : m.cm.item.Image1
+                    image1 = GetBase64Image(m.cm.item.Image1) //m.cm.item.Image1 == null ? " " : m.cm.item.Image1
                     //  Image2 = m.cm.item.Image1 == null ? " " : Convert.ToBase64String(m.cm.item.Image2),
                     //  Image3 = m.cm.item.Image1 == null ? " " :  Convert.ToBase64String(m.cm.item.Image3),
 
@@ -348,7 +347,7 @@ namespace ShoppingApi.Data
                     //   Image1 = System.IO.File.ReadAllBytes(x.cm.item.Image1),
 
 
-                    Image1 = "data:image/jpeg;base64," + Convert.ToBase64String(File.ReadAllBytes(x.cm.item.Image1)), //x.cm.item.Image1 == null ? " " : x.cm.item.Image1,
+                    Image1 = GetBase64Image(x.cm.item.Image1)    //"data:image/jpeg;base64," + Convert.ToBase64String(File.ReadAllBytes(x.cm.item.Image1)), //x.cm.item.Image1 == null ? " " : x.cm.item.Image1,
                     //  Image2 = x.cm.item.Image1 == null ? " " : Convert.ToBase64String(x.cm.item.Image2),
                     //  Image3 = x.cm.item.Image1 == null ? " " :  Convert.ToBase64String(x.cm.item.Image3),
                 })
@@ -470,7 +469,7 @@ namespace ShoppingApi.Data
                    ColorId = x.cm.item.ColorId,
                    SizeName = x.size.SizeName,
                    //      data:image/jpeg;base64,             Image1 = x.cm.item.Image1 == null ? " " : Convert.ToBase64String(x.cm.item.Image1),
-                   Image1 = "data:image/jpeg;base64," + Convert.ToBase64String(File.ReadAllBytes(x.cm.item.Image1)), //x.cm.item.Image1 == null ? " " : x.cm.item.Image1,
+                   Image1 = GetBase64Image(x.cm.item.Image1)  //"data:image/jpeg;base64," + Convert.ToBase64String(File.ReadAllBytes(x.cm.item.Image1)), //x.cm.item.Image1 == null ? " " : x.cm.item.Image1,
 
                    //  Image2 = x.cm.item.Image1 == null ? " " : Convert.ToBase64String(x.cm.item.Image2),
                    //  Image3 = x.cm.item.Image1 == null ? " " :  Convert.ToBase64String(x.cm.item.Image3),
@@ -656,6 +655,25 @@ namespace ShoppingApi.Data
                 return await data;
             }
             return null;
+        }
+
+        private string GetBase64Image(string url)
+        {
+            string img=null;
+            try
+            {
+                img = "data:image/jpeg;base64," + Convert.ToBase64String(File.ReadAllBytes(url)); 
+            }
+            catch
+            {
+                var configurationBuilder = new ConfigurationBuilder();
+                var root = configurationBuilder.Build();
+                string imgNotFound = Startup.imageNotFound;//root.GetSection("ImageNotFound").ToString();
+                img = "data:image/jpeg;base64," + Convert.ToBase64String(File.ReadAllBytes(imgNotFound));
+                return img;
+            }
+
+            return img;
         }
 
     }

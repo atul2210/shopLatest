@@ -24,6 +24,7 @@ using ShoppingApi.Email;
 using ShoppingApi.Common;
 using Microsoft.AspNetCore.ResponseCompression;
 using System.IO.Compression;
+using ShoppingApi.Image;
 
 namespace ShoppingApi
 {
@@ -51,7 +52,7 @@ namespace ShoppingApi
 
         //  public IConfiguration Configuration { get; set; }
         public static string connectionstring { get; set; }
-        
+        public static string imageNotFound { get; set; }
 
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -153,8 +154,8 @@ namespace ShoppingApi
 
             //Add database services.
             connectionstring = this.Configuration.GetConnectionString("ShoppingConnectionString");
+            imageNotFound = this.Configuration["ImageNotFound"].ToString();
            
-
             services.AddSingleton<IConfiguration>(Configuration);
           
             // 
