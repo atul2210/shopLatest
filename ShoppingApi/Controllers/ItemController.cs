@@ -231,6 +231,13 @@ namespace ShoppingApi.Controllers
             //return Ok(paymentreceived);
           
         }
+     //   [AllowAnonymous]
+        [HttpPut, Route("items/EditAddress")]
+        [IgnoreAntiforgeryToken]
+        public IActionResult EditAddress([FromBody]EditAddress editUserAddress)
+        {
+           return Ok(_operations.EditAddress(editUserAddress));
+        }
 
     }
 }

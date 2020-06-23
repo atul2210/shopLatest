@@ -1,4 +1,5 @@
-﻿using ShoppingApi.Interfaces;
+﻿using Microsoft.EntityFrameworkCore;
+using ShoppingApi.Interfaces;
 using ShoppingApi.Model;
 using System;
 using System.Collections.Generic;
@@ -57,6 +58,32 @@ namespace ShoppingApi.Data
             return top1;
 
         }
+
+        public  Task<List<States>> GetStates()
+        {
+            var connectionString = Startup.connectionstring;
+            var con = new ShoppingContext(Startup.connectionstring);
+            Task<List<States>> data = null;
+         
+                data =  con.StateEntity.Select(x => new States()
+                {
+                    Stateid=x.StateId,
+                    StateName=x.StateName
+                     
+                }
+                ).ToListAsync();
+
+          
+            return data;
+        }
+
+
+
+
+
+
+
+
 
         public void OtpData(OtpSenderModel otpData)
         {

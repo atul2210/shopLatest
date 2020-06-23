@@ -389,45 +389,63 @@ namespace ShoppingApi.Data
            
         }
 
-        public bool addUser(User user)
+        public (bool success, string result) addUser(User user)
         {
-            var connectionString = Startup.connectionstring;
             bool success = false;
-
-            var message = user.password;
-            var salt = Salt.Create();
-            var hash = Hash.Create(message, salt);
-
-
-
-
-            using (var con = new ShoppingContext(connectionString))
+            string result;
+            try
             {
-                var entity = new UserRegistrationEntity
+                var connectionString = Startup.connectionstring;
+             
+
+                var message = user.password;
+                var salt = Salt.Create();
+                var hash = Hash.Create(message, salt);
+
+                
+
+
+                using (var con = new ShoppingContext(connectionString))
                 {
-                    hash = hash,
-                    salt=salt,
-                    FirsName = user.firstName,
-                   
-                    MiddleName = user.middleName,
-                    LastName = user.lastName,
-                    Email = user.emailId,
-                    Mobile =  Convert.ToDouble(user.mobile),
-                    UlternateMobile= user.ulternateMobile.Length>0? Convert.ToDouble(user.ulternateMobile):0,
-                    Address = user.address,
-                    City = user.city,
-                    Pin = user.pin,
-                    State = user.state
-                };
 
-                con.Users.Add(entity);
-                con.SaveChanges();
+                    var data = con.Users.Where(x => x.Email == user.emailId).FirstOrDefault();
+                    if (data == null)
+                    {
+                        var entity = new UserRegistrationEntity
+                        {
+                            hash = hash,
+                            salt = salt,
+                            FirsName = user.firstName,
 
-                success = true;
-               
+                            MiddleName = user.middleName,
+                            LastName = user.lastName,
+                            Email = user.emailId,
+                            Mobile = Convert.ToDouble(user.mobile),
+                            UlternateMobile = user.ulternateMobile.Length > 0 ? Convert.ToDouble(user.ulternateMobile) : 0,
+                            Address = user.address,
+                            City = user.city,
+                            Pin = user.pin,
+                            State = user.state
+                        };
+
+                        con.Users.Add(entity);
+                        con.SaveChanges();
+
+                        success = true;
+                        result = "Added successfylly";
+                    }
+                    else
+                    {
+                        result = "This Email Id is aleady exhisting";
+                        success=false;
+                    }
+                }
             }
-
-            return success;
+            catch(Exception ex)
+            {
+                throw;
+            }
+            return (success,result);
            
         }
 
@@ -502,7 +520,7 @@ namespace ShoppingApi.Data
 
 
 
-                ;
+        
 
 
 
@@ -674,6 +692,30 @@ namespace ShoppingApi.Data
             }
 
             return img;
+        }
+
+        public bool EditAddress(EditAddress user)
+        {
+            var connectionString = Startup.connectionstring;
+            var con = new ShoppingContext(connectionString);
+            bool success = false;
+            using (var conn = new ShoppingContext(connectionString))
+            {
+                var editUser = conn.Users.Where(x => x.Email == user.emailId).FirstOrDefault();
+                editUser.Address = user.address;
+                editUser.City = user.city;
+                editUser.FirsName = user.firstName;
+                editUser.LastName = user.lastName;
+                editUser.MiddleName = user.middleName;
+                editUser.Pin = user.pin;
+                editUser.State = user.state;
+                conn.SaveChanges();
+                success = true;
+            }
+
+            return success;
+           
+
         }
 
     }

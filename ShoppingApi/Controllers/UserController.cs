@@ -9,6 +9,9 @@ using ShoppingApi.Data;
 using Microsoft.AspNetCore.Authorization;
 using ShoppingApi.Interfaces;
 using System.Net;
+using ShoppingApi.Email;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace ShoppingApi.Controllers
 {
@@ -18,15 +21,20 @@ namespace ShoppingApi.Controllers
     public class UserController : Controller
     {
         IotpChecker _iotpChecker ;
-
-      //  Operations _operations;
+        private Microsoft.Extensions.Options.IOptions<EmailSettings> _emailSettings;
+        //  Operations _operations;
         Ioperation _operations;
-
-        public UserController(IotpChecker iotpchecker, Ioperation operations )
+        private readonly IEmailSender _emailSender;
+        private readonly IEmailSender emailSender;
+        private IConfiguration _iConfiguration;
+        public UserController(IotpChecker iotpchecker, Ioperation operations, IOptions<EmailSettings> emailSettings, IEmailSender emailSender, IConfiguration iConfiguration)
         {
             _iotpChecker = iotpchecker;
             _operations = operations;
-    }
+            _emailSender = emailSender;
+            _iConfiguration = iConfiguration;
+            _emailSettings = emailSettings;
+        }
 
         [AllowAnonymous]
         [HttpPost, Route("User/NewUser/")]
@@ -56,7 +64,9 @@ namespace ShoppingApi.Controllers
                     if (data[0].senderIP != ipAddress) throw new Exception("Invalid IP");
 
                 }
-
+                _operations.addUser(userData);
+                SendEmailToNewUser(userData.emailId);
+              
             }
 
             catch(Exception e)
@@ -64,7 +74,7 @@ namespace ShoppingApi.Controllers
                 // return Json(new { status = HttpStatusCode.BadRequest, statusText = e.Message });
                 return BadRequest(e);
             }
-            return Ok(_operations.addUser(userData));
+            return Ok();
         }
 
         [HttpGet, Route("User/Address/")]
@@ -73,6 +83,21 @@ namespace ShoppingApi.Controllers
             return  Ok(await _operations.GetAddress(usersession));
            
         }
+        [HttpGet, Route("User/GetStates/")]
+        public async Task<ActionResult> GetStates()
+        {
+            return Ok(await _iotpChecker.GetStates());
+
+        }
+
+        private void SendEmailToNewUser(string ToEmail )
+        {
+            string Subject = "New User Registration  ";
+            string body = string.Empty;
+            body += "<a href=" + _iConfiguration.GetSection("FirstTimeUser")+@">Please click to complete your registraion  </a>"; 
+            _emailSender.SendEmailAsync(ToEmail, Subject, body);
+        }
+
 
     }
 }

@@ -17,11 +17,12 @@ namespace ShoppingApi.Interfaces
         List<checkedInItem> getCheckInItem(string usersession);
         PageResult<ItemMaster> GetPageItemsList(PageAndSortedQuery<ItemDetailsQuery> query);
         RemoveItem RemoveItems(int itemId, int returnedItemQty, string sessionId, int checkedinId);
-        bool addUser(User user);
+        (bool success, string result)addUser(User user);
         PageResult<ItemMaster> Search(string SearchItem, PageAndSortedQuery<ItemDetailsQuery> query);
         bool PaymentReceived(string emailId, string UserSession, EmailSettings emailSettings,User user,bool sendEmail);
         Task<List<files>> getAllImmages(string filepath);
         void DeActivatesAfterPaymentReceived(string sessionId);
         Task<User> GetAddress(string usersession);
+        bool EditAddress(EditAddress user);
     }
 }

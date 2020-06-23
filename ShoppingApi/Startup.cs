@@ -147,7 +147,9 @@ namespace ShoppingApi
 
             });
             services.Configure<EmailSettings>(Configuration.GetSection("EmailSettings"));
-         /////   services.AddCors();
+        
+            
+            /////   services.AddCors();
             //services.AddMvc();
 
 
