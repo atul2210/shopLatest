@@ -65,7 +65,8 @@ namespace ShoppingApi.Controllers
 
                 }
                 _operations.addUser(userData);
-                SendEmailToNewUser(userData.emailId);
+                bool value= Convert.ToBoolean(_iConfiguration.GetSection("SendMail").Value);
+                SendEmailToNewUser(userData.emailId, value);
               
             }
 
@@ -90,13 +91,30 @@ namespace ShoppingApi.Controllers
 
         }
 
-        private void SendEmailToNewUser(string ToEmail )
+        private void SendEmailToNewUser(string ToEmail,bool sendemail )
         {
-            string Subject = "New User Registration  ";
-            string body = string.Empty;
-            body += "<a href=" + _iConfiguration.GetSection("FirstTimeUser")+@">Please click to complete your registraion  </a>"; 
-            _emailSender.SendEmailAsync(ToEmail, Subject, body);
+            if (sendemail == true)
+            {
+                string Subject = "New User Registration  ";
+                string body = string.Empty;
+                body += "<a href=" + _iConfiguration.GetSection("FirstTimeUser") + @">Please click to complete your registraion  </a>";
+                _emailSender.SendEmailAsync(ToEmail, Subject, body);
+            }
         }
+
+        
+        [AllowAnonymous]
+        [HttpGet, Route("User/ActivateUser/")]
+        //[ValidateAntiForgeryToken]
+
+        [IgnoreAntiforgeryToken]
+        public IActionResult ActivateUser(bool Activate, string email)
+        {
+            _operations.ActivateUser(email, true);
+
+            return Ok();
+        }
+
 
 
     }

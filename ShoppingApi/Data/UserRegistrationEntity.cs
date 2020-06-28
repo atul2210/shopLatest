@@ -47,7 +47,8 @@ namespace ShoppingApi.Data
 
         [Column(TypeName = "nvarchar(50)")]
         public string Address { get; set; }
-
+        [Column(TypeName = "bit")]
+        public bool Active { get; set; }
 
     }
 }

@@ -22,14 +22,14 @@ namespace ShoppingApi.Data
     {
         public PageResult<ItemMaster> getItems(int childmenuid, PageAndSortedQuery<ItemDetailsQuery> query)
         {
-         
+
             try
             {
 
                 var connectionString = Startup.connectionstring;
 
                 var con = new ShoppingContext(connectionString);
-                var searchResult = con.itemMasterEntity.Where(m=>m.ChildMenuId==childmenuid && m.Active==true && m.AvailableQty>0)
+                var searchResult = con.itemMasterEntity.Where(m => m.ChildMenuId == childmenuid && m.Active == true && m.AvailableQty > 0)
                 .Select(x => new ItemMaster
                 {
                     ItemName = x.ItemName.Trim(),
@@ -38,7 +38,7 @@ namespace ShoppingApi.Data
                     AvailableQty = x.AvailableQty,
                     brand = x.brand.Trim(),
                     childmenuid = x.ChildMenuId,
-                
+
                     detailId = x.detailId,
                     InitialQty = x.InitialQty,
                     DeliveryCharges = x.deliveryCharges,
@@ -49,8 +49,8 @@ namespace ShoppingApi.Data
                     SizeId = x.SizeId,
                     itemid = x.ItemId,
                     ColorId = x.ColorId,
-//                    Image1 = x.Image1 == null ? " " : Convert.ToBase64String(x.Image1),
-                  
+                    //                    Image1 = x.Image1 == null ? " " : Convert.ToBase64String(x.Image1),
+
                     Image1 = GetBase64Image(x.Image1) //"data:image/jpeg;base64," + Convert.ToBase64String(File.ReadAllBytes(x.Image1)), //x.cm.item.Image1 == null ? " " : x.cm.item.Image1, //System.IO.File.ReadAllBytes(x.Image1) //x.Image1 == null ? " ": x.Image1,
 
                     // Image2 = x.Image1 == null ? " " : Convert.ToBase64String(x.Image2),
@@ -61,20 +61,20 @@ namespace ShoppingApi.Data
 
                 return searchResult;
             }
-            
+
 
             catch
             {
                 throw;
             }
-           // return items;
+            // return items;
         }
 
 
         public Items getItemDetail(int itemId)
         {
             Items items = null;
-           
+
             try
             {
 
@@ -111,18 +111,18 @@ namespace ShoppingApi.Data
                     //  Image3 = x.cm.item.Image1 == null ? " " :  Convert.ToBase64String(x.cm.item.Image3),
                 }).AsQueryable().SingleOrDefault();
                 con.Dispose();
-               
+
             }
 
             catch
             {
-               
+
                 throw;
             }
-           
+
             return items;
         }
-        
+
 
 
 
@@ -142,16 +142,16 @@ namespace ShoppingApi.Data
                 var inputItems = condb.itemMasterEntity.Where(x => x.ItemId == itemId && x.Active == true)
                                     .Select(m => new AddToCart
                                     {
-                                       
-                                       
+
+
                                         price = m.Price,
                                         offerPrice = m.OfferPrice,
                                         DeliveryCharges = m.deliveryCharges,
                                         colorId = m.ColorId,
-                                        quantity=m.AvailableQty
+                                        quantity = m.AvailableQty
                                     }).FirstOrDefault();
 
-                if(inputItems!=null && inputItems.quantity>0)
+                if (inputItems != null && inputItems.quantity > 0)
                 {
                     using (SqlConnection con = new SqlConnection(connectionString))
                     {
@@ -248,7 +248,7 @@ namespace ShoppingApi.Data
                     {
                         match = Hash.Validate(password, dr["salt"].ToString(), dr["hash"].ToString());
 
-                        if (match == false) throw new Exception("Invalid User Id or Password, please try again."); 
+                        if (match == false) throw new Exception("Invalid User Id or Password, please try again.");
 
                         lstToken.details = new List<Token>();
                         lstToken.details.Add(new Token
@@ -295,7 +295,7 @@ namespace ShoppingApi.Data
                     price = m.cm.checkin.Price,
                     offerprice = m.cm.checkin.OfferPrice,
                     deliveryCharges = m.cm.checkin.DeliveryCharges,
-                  
+
                     brand = m.cm.item.brand,
                     id = m.cm.checkin.id,
                     //image1 = m.cm.item.Image1 == null ? " " : Convert.ToBase64String(m.cm.item.Image1),
@@ -308,41 +308,41 @@ namespace ShoppingApi.Data
             return data;
         }
 
-        public PageResult<ItemMaster> GetPageItemsList (PageAndSortedQuery<ItemDetailsQuery> query)
-            
+        public PageResult<ItemMaster> GetPageItemsList(PageAndSortedQuery<ItemDetailsQuery> query)
+
         {
             var connectionString = Startup.connectionstring;
-            
+
             var con = new ShoppingContext(connectionString);
-            var searchResult = con.itemMasterEntity.Where(m => m.Active == true && m.AvailableQty > 0).Join(con.ColorMasterEntity,item=>item.ColorId,clr=>clr.Colorid,
-                (item,clr)=> new
+            var searchResult = con.itemMasterEntity.Where(m => m.Active == true && m.AvailableQty > 0).Join(con.ColorMasterEntity, item => item.ColorId, clr => clr.Colorid,
+                (item, clr) => new
                 {
-                    item,clr   
+                    item, clr
                 })
-                .Join(con.SizeMasterEntity, cm=>cm.item.SizeId, size=>size.SizeId,
+                .Join(con.SizeMasterEntity, cm => cm.item.SizeId, size => size.SizeId,
                   (cm, size) => new { cm, size })
 
                 .Select(x => new ItemMaster
-                 {
-                        ItemName = x.cm.item.ItemName.Trim(),
-                        Active = x.cm.item.Active,
-                        AvailableColor = x.cm.item.AvailableColor.Trim(),
-                        AvailableQty = x.cm.item.AvailableQty,
-                        brand = x.cm.item.brand.Trim(),
-                        childmenuid = x.cm.item.ChildMenuId,
-                        Color = x.cm.clr.ColorName.Trim(),
-                        detailId = x.cm.item.detailId,
-                      
-                        InitialQty = x.cm.item.InitialQty,
-                        DeliveryCharges = x.cm.item.deliveryCharges,
-                        itemDescription = x.cm.item.ItemDescripton.Trim(),
-                        OfferPrice = x.cm.item.OfferPrice,
-                        Price = x.cm.item.Price,
-                        ReserveQty = x.cm.item.ReserveQty,
-                        SizeId = x.cm.item.SizeId,
-                        itemid = x.cm.item.ItemId,
-                        ColorId = x.cm.item.ColorId,
-                        SizeName=x.size.SizeName,
+                {
+                    ItemName = x.cm.item.ItemName.Trim(),
+                    Active = x.cm.item.Active,
+                    AvailableColor = x.cm.item.AvailableColor.Trim(),
+                    AvailableQty = x.cm.item.AvailableQty,
+                    brand = x.cm.item.brand.Trim(),
+                    childmenuid = x.cm.item.ChildMenuId,
+                    Color = x.cm.clr.ColorName.Trim(),
+                    detailId = x.cm.item.detailId,
+
+                    InitialQty = x.cm.item.InitialQty,
+                    DeliveryCharges = x.cm.item.deliveryCharges,
+                    itemDescription = x.cm.item.ItemDescripton.Trim(),
+                    OfferPrice = x.cm.item.OfferPrice,
+                    Price = x.cm.item.Price,
+                    ReserveQty = x.cm.item.ReserveQty,
+                    SizeId = x.cm.item.SizeId,
+                    itemid = x.cm.item.ItemId,
+                    ColorId = x.cm.item.ColorId,
+                    SizeName = x.size.SizeName,
                     //Image1 = x.cm.item.Image1==null?" ":Convert.ToBase64String(x.cm.item.Image1),
                     //   Image1 = System.IO.File.ReadAllBytes(x.cm.item.Image1),
 
@@ -355,38 +355,38 @@ namespace ShoppingApi.Data
                   .Paging(query);
 
 
-           
+
 
             return searchResult;
         }
 
 
-        public RemoveItem RemoveItems(int itemId,int returnedItemQty,string sessionId,int checkedinId)
+        public RemoveItem RemoveItems(int itemId, int returnedItemQty, string sessionId, int checkedinId)
         {
             var connectionString = Startup.connectionstring;
 
             using (var con = new ShoppingContext(connectionString))
             {
-                var context = con.itemMasterEntity.Where(k=>k.Active==true && k.ItemId == itemId).SingleOrDefault();
+                var context = con.itemMasterEntity.Where(k => k.Active == true && k.ItemId == itemId).SingleOrDefault();
                 context.ReserveQty = context.ReserveQty - returnedItemQty;
                 context.AvailableQty = context.AvailableQty + returnedItemQty;
                 con.SaveChanges();
-                var remove = con.CheckInEntity.Where(m => m.UserSessionId == sessionId && m.id== checkedinId).SingleOrDefault();
+                var remove = con.CheckInEntity.Where(m => m.UserSessionId == sessionId && m.id == checkedinId).SingleOrDefault();
                 remove.Active = false;
                 con.SaveChanges();
-                var count = con.CheckInEntity.Where(m => m.UserSessionId == sessionId && m.Active==true).Count();
+                var count = con.CheckInEntity.Where(m => m.UserSessionId == sessionId && m.Active == true).Count();
 
                 var result = new RemoveItem()
                 {
                     count = count,
                     successs = true
                 };
-               
+
                 return result;
 
             }
 
-           
+
         }
 
         public (bool success, string result) addUser(User user)
@@ -396,13 +396,13 @@ namespace ShoppingApi.Data
             try
             {
                 var connectionString = Startup.connectionstring;
-             
+
 
                 var message = user.password;
                 var salt = Salt.Create();
                 var hash = Hash.Create(message, salt);
 
-                
+
 
 
                 using (var con = new ShoppingContext(connectionString))
@@ -425,7 +425,8 @@ namespace ShoppingApi.Data
                             Address = user.address,
                             City = user.city,
                             Pin = user.pin,
-                            State = user.state
+                            State = user.state,
+                            Active = false
                         };
 
                         con.Users.Add(entity);
@@ -437,16 +438,16 @@ namespace ShoppingApi.Data
                     else
                     {
                         result = "This Email Id is aleady exhisting";
-                        success=false;
+                        success = false;
                     }
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw;
             }
-            return (success,result);
-           
+            return (success, result);
+
         }
 
 
@@ -456,7 +457,7 @@ namespace ShoppingApi.Data
 
             var con = new ShoppingContext(connectionString);
 
-            var searchResult = con.itemMasterEntity.Where(m => m.ItemName.Contains(SearchItem)&&  m.Active == true && m.AvailableQty > 0).Join(con.ColorMasterEntity, item => item.ColorId, clr => clr.Colorid,
+            var searchResult = con.itemMasterEntity.Where(m => m.ItemName.Contains(SearchItem) && m.Active == true && m.AvailableQty > 0).Join(con.ColorMasterEntity, item => item.ColorId, clr => clr.Colorid,
                (item, clr) => new
                {
                    item,
@@ -475,7 +476,7 @@ namespace ShoppingApi.Data
                    childmenuid = x.cm.item.ChildMenuId,
                    Color = x.cm.clr.ColorName.Trim(),
                    detailId = x.cm.item.detailId,
-                   
+
                    InitialQty = x.cm.item.InitialQty,
                    DeliveryCharges = x.cm.item.deliveryCharges,
                    itemDescription = x.cm.item.ItemDescripton.Trim(),
@@ -501,26 +502,26 @@ namespace ShoppingApi.Data
         }
 
 
-       public bool PaymentReceived(string emailId, string UserSession, EmailSettings emailSettings,User user, bool sendEmail)
+        public bool PaymentReceived(string emailId, string UserSession, EmailSettings emailSettings, User user, bool sendEmail)
         {
             var connectionString = Startup.connectionstring;
-            StringBuilder emailBody = new StringBuilder("Congratulations!! Your order is confirmed <br><br><br>  "); 
+            StringBuilder emailBody = new StringBuilder("Congratulations!! Your order is confirmed <br><br><br>  ");
             bool success = false;
-            double paymentAmount = 0,OfferAmount =0;
-            double deliveryCharges=0;
+            double paymentAmount = 0, OfferAmount = 0;
+            double deliveryCharges = 0;
             var conn = new ShoppingContext(connectionString);
             var pmt = conn.CheckInEntity.Where(m => m.UserSessionId == UserSession && m.Active == true)
                         .Join(conn.itemMasterEntity, item => item.itemId, chk => chk.ItemId,
-                          (chk,item) => new
+                          (chk, item) => new
                           {
                               chk,
                               item
-                              
+
                           });
 
 
 
-        
+
 
 
 
@@ -538,27 +539,27 @@ namespace ShoppingApi.Data
                 {
                     var add = con.PaymentReceivedEntity.Add(new PaymentReceivedEntity
                     {
-                        itemId=items.chk.itemId,
-                        ReceivedFormEmailId= emailId,
+                        itemId = items.chk.itemId,
+                        ReceivedFormEmailId = emailId,
                         Quantity = items.chk.Quantity,
                         sessionid = UserSession,
                         TotalOfferAmount = items.chk.OfferPrice,
                         TotalPaymentAmount = items.chk.Price,
-                        FirstName=user.firstName,
-                        LastName=user.lastName,
-                        Address=user.address,
+                        FirstName = user.firstName,
+                        LastName = user.lastName,
+                        Address = user.address,
                         MiddleName = user.middleName,
-                        City=user.city,
-                        Pin=user.pin,
-                        State=user.state
-                        
+                        City = user.city,
+                        Pin = user.pin,
+                        State = user.state
+
                     });
                     deliveryCharges = Convert.ToDouble(items.chk.DeliveryCharges);
                     paymentAmount = paymentAmount + items.chk.OfferPrice;
                     OfferAmount = OfferAmount + items.chk.OfferPrice;
                     emailBody.Append("<tr>");
                     emailBody.Append("<td width='50%'>Description: </td>");
-                    emailBody.Append("<td width='50%'>" + items.item.ItemName+"</td>"  );
+                    emailBody.Append("<td width='50%'>" + items.item.ItemName + "</td>");
                     emailBody.Append("</tr>");
 
                     emailBody.Append("<tr>");
@@ -568,7 +569,7 @@ namespace ShoppingApi.Data
 
                     emailBody.Append("<tr>");
                     //emailBody.Append("<td width='50%'>Delivery Charges: </td>");
-                   // emailBody.Append("<td width='50%'> ₹ " + item.deliveryCharges + "</td>");
+                    // emailBody.Append("<td width='50%'> ₹ " + item.deliveryCharges + "</td>");
                     emailBody.Append("</tr>");
 
                     emailBody.Append("<tr>");
@@ -590,15 +591,15 @@ namespace ShoppingApi.Data
                 OfferAmount = OfferAmount + deliveryCharges;
 
                 emailBody.Append("</table><br>");
-                emailBody.Append("<p>Delivery Charges ₹ " + string.Format(String.Format("{0:N2}", deliveryCharges))  + "</p><br>");
+                emailBody.Append("<p>Delivery Charges ₹ " + string.Format(String.Format("{0:N2}", deliveryCharges)) + "</p><br>");
                 emailBody.Append("<p>Total Amount ₹ " + string.Format(string.Format("{0:N2}", Convert.ToDecimal(paymentAmount))) + "</p><br>");
-                emailBody.Append("<p>Total Offered Amount Payble including Delivery Charges ₹ " + string.Format(string.Format("{0:N2}", Convert.ToDecimal(OfferAmount))) +"</p><br>");
-                emailBody.Append("<p>Total Saving ₹ " + string.Format(string.Format("{0:N2}", Convert.ToDecimal(paymentAmount-(OfferAmount- deliveryCharges)))) + "</p><br>");
+                emailBody.Append("<p>Total Offered Amount Payble including Delivery Charges ₹ " + string.Format(string.Format("{0:N2}", Convert.ToDecimal(OfferAmount))) + "</p><br>");
+                emailBody.Append("<p>Total Saving ₹ " + string.Format(string.Format("{0:N2}", Convert.ToDecimal(paymentAmount - (OfferAmount - deliveryCharges)))) + "</p><br>");
 
                 emailBody.Append("<p>Thank You !!  Happy Shopping!!!</p>");
                 emailBody.Append("</body></html>");
-              
-                if(sendEmail==true)
+
+                if (sendEmail == true)
                 {
                     EmailSender.SendEmailAsync(emailId, "Vidhimas Shopping - Order Confirmation", emailBody.ToString(), emailSettings);
                 }
@@ -617,12 +618,12 @@ namespace ShoppingApi.Data
             DirectoryInfo di = new DirectoryInfo(filepath);
 
             //Get All Files  
-            
-            List<files> files= di.GetFiles("*.*")
+
+            List<files> files = di.GetFiles("*.*")
                                 // .Where(file => file.Name.EndsWith(".csv"))
                                 .Select(file => new files()
                                 {
-                                    fileName =  file.FullName
+                                    fileName = file.FullName
 
                                 }).ToList();
 
@@ -649,7 +650,7 @@ namespace ShoppingApi.Data
             var connectionString = Startup.connectionstring;
             var con = new ShoppingContext(connectionString);
 
-            var  user = await con.UserSessionEntity.Where(m => m.Active == true && m.SessionKey == usersession).FirstOrDefaultAsync();
+            var user = await con.UserSessionEntity.Where(m => m.Active == true && m.SessionKey == usersession).FirstOrDefaultAsync();
 
 
             if (user != null)
@@ -664,8 +665,8 @@ namespace ShoppingApi.Data
                          city = k.City,
                          pin = k.Pin,
                          mobile = k.Mobile.ToString(),
-                         emailId=k.Email,
-                         state=k.State
+                         emailId = k.Email,
+                         state = k.State
 
                      }
 
@@ -677,10 +678,10 @@ namespace ShoppingApi.Data
 
         private string GetBase64Image(string url)
         {
-            string img=null;
+            string img = null;
             try
             {
-                img = "data:image/jpeg;base64," + Convert.ToBase64String(File.ReadAllBytes(url)); 
+                img = "data:image/jpeg;base64," + Convert.ToBase64String(File.ReadAllBytes(url));
             }
             catch
             {
@@ -714,11 +715,53 @@ namespace ShoppingApi.Data
             }
 
             return success;
-           
+
 
         }
 
+
+        public bool ActivateUser(string emailId, bool active)
+        {
+
+            bool success = false;
+
+            try
+            {
+                var connectionString = Startup.connectionstring;
+
+                using (var con = new ShoppingContext(connectionString))
+                {
+
+                    var data = con.Users.Where(x => x.Email == emailId).FirstOrDefault();
+                    if (data != null)
+                    {
+                        var entity = new UserRegistrationEntity
+                        {
+
+                            Active = true
+                        };
+                        con.SaveChanges();
+
+                        success = true;
+
+                    }
+                    else
+                    {
+                        success = false;
+                    }
+                }
+
+
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return success;
+        }
     }
+}
 
 
  
@@ -728,5 +771,5 @@ namespace ShoppingApi.Data
 
 
 
-}
+
 

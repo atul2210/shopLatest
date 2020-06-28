@@ -24,5 +24,6 @@ namespace ShoppingApi.Interfaces
         void DeActivatesAfterPaymentReceived(string sessionId);
         Task<User> GetAddress(string usersession);
         bool EditAddress(EditAddress user);
+        bool ActivateUser(string emailId, bool active);
     }
 }
