@@ -97,7 +97,7 @@ namespace ShoppingApi.Controllers
             {
                 string Subject = "New User Registration  ";
                 string body = string.Empty;
-                body += "<a href=" + _iConfiguration.GetSection("FirstTimeUser") + @">Please click to complete your registraion  </a>";
+                body += "<a href=" + _iConfiguration.GetSection("FirstTimeUser").Value + @">Please click to complete your registraion  </a>";
                 _emailSender.SendEmailAsync(ToEmail, Subject, body);
             }
         }
