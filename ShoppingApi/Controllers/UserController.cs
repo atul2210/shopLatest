@@ -60,7 +60,7 @@ namespace ShoppingApi.Controllers
                 if (data.Count > 0)
                 {
                     if (data[0].otpNumer != otpEnter) throw new Exception("Incorrect OTP entered");
-                    if (data[0].senderBrowser != browser) throw new Exception("Invalid request from other browser");
+                 ////   if (data[0].senderBrowser != browser) throw new Exception("Invalid request from other browser");
                     if (data[0].senderIP != ipAddress) throw new Exception("Invalid IP");
 
                 }
