@@ -135,9 +135,9 @@ namespace ShoppingApi.Controllers
 
 
                 };
-
+                bool sentEmail = Convert.ToBoolean(_configuration.GetSection("SendMail").Value);
                 string emailBody = "Your new password for Vidhim Shopping is  " + pwd[1];
-                if (pwd[0] != "This Email is not registered with us")
+                if (pwd[0] != "This Email is not registered with us" && sentEmail == true) 
                 {
                     await EmailSender.SendEmailAsync(email, "Password Reset - Vidhim Shoppings", emailBody, emailsettin);
                 }

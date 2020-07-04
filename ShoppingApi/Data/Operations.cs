@@ -222,7 +222,15 @@ namespace ShoppingApi.Data
             {
 
                 var connectionString = Startup.connectionstring;
+                var connect = new ShoppingContext(connectionString);
                 bool match = false;
+                var message = password;
+                
+                var salter = connect.Users.Where(x => x.Active == true && x.Email == userId)
+                    .FirstOrDefault();
+                var hash = Hash.Create(message, salter.salt);
+
+
                 using (SqlConnection con = new SqlConnection(connectionString))
                 {
                     SqlCommand cmd = new SqlCommand("authenticate", con);
@@ -230,6 +238,7 @@ namespace ShoppingApi.Data
 
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@email", userId);
+                    cmd.Parameters.AddWithValue("@hash", hash);
                     con.Open();
                     SqlDataAdapter adapter = new SqlDataAdapter(cmd);
 

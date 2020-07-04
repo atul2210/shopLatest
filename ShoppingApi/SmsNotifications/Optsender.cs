@@ -170,9 +170,9 @@ namespace ShoppingApi.SmsNotifications
                    
                     int otp = GenerateOtp(1, 4);
 
-                    message = message + otp.ToString();
+                    string hashmessage = message + otp.ToString();
                     var salt = Salt.Create();
-                    var hash = Hash.Create(message, salt);
+                    var hash = Hash.Create(hashmessage, salt);
                     //update database
                     data.salt = salt;
                     data.hash = hash;
