@@ -110,9 +110,18 @@ namespace ShoppingApi.Controllers
         [IgnoreAntiforgeryToken]
         public IActionResult ActivateUser(bool Activate, string email)
         {
-            _operations.ActivateUser(email, true);
+            string status = string.Empty;
+            var success =_operations.ActivateUser(email, true);
+            if(success)
+            {
+                status = "Your account has been activated successfully.";
+            }
+            else
+            {
+                status = "Invalid User Id";
+            }
 
-            return Ok();
+            return Ok(status);
         }
 
 

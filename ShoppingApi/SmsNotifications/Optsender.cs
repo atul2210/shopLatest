@@ -154,6 +154,7 @@ namespace ShoppingApi.SmsNotifications
         public string SendEmail(string email)
         {
             string message = string.Empty;
+            string hashmessage = string.Empty;
             try
                 {
                 var connectionString = Startup.connectionstring;
@@ -170,7 +171,7 @@ namespace ShoppingApi.SmsNotifications
                    
                     int otp = GenerateOtp(1, 4);
 
-                    string hashmessage = message + otp.ToString();
+                    hashmessage = message + otp.ToString();
                     var salt = Salt.Create();
                     var hash = Hash.Create(hashmessage, salt);
                     //update database
@@ -183,7 +184,7 @@ namespace ShoppingApi.SmsNotifications
             {
                 throw exp;
             }
-            return message;
+            return hashmessage;
                /// return "Your new password has been emailed on  " + email + "." + "<br> Please log on and check" ;
         }
 

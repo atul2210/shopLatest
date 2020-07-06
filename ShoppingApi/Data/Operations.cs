@@ -744,11 +744,12 @@ namespace ShoppingApi.Data
                     var data = con.Users.Where(x => x.Email == emailId).FirstOrDefault();
                     if (data != null)
                     {
-                        var entity = new UserRegistrationEntity
-                        {
+                        //var entity = new UserRegistrationEntity
+                        //{
 
-                            Active = true
-                        };
+                        //    Active = true
+                        //};
+                        data.Active = true;
                         con.SaveChanges();
 
                         success = true;
