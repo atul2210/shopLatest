@@ -10,6 +10,8 @@ namespace ShoppingApi.Data
 {
     public class OtpChecker : IotpChecker
     {
+    
+
         public List<OtpSenderModel> GetOtpSenderDetails(string MobileNumer)
         {
             var connectionString = Startup.connectionstring;
@@ -65,10 +67,11 @@ namespace ShoppingApi.Data
             var con = new ShoppingContext(Startup.connectionstring);
             Task<List<States>> data = null;
          
-                data =  con.StateEntity.Select(x => new States()
+                data =  con.StateEntity.Where(ac=> ac.ParentStateId==0 &&ac.Active==true).Select(x => new States()
                 {
                     Stateid=x.StateId,
-                    StateName=x.StateName
+                    StateName=x.StateName,
+                    Active= x.Active
                      
                 }
                 ).ToListAsync();
@@ -79,7 +82,21 @@ namespace ShoppingApi.Data
 
 
 
+        public Task<List<States>> GetCities(int StateId)
+        {
+            var connectionString = Startup.connectionstring;
+            var con = new ShoppingContext(connectionString);
 
+            return con.StateEntity.Where(x => x.ParentStateId == StateId && x.Active == true)
+                .Select(x => new States()
+                {
+                    ParentStateId=x.ParentStateId,
+                    City =x.City,
+                    Active=x.Active
+
+                }).ToListAsync();
+
+        }
 
 
 

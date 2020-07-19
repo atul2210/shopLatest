@@ -11,5 +11,6 @@ namespace ShoppingApi.Interfaces
         void OtpData(OtpSenderModel otpData);
         List<OtpSenderModel> GetOtpSenderDetails(string MobileNumer);
         Task<List<States>> GetStates();
+        Task<List<States>> GetCities(int StateId);
     }
 }

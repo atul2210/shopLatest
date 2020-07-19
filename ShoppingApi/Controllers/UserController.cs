@@ -124,6 +124,17 @@ namespace ShoppingApi.Controllers
             return Ok(status);
         }
 
+        [HttpGet,Route("User/GetCities")]
+        [IgnoreAntiforgeryToken]
+
+        public async Task<ActionResult> GetCities(int StateId)
+        {
+            var cities = await _iotpChecker.GetCities(StateId);
+            return Ok(cities);
+
+        }
+
+
 
 
     }

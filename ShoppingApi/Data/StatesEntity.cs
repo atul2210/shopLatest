@@ -10,10 +10,17 @@ namespace ShoppingApi.Data
     [Table("States")]
     public class StatesEntity
     {
-            [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-            [Column(TypeName = "int")]
-            public int StateId { get; set; }
-            [Column(TypeName = "nvarchar(50)")]
-            public string StateName { get; set; }
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Column(TypeName = "int")]
+        public int StateId { get; set; }
+        [Column(TypeName = "nvarchar(50)")]
+        public string StateName { get; set; }
+        [Column(TypeName = "int")]
+        public int ParentStateId { get; set; }
+        [Column(TypeName = "nvarchar(50)")]
+        public string City { get; set; }
+        [Column(TypeName = "bit")]
+        public bool Active { get; set; }
+
     }
 }

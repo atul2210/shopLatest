@@ -9,5 +9,8 @@ namespace ShoppingApi.Model
     {
         public int Stateid { get; set; }
         public string StateName { get; set; }
+        public int ParentStateId { get; set; }
+        public string City { get; set; }
+        public bool Active { get; set; }
     }
 }
