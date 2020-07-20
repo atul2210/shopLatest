@@ -90,7 +90,9 @@ namespace ShoppingApi.Data
             return con.StateEntity.Where(x => x.ParentStateId == StateId && x.Active == true)
                 .Select(x => new States()
                 {
-                    ParentStateId=x.ParentStateId,
+                    Stateid=x.StateId,
+                    StateName=x.StateName,
+                    ParentStateId =x.ParentStateId,
                     City =x.City,
                     Active=x.Active
 

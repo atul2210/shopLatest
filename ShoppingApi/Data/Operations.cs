@@ -417,8 +417,15 @@ namespace ShoppingApi.Data
                 using (var con = new ShoppingContext(connectionString))
                 {
 
+                    var city = con.StateEntity.Where(st => st.StateId == Convert.ToInt32(user.city) && st.Active == true)
+                        .Select(xx => new { city = xx.City }).FirstOrDefault();
+
+                    var state = con.StateEntity.Where(st => st.StateId == Convert.ToInt32(user.state) && st.Active == true)
+                        .Select(xx => new { state = xx.StateName }).FirstOrDefault();
+
+
                     var data = con.Users.Where(x => x.Email == user.emailId).FirstOrDefault();
-                    if (data == null)
+                    if (data == null && city!=null && state!=null)
                     {
                         var entity = new UserRegistrationEntity
                         {
@@ -432,9 +439,9 @@ namespace ShoppingApi.Data
                             Mobile = Convert.ToDouble(user.mobile),
                             UlternateMobile = user.ulternateMobile.Length > 0 ? Convert.ToDouble(user.ulternateMobile) : 0,
                             Address = user.address,
-                            City = user.city,
+                            City = city.city,//user.city,
                             Pin = user.pin,
-                            State = user.state,
+                            State = state.state,//user.state,
                             Active = false
                         };
 
