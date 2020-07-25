@@ -439,9 +439,9 @@ namespace ShoppingApi.Data
                             Mobile = Convert.ToDouble(user.mobile),
                             UlternateMobile = user.ulternateMobile.Length > 0 ? Convert.ToDouble(user.ulternateMobile) : 0,
                             Address = user.address,
-                            City = city.city,//user.city,
+                            City = user.city,// city.city,//user.city,
                             Pin = user.pin,
-                            State = state.state,//user.state,
+                            State = user.state,//state.state,//user.state,
                             Active = false
                         };
 
