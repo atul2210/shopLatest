@@ -567,7 +567,8 @@ namespace ShoppingApi.Data
                         MiddleName = user.middleName,
                         City = user.city,
                         Pin = user.pin,
-                        State = user.state
+                        State = user.state,
+                        PrivacyAgreed=user.PrivacyAgreed
 
                     });
                     deliveryCharges = Convert.ToDouble(items.chk.DeliveryCharges);

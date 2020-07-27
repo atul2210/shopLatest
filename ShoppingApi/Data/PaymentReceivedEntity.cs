@@ -37,6 +37,8 @@ namespace ShoppingApi.Data
         public string City { get; set; }
         public string Pin { get; set; }
         public string State { get; set; }
+        [Column(TypeName = "bit")]
+        public bool PrivacyAgreed { get; set; }
 
     }
 }
