@@ -12,7 +12,7 @@ namespace ShoppingApi.SmsNotifications
         //  Task<bool> SendMessage(T MobileNumber,M model);
         Task<int> SendOtp(T MobileNumber, M model, O data);
         string SendEmail(string email);
-        string ComparePassword(string emailId, string password, string confrmpassword);
+        string ComparePassword(string emailId, string password, string confrmpassword, string OldPassword);
 
     }
 }

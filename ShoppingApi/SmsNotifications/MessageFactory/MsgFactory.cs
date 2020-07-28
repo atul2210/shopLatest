@@ -68,13 +68,13 @@ namespace ShoppingApi.SmsNotifications.MessageFactory
             return "Your password has been emailed to  " + emailId+"#"+password ;
         }
 
-        public async Task<string> ComparePassword(string emailId, string password, string confrmpassword)
+        public async Task<string> ComparePassword(string emailId, string password, string confrmpassword,string OldPassword)
         {
 
             var connectionString = Startup.connectionstring;
             IsmsNotification<string, OtpAndSms, OtpSenderModel> factory = null;
             factory = new Otpsender();
-            return  factory.ComparePassword(emailId,password, confrmpassword);
+            return  factory.ComparePassword(emailId,password, confrmpassword, OldPassword);
 
 
         }

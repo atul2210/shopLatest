@@ -157,12 +157,12 @@ namespace ShoppingApi.Controllers
         [HttpGet, Route("sms/ChangePassword/")]
        [AutoValidateAntiforgeryToken]
        // [IgnoreAntiforgeryToken]
-        public async Task<IActionResult> ChangePassword(string email,string password,string confirmpassword)
+        public async Task<IActionResult> ChangePassword(string email,string password,string confirmpassword,string OldPassword)
         {
             try
             {
 
-                var result = _msgFactory.ComparePassword(email, password, confirmpassword);
+                var result = _msgFactory.ComparePassword(email, password, confirmpassword,OldPassword);
 
                 if (result.IsFaulted)
                 {

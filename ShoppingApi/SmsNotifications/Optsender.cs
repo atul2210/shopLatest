@@ -188,15 +188,12 @@ namespace ShoppingApi.SmsNotifications
                /// return "Your new password has been emailed on  " + email + "." + "<br> Please log on and check" ;
         }
 
-        public string ComparePassword(string emailId, string password, string confrmpassword)
+        public string ComparePassword(string emailId, string password, string confrmpassword, string OldPassword)
         {
             string status  = string.Empty;
             try
             {
-                if (!password.Equals(confrmpassword))
-                {
-                    throw new Exception("Confirm password is not matching. Please reenter");
-                }
+              
 
                 var connectionString = Startup.connectionstring;
                 using (var con = new ShoppingContext(connectionString))
@@ -207,6 +204,20 @@ namespace ShoppingApi.SmsNotifications
                     {
                         throw new Exception("This Email is not registered with us");
                     }
+                    if (!password.Equals(confrmpassword))
+                    {
+                        throw new Exception("Confirm password is not matching. Please reenter");
+                    }
+                    var oldPwdSlt = data.salt;
+                    var oldPwdHash = data.hash;
+                    var oldHashCreate = Hash.Create(OldPassword, oldPwdSlt);
+
+                    if(oldPwdHash!=oldHashCreate)
+                    {
+                        throw new Exception("Incorrect Old Password Entered.");
+                    }
+
+
                     var salt = Salt.Create();
                     var hash = Hash.Create(password, salt);
                     //update database
