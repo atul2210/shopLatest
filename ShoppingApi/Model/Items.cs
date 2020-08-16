@@ -30,6 +30,8 @@ namespace ShoppingApi.Model
         public string Image1 { get; set; }
         public string Image2 { get; set; }
         public string Image3 { get; set; }
+        public int GroupId { get; set; }
+        public List<GroupMaster> AvailableSize { get; set; }
 
 
     }
@@ -38,6 +40,15 @@ namespace ShoppingApi.Model
     {
         public int count { get; set; }
         public List<Items> allItems { get; set; }
+
+    }
+
+    public class GroupMaster
+    {
+        public int GroupId { get; set; }
+        public double SizeIdy { get; set; }
+        public string SizeName { get; set; }
+        public int ItemId { get; set; }
 
     }
 

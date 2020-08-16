@@ -110,6 +110,22 @@ namespace ShoppingApi.Data
                     //  Image2 = x.cm.item.Image1 == null ? " " : Convert.ToBase64String(x.cm.item.Image2),
                     //  Image3 = x.cm.item.Image1 == null ? " " :  Convert.ToBase64String(x.cm.item.Image3),
                 }).AsQueryable().SingleOrDefault();
+
+
+                var grpId = con.itemMasterEntity.Where(xx => xx.ItemId == itemId).FirstOrDefault();
+
+                var gorupId = con.itemMasterEntity.Where(x => x.GroupId == grpId.GroupId)
+                   .Join(con.SizeMasterEntity, im => im.SizeId, ssm => ssm.SizeId, (im, sm) =>
+                         new { im, sm })
+                   .Select(xx => new GroupMaster (){ SizeIdy = xx.im.SizeId, GroupId = xx.im.GroupId, SizeName = xx.sm.SizeName,ItemId=xx.im.ItemId })
+                   .ToList();
+
+                    items.AvailableSize = gorupId;
+
+
+
+
+
                 con.Dispose();
 
             }
@@ -151,7 +167,14 @@ namespace ShoppingApi.Data
                                         quantity = m.AvailableQty
                                     }).FirstOrDefault();
 
-                if (inputItems != null && inputItems.quantity > 0)
+
+                if(quantity> inputItems.quantity)
+                {
+                    throw new Exception("Quantity Not Available");
+                }
+
+
+                if (inputItems != null && inputItems.quantity > 0 && quantity<= inputItems.quantity)
                 {
                     using (SqlConnection con = new SqlConnection(connectionString))
                     {
@@ -308,12 +331,24 @@ namespace ShoppingApi.Data
                     brand = m.cm.item.brand,
                     id = m.cm.checkin.id,
                     //image1 = m.cm.item.Image1 == null ? " " : Convert.ToBase64String(m.cm.item.Image1),
-                    image1 = GetBase64Image(m.cm.item.Image1) //m.cm.item.Image1 == null ? " " : m.cm.item.Image1
+                    image1 = GetBase64Image(m.cm.item.Image1), //m.cm.item.Image1 == null ? " " : m.cm.item.Image1
                     //  Image2 = m.cm.item.Image1 == null ? " " : Convert.ToBase64String(m.cm.item.Image2),
                     //  Image3 = m.cm.item.Image1 == null ? " " :  Convert.ToBase64String(m.cm.item.Image3),
+                    PaidAmount= Convert.ToDouble(m.cm.checkin.OfferPrice)*m.cm.checkin.Quantity,
+                   
 
 
                 }).ToList();
+
+            var totoalOfferAmount = data.Sum(x => x.PaidAmount);
+            var totalprice = data.Sum(x => x.price*x.quantity);
+            if (data.Count > 0)
+            {
+                data[0].TotalPaidAmunt = totoalOfferAmount;
+                data[0].TotaPrice = totalprice;
+            }
+
+
             return data;
         }
 

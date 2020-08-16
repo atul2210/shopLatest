@@ -68,8 +68,9 @@ namespace ShoppingApi.Model
         [Column(TypeName = "int")]
         public int ColorId { get; set; }
 
-
-       // [Column(TypeName = "varbinary(max)")]
+        [Column(TypeName ="int")]
+        public int GroupId { get; set; }
+                                           // [Column(TypeName = "varbinary(max)")]
         public string Image1 { get; set; }
 
         [Column(TypeName = "varbinary(max)")]

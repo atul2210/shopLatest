@@ -32,6 +32,10 @@ namespace ShoppingApi.Model
         public string image1 { get; set; }
         public string image2 { get; set; }
         public string image3 { get; set; }
+        public double PaidAmount { get; set; }
+        public double TotalPaidAmunt { get; set; }
+        public double TotaPrice { get; set; }
+
 
     }
 
