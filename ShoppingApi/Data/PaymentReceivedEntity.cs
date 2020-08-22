@@ -39,6 +39,13 @@ namespace ShoppingApi.Data
         public string State { get; set; }
         [Column(TypeName = "bit")]
         public bool PrivacyAgreed { get; set; }
+        [Column(TypeName = "int")]
 
+        public int PaymentMethodType { get; set; }
+        [Column(TypeName = "int")]
+
+        public int PaymentStatus { get; set; }
+
+        public string ConsignmentNum { get; set; }
     }
 }

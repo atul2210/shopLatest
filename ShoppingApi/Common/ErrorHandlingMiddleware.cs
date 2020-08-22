@@ -44,8 +44,8 @@ namespace ShoppingApi.Common
                 var connectionString = Startup.connectionstring;
 
              var con = new ShoppingContext(connectionString);
-            var log = new ErrorLoggerEntity() { ErrorDescription = ex.Message, id = 2 };
-            var searchResult = con.ErrorLoggerEntity.Add(log);
+            var log = new ErrorLoggerEntity() { ErrorDescription = ex.Message};
+            con.ErrorLoggerEntity.Add(log);
 
             con.SaveChanges();
                 return context.Response.WriteAsync(result);

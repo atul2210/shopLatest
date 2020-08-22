@@ -39,7 +39,7 @@ namespace ShoppingApi.Common
             var connectionString = Startup.connectionstring;
 
             var con = new ShoppingContext(connectionString);
-            var log = new ErrorLoggerEntity() { ErrorDescription = "First Origin Call  " + origin.Trim() + "app origin value " + corectorigin, id = 2 };
+            var log = new ErrorLoggerEntity() { ErrorDescription = "First Origin Call  " + origin.Trim() + "app origin value " + corectorigin };
             var searchResult = con.ErrorLoggerEntity.Add(log);
             con.SaveChanges();
 

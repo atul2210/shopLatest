@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ShoppingApi.Data
 {
-    [Table("GroupMaster")]
+    [Table("Suppliers")]
     public class SuppliersEntity
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
