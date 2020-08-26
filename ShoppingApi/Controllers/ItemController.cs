@@ -87,15 +87,20 @@ namespace ShoppingApi.Controllers
         //[ValidateAntiForgeryToken]
 
         [IgnoreAntiforgeryToken]
-        [Authorize]
-        public AddToCart adaddCart([FromQuery]  int itemid, [FromQuery]int quantity, string sessionId)
+        [AllowAnonymous]
+        public AddToCart adaddCart([FromQuery]  int itemid, [FromQuery]int quantity, [FromQuery] string UserSessioin)
         {
+           ///// string sessionId = string.Empty;
             AddToCart addCart = null;
+            if (UserSessioin == "null" || UserSessioin == String.Empty || UserSessioin == "" || UserSessioin == null)
+            {
+                UserSessioin = GetSessionToken();
+            }
             string ipAddress = string.Empty;
             try
             {
                 ipAddress = HttpContext.Connection.RemoteIpAddress.ToString();
-                addCart = _operations.getAddToCart(itemid, ipAddress, quantity,sessionId);
+                addCart = _operations.getAddToCart(itemid, ipAddress, quantity, UserSessioin);
             }
 
             catch (Exception ex)
@@ -107,7 +112,7 @@ namespace ShoppingApi.Controllers
 
         }
 
-        [Authorize]
+        [AllowAnonymous]
         [HttpGet, Route("items/getcheckedinItem/")]
         [AutoValidateAntiforgeryToken]
 
@@ -175,7 +180,7 @@ namespace ShoppingApi.Controllers
             return Ok(_operations.Search(itemSearch,query));
         }
 
-        [Authorize]
+        [AllowAnonymous]
         [HttpPost, Route("items/RemoveItems/")]
         //[ValidateAntiForgeryToken]
 
@@ -231,13 +236,51 @@ namespace ShoppingApi.Controllers
             //return Ok(paymentreceived);
           
         }
-     //   [AllowAnonymous]
+
+        [AllowAnonymous]
+        [HttpGet, Route("items/PaymenOptions")]
+        [IgnoreAntiforgeryToken]
+        public async Task<IActionResult> PaymenOptions()
+        {
+            return Ok(await _operations.PaymenOpions());
+        }
+
+
+
+        //   [AllowAnonymous]
         [HttpPut, Route("items/EditAddress")]
         [IgnoreAntiforgeryToken]
         public IActionResult EditAddress([FromBody]EditAddress editUserAddress)
         {
            return Ok(_operations.EditAddress(editUserAddress));
         }
+        private string GetSessionToken()
+        {
+            string authToken = null;
+            var claims = new[]
+                    {
+                        new Claim (JwtRegisteredClaimNames.Sub,"usersession"),
+                        new Claim (JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString())
+                    };
 
+            var keyname = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("abcabcabcabcabcabcabcabcabcabc"));
+
+
+            var token = new JwtSecurityToken(
+                issuer: "lowCart.com",
+                audience: "lowCart.com",
+                expires: DateTime.Now.AddMinutes(20),
+                claims: claims,
+                signingCredentials: new Microsoft.IdentityModel.Tokens.SigningCredentials(keyname, SecurityAlgorithms.HmacSha256)
+                );
+
+            authToken = new JwtSecurityTokenHandler().WriteToken(token);
+            //lstToken.details[0].token = authToken;
+
+
+            authToken = new JwtSecurityTokenHandler().WriteToken(token);
+            return authToken;
+
+        }
     }
 }

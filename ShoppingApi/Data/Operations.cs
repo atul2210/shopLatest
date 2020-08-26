@@ -120,7 +120,10 @@ namespace ShoppingApi.Data
                    .Select(xx => new GroupMaster (){ SizeIdy = xx.im.SizeId, GroupId = xx.im.GroupId, SizeName = xx.sm.SizeName,ItemId=xx.im.ItemId })
                    .ToList();
 
+                if (items != null)
+                {
                     items.AvailableSize = gorupId;
+                }
 
 
 
@@ -812,6 +815,24 @@ namespace ShoppingApi.Data
                 throw ex;
             }
             return success;
+        }
+
+        public async Task<List<PaymentMethod>> PaymenOpions()
+        {
+            var connectionString = Startup.connectionstring;// Task<List<States>> GetStates()
+            Task<List<PaymentMethod>> data;
+            //using (var con = new ShoppingContext(connectionString))
+            // {
+            var con = new ShoppingContext(connectionString);
+                data = con.PaymentMethodEntity.Where(x => x.Active == true)
+                    .Select(k=> new PaymentMethod() {
+                        Active=k.Active,
+                        PaymentTypeName=k.PaymentTypeName,
+                        ID=k.ID
+                       
+                    }).ToListAsync();
+          //  }
+            return await data;
         }
     }
 }

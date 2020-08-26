@@ -35,7 +35,7 @@ namespace ShoppingApi.Data
         public Microsoft.EntityFrameworkCore.DbSet<SizeMasterEntity> SizeMasterEntity { get; set; }
         public Microsoft.EntityFrameworkCore.DbSet<StatesEntity> StateEntity { get; set; }
         public Microsoft.EntityFrameworkCore.DbSet<GroupMasterEntity> GroupMasterEntity { get; set; }
-        public Microsoft.EntityFrameworkCore.DbSet<SuppliersEntity> SuppliersEntity { get; set; }
+        public Microsoft.EntityFrameworkCore.DbSet<SuppliersEntity> SupplierEntity { get; set; }
         public Microsoft.EntityFrameworkCore.DbSet<PaymentStatusEntity> PaymentStatusEntity { get; set; }
         public Microsoft.EntityFrameworkCore.DbSet<PaymentMethodEntity> PaymentMethodEntity { get; set; }
 
