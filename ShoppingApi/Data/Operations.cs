@@ -700,17 +700,17 @@ namespace ShoppingApi.Data
             }
         }
 
-        public async Task<User> GetAddress(string usersession)
+        public async Task<User> GetAddress(string email)
         {
             var connectionString = Startup.connectionstring;
             var con = new ShoppingContext(connectionString);
 
-            var user = await con.UserSessionEntity.Where(m => m.Active == true && m.SessionKey == usersession).FirstOrDefaultAsync();
+            //var user = await con.UserSessionEntity.Where(m => m.Active == true && m.SessionKey == usersession).FirstOrDefaultAsync();
 
 
-            if (user != null)
-            {
-                var data = con.Users.Where(usr => usr.Email == user.UserId)
+            //if (user != null)
+            //{
+                var data = con.Users.Where(usr => usr.Email == email)
                      .Select(k => new User()
                      {
                          firstName = k.FirsName,
@@ -727,8 +727,8 @@ namespace ShoppingApi.Data
 
                      ).FirstOrDefaultAsync();
                 return await data;
-            }
-            return null;
+          //  }
+          //  return null;
         }
 
         private string GetBase64Image(string url)
@@ -833,6 +833,13 @@ namespace ShoppingApi.Data
                     }).ToListAsync();
           //  }
             return await data;
+        }
+
+
+        private string GenerateConsignmentNumber()
+        {
+            return null;
+
         }
     }
 }

@@ -198,10 +198,10 @@ namespace ShoppingApi.Controllers
         public IActionResult PaymentReceived(string UserSession,[FromBody] User user )
         {
          
-            List<UserSessionDto> sessionData = _iusersession.GetUserSession(UserSession);
+            //List<UserSessionDto> sessionData = _iusersession.GetUserSession(UserSession);
 
-            if (EmailValidator.IsValidEmail(sessionData[0].UserId))
-            {
+           // if (EmailValidator.IsValidEmail(sessionData[0].UserId))
+           // {
                 var emailsettin = new EmailSettings()
 
                 {
@@ -212,7 +212,8 @@ namespace ShoppingApi.Controllers
                     PrimaryPort = _emailSettings.Value.PrimaryPort,
                     SecondaryPort = _emailSettings.Value.SecondaryPort,
                     SecondayDomain = _emailSettings.Value.SecondayDomain,
-                    ToEmail = sessionData[0].UserId,//_emailSettings.Value.ToEmail,
+                    // ToEmail = sessionData[0].UserId,//_emailSettings.Value.ToEmail,
+                    ToEmail = _emailSettings.Value.ToEmail,
                     UsernamePassword = _emailSettings.Value.UsernamePassword
                 };
 
@@ -227,15 +228,15 @@ namespace ShoppingApi.Controllers
                 _operations.DeActivatesAfterPaymentReceived(UserSession);
                 return Ok("Order Placed successfully.");
             }
-            else
-            {
-                return BadRequest("Invalid Email id.  Please login again");
+            //else
+            //{
+            //    return BadRequest("Invalid Email id.  Please login again");
 
-            }
+          //  }
            
             //return Ok(paymentreceived);
           
-        }
+        //}
 
         [AllowAnonymous]
         [HttpGet, Route("items/PaymenOptions")]
