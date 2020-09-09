@@ -19,7 +19,7 @@ namespace ShoppingApi.Interfaces
         RemoveItem RemoveItems(int itemId, int returnedItemQty, string sessionId, int checkedinId);
         (bool success, string result)addUser(User user);
         PageResult<ItemMaster> Search(string SearchItem, PageAndSortedQuery<ItemDetailsQuery> query);
-        bool PaymentReceived(string emailId, string UserSession, EmailSettings emailSettings,User user,bool sendEmail);
+        bool PaymentReceived(string emailId, string UserSession, EmailSettings emailSettings,User user,bool sendEmail, int PaymentOption);
         Task<List<files>> getAllImmages(string filepath);
         void DeActivatesAfterPaymentReceived(string sessionId);
         Task<User> GetAddress(string usersession);

@@ -195,7 +195,7 @@ namespace ShoppingApi.Controllers
         //[ValidateAntiForgeryToken]
 
         [IgnoreAntiforgeryToken]
-        public IActionResult PaymentReceived(string UserSession,[FromBody] User user )
+        public IActionResult PaymentReceived(string UserSession,int PaymentOption ,[FromBody] User user)
         {
          
             //List<UserSessionDto> sessionData = _iusersession.GetUserSession(UserSession);
@@ -213,7 +213,7 @@ namespace ShoppingApi.Controllers
                     SecondaryPort = _emailSettings.Value.SecondaryPort,
                     SecondayDomain = _emailSettings.Value.SecondayDomain,
                     // ToEmail = sessionData[0].UserId,//_emailSettings.Value.ToEmail,
-                    ToEmail = _emailSettings.Value.ToEmail,
+                    ToEmail = user.emailId ,// _emailSettings.Value.ToEmail,
                     UsernamePassword = _emailSettings.Value.UsernamePassword
                 };
 
@@ -224,7 +224,7 @@ namespace ShoppingApi.Controllers
 
                 bool sendEmail = Convert.ToBoolean(_iConfiguration.GetSection("SendMail").Value);
 
-                _operations.PaymentReceived(emailsettin.ToEmail,UserSession, emailsettin, user,sendEmail);
+                _operations.PaymentReceived(emailsettin.ToEmail,UserSession, emailsettin, user,sendEmail, PaymentOption);
                 _operations.DeActivatesAfterPaymentReceived(UserSession);
                 return Ok("Order Placed successfully.");
             }

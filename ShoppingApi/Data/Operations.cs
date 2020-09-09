@@ -556,7 +556,7 @@ namespace ShoppingApi.Data
         }
 
 
-        public bool PaymentReceived(string emailId, string UserSession, EmailSettings emailSettings, User user, bool sendEmail)
+        public bool PaymentReceived(string emailId, string UserSession, EmailSettings emailSettings, User user, bool sendEmail,int PaymentOption)
         {
             var connectionString = Startup.connectionstring;
             StringBuilder emailBody = new StringBuilder("Congratulations!! Your order is confirmed <br><br><br>  ");
@@ -606,7 +606,9 @@ namespace ShoppingApi.Data
                         City = user.city,
                         Pin = user.pin,
                         State = user.state,
-                        PrivacyAgreed=user.PrivacyAgreed
+                        PrivacyAgreed=user.PrivacyAgreed,
+                        PaymentMethodType= PaymentOption,
+                        PaymentStatus= (int) ShoppingApi.Data.Enum.PaymentStatus.PmtStatus.Received
 
                     });
                     deliveryCharges = Convert.ToDouble(items.chk.DeliveryCharges);
@@ -659,7 +661,11 @@ namespace ShoppingApi.Data
                     EmailSender.SendEmailAsync(emailId, "Vidhimas Shopping - Order Confirmation", emailBody.ToString(), emailSettings);
                 }
 
+
+
+
                 con.SaveChanges();
+              //  int id = pmt.
                 success = true;
             }
 
