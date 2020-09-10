@@ -16,6 +16,8 @@ using ShoppingApi.Common;
 using ShoppingApi.Email;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Cryptography;
+
 namespace ShoppingApi.Data
 {
     public class Operations : Ioperation
@@ -576,95 +578,109 @@ namespace ShoppingApi.Data
 
 
 
+            string consign = GenerateConsignmentNumber();
 
-
-
-            using (var con = new ShoppingContext(connectionString))
+           var check= conn.PaymentReceivedEntity.Where(x => x.ConsignmentNum == consign).ToList();
+            if(check.Count>0 || check!=null)
             {
-                emailBody.Append("<html> ");
-                emailBody.Append("<head>");
-                emailBody.Append("<style type='text/css'> </style> </head>");
 
-                emailBody.Append("<body>");
-                emailBody.Append("<h4>" + "Date: " + DateTime.Now.ToString("dddd, dd MMMM yyyy") + "</hr><br>");
-                emailBody.Append("<table class='auto' border='1' width='100%'>");
-                emailBody.Append("<caption> Your Order Details:- </caption>");
-                foreach (var items in pmt)
+                consign = GenerateConsignmentNumber();
+            }
+
+            if(check.Count==0 || check==null)
+            {
+                using (var con = new ShoppingContext(connectionString))
                 {
-                    var add = con.PaymentReceivedEntity.Add(new PaymentReceivedEntity
+                    emailBody.Append("<html> ");
+                    emailBody.Append("<head>");
+                    emailBody.Append("<style type='text/css'> </style> </head>");
+
+                    emailBody.Append("<body>");
+                    emailBody.Append("<h4>" + "Date: " + DateTime.Now.ToString("dddd, dd MMMM yyyy") + "</hr><br>");
+                    emailBody.Append("<table class='auto' border='1' width='100%'>");
+                    emailBody.Append("<caption> Your Order Details:- </caption>");
+                    foreach (var items in pmt)
                     {
-                        itemId = items.chk.itemId,
-                        ReceivedFormEmailId = emailId,
-                        Quantity = items.chk.Quantity,
-                        sessionid = UserSession,
-                        TotalOfferAmount = items.chk.OfferPrice,
-                        TotalPaymentAmount = items.chk.Price,
-                        FirstName = user.firstName,
-                        LastName = user.lastName,
-                        Address = user.address,
-                        MiddleName = user.middleName,
-                        City = user.city,
-                        Pin = user.pin,
-                        State = user.state,
-                        PrivacyAgreed=user.PrivacyAgreed,
-                        PaymentMethodType= PaymentOption,
-                        PaymentStatus= (int) ShoppingApi.Data.Enum.PaymentStatus.PmtStatus.Received
+                        var add = con.PaymentReceivedEntity.Add(new PaymentReceivedEntity
+                        {
+                            itemId = items.chk.itemId,
+                            ReceivedFormEmailId = emailId,
+                            Quantity = items.chk.Quantity,
+                            sessionid = UserSession,
+                            TotalOfferAmount = items.chk.OfferPrice,
+                            TotalPaymentAmount = items.chk.Price,
+                            FirstName = user.firstName,
+                            LastName = user.lastName,
+                            Address = user.address,
+                            MiddleName = user.middleName,
+                            City = user.city,
+                            Pin = user.pin,
+                            State = user.state,
+                            PrivacyAgreed = user.PrivacyAgreed,
+                            PaymentMethodType = PaymentOption,
+                            PaymentStatus = (int)ShoppingApi.Data.Enum.PaymentStatus.PmtStatus.Received,
+                            ConsignmentNum = consign
 
-                    });
-                    deliveryCharges = Convert.ToDouble(items.chk.DeliveryCharges);
-                    paymentAmount = paymentAmount + items.chk.OfferPrice;
-                    OfferAmount = OfferAmount + items.chk.OfferPrice;
-                    emailBody.Append("<tr>");
-                    emailBody.Append("<td width='50%'>Description: </td>");
-                    emailBody.Append("<td width='50%'>" + items.item.ItemName + "</td>");
-                    emailBody.Append("</tr>");
+                        });
+                        deliveryCharges = Convert.ToDouble(items.chk.DeliveryCharges);
+                        paymentAmount = paymentAmount + items.chk.OfferPrice;
+                        OfferAmount = OfferAmount + items.chk.OfferPrice;
+                        emailBody.Append("<tr>");
+                        emailBody.Append("<td width='50%'>Consignment Number: </td>");
+                        emailBody.Append("<td width='50%'>" + consign + "</td>");
+                        emailBody.Append("</tr>");
+                        emailBody.Append("<tr>");
+                        emailBody.Append("<td width='50%'>Description: </td>");
+                        emailBody.Append("<td width='50%'>" + items.item.ItemName + "</td>");
+                        emailBody.Append("</tr>");
 
-                    emailBody.Append("<tr>");
-                    emailBody.Append("<td width='50%'>Quanity: </td>");
-                    emailBody.Append("<td width='50%'>" + items.chk.Quantity + "</td>");
-                    emailBody.Append("</tr>");
+                        emailBody.Append("<tr>");
+                        emailBody.Append("<td width='50%'>Quanity: </td>");
+                        emailBody.Append("<td width='50%'>" + items.chk.Quantity + "</td>");
+                        emailBody.Append("</tr>");
 
-                    emailBody.Append("<tr>");
-                    //emailBody.Append("<td width='50%'>Delivery Charges: </td>");
-                    // emailBody.Append("<td width='50%'> ₹ " + item.deliveryCharges + "</td>");
-                    emailBody.Append("</tr>");
+                        emailBody.Append("<tr>");
+                        //emailBody.Append("<td width='50%'>Delivery Charges: </td>");
+                        // emailBody.Append("<td width='50%'> ₹ " + item.deliveryCharges + "</td>");
+                        emailBody.Append("</tr>");
 
-                    emailBody.Append("<tr>");
-                    emailBody.Append("<td width='50%'>Price: </td>");
-                    emailBody.Append("<td width='50%'> ₹ " + string.Format(String.Format("{0:N2}", items.chk.Price)) + "</td>");
-                    emailBody.Append("</tr>");
+                        emailBody.Append("<tr>");
+                        emailBody.Append("<td width='50%'>Price: </td>");
+                        emailBody.Append("<td width='50%'> ₹ " + string.Format(String.Format("{0:N2}", items.chk.Price)) + "</td>");
+                        emailBody.Append("</tr>");
 
-                    emailBody.Append("<tr>");
-                    emailBody.Append("<td width='50%'>Offer Price: </td>");
-                    emailBody.Append("<td width='50%'>₹ " + string.Format(String.Format("{0:N2}", items.chk.OfferPrice)) + "</td>");
+                        emailBody.Append("<tr>");
+                        emailBody.Append("<td width='50%'>Offer Price: </td>");
+                        emailBody.Append("<td width='50%'>₹ " + string.Format(String.Format("{0:N2}", items.chk.OfferPrice)) + "</td>");
 
-                    emailBody.Append("</tr>");
+                        emailBody.Append("</tr>");
 
 
 
+                    }
+
+
+                    OfferAmount = OfferAmount + deliveryCharges;
+
+                    emailBody.Append("</table><br>");
+                    emailBody.Append("<p>Delivery Charges ₹ " + string.Format(String.Format("{0:N2}", deliveryCharges)) + "</p><br>");
+                    emailBody.Append("<p>Total Amount ₹ " + string.Format(string.Format("{0:N2}", Convert.ToDecimal(paymentAmount))) + "</p><br>");
+                    emailBody.Append("<p>Total Offered Amount Payble including Delivery Charges ₹ " + string.Format(string.Format("{0:N2}", Convert.ToDecimal(OfferAmount))) + "</p><br>");
+                    emailBody.Append("<p>Total Saving ₹ " + string.Format(string.Format("{0:N2}", Convert.ToDecimal(paymentAmount - (OfferAmount - deliveryCharges)))) + "</p><br>");
+
+                    emailBody.Append("<p>Thank You !!  Happy Shopping!!!</p>");
+                    emailBody.Append("</body></html>");
+
+                    if (sendEmail == true)
+                    {
+                        EmailSender.SendEmailAsync(emailId, "Vidhimas Shopping - Order Confirmation", emailBody.ToString(), emailSettings);
+                    }
+
+
+
+
+                    con.SaveChanges();
                 }
-
-
-                OfferAmount = OfferAmount + deliveryCharges;
-
-                emailBody.Append("</table><br>");
-                emailBody.Append("<p>Delivery Charges ₹ " + string.Format(String.Format("{0:N2}", deliveryCharges)) + "</p><br>");
-                emailBody.Append("<p>Total Amount ₹ " + string.Format(string.Format("{0:N2}", Convert.ToDecimal(paymentAmount))) + "</p><br>");
-                emailBody.Append("<p>Total Offered Amount Payble including Delivery Charges ₹ " + string.Format(string.Format("{0:N2}", Convert.ToDecimal(OfferAmount))) + "</p><br>");
-                emailBody.Append("<p>Total Saving ₹ " + string.Format(string.Format("{0:N2}", Convert.ToDecimal(paymentAmount - (OfferAmount - deliveryCharges)))) + "</p><br>");
-
-                emailBody.Append("<p>Thank You !!  Happy Shopping!!!</p>");
-                emailBody.Append("</body></html>");
-
-                if (sendEmail == true)
-                {
-                    EmailSender.SendEmailAsync(emailId, "Vidhimas Shopping - Order Confirmation", emailBody.ToString(), emailSettings);
-                }
-
-
-
-
-                con.SaveChanges();
               //  int id = pmt.
                 success = true;
             }
@@ -842,11 +858,21 @@ namespace ShoppingApi.Data
         }
 
 
+      
+
         private string GenerateConsignmentNumber()
         {
-            return null;
+
+            int _min = 1;
+            int _max = 9999;
+            Random _rdm = new Random();
+            int num = _rdm.Next(_min, _max);
+
+            return "VH-" + num.ToString();
 
         }
+
+
     }
 }
 
