@@ -91,7 +91,7 @@ namespace ShoppingApi.Data
                 })
                 .Join(con.SizeMasterEntity, cm => cm.item.SizeId, size => size.SizeId,
                   (cm, size) => new { cm, size })
-
+                
                 .Select(x => new Items
                 {
                     itemid = x.cm.item.ItemId,
@@ -107,11 +107,17 @@ namespace ShoppingApi.Data
                     availableQty = x.cm.item.AvailableQty,
                     availableColor = x.cm.item.AvailableColor,
                     colorId = x.cm.clr.Colorid,
-                    Image1 = GetBase64Image(x.cm.item.Image1) // System.IO.File.ReadAllBytes(x.cm.item.Image1)///x.cm.item.Image1 == null ? " " : x.cm.item.Image1
+                    Image1 = GetBase64Image(x.cm.item.Image1), // System.IO.File.ReadAllBytes(x.cm.item.Image1)///x.cm.item.Image1 == null ? " " : x.cm.item.Image1
                     //Image1 = x.cm.item.Image1 == null ? " " : Convert.ToBase64String(x.cm.item.Image1),
                     //  Image2 = x.cm.item.Image1 == null ? " " : Convert.ToBase64String(x.cm.item.Image2),
                     //  Image3 = x.cm.item.Image1 == null ? " " :  Convert.ToBase64String(x.cm.item.Image3),
-                }).AsQueryable().SingleOrDefault();
+
+                    ImageSmall3 = SplitToArray( x.cm.item.ImageSmall3, '#')
+
+
+                })
+               
+                .AsQueryable().SingleOrDefault();
 
 
                 var grpId = con.itemMasterEntity.Where(xx => xx.ItemId == itemId).FirstOrDefault();
@@ -869,6 +875,18 @@ namespace ShoppingApi.Data
             int num = _rdm.Next(_min, _max);
 
             return "VH-" + num.ToString();
+
+        }
+
+
+        private Array SplitToArray(string strvalue,char splietter)
+        {
+            var arrobject = strvalue!=null ? strvalue.Split(splietter):null;
+            for (int i =0; i < arrobject.Length;i++)
+            {
+                arrobject[i] = GetBase64Image(arrobject[i]);
+            }
+            return arrobject;
 
         }
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -32,7 +33,7 @@ namespace ShoppingApi.Model
         public string Image3 { get; set; }
         public int GroupId { get; set; }
         public List<GroupMaster> AvailableSize { get; set; }
-
+        public Array ImageSmall3 { get; set; }
 
     }
 
