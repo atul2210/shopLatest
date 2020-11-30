@@ -368,7 +368,7 @@ namespace ShoppingApi.Controllers
             }
 
         }
-        ;
+        
 
         [HttpGet, Route("item/SubMenu")]
         [IgnoreAntiforgeryToken]
