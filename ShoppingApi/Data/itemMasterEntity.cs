@@ -15,6 +15,9 @@ namespace ShoppingApi.Model
         [Column(TypeName = "int")]
         public int ItemId { get; set; }
 
+        [Column(TypeName = "int")]
+        public int SupplierId { get; set; }
+
         [Column(TypeName = "nvarchar(50)")]
         public string ItemName { get; set; }
 
@@ -47,20 +50,15 @@ namespace ShoppingApi.Model
 
 
         [Column(TypeName = "nvarchar(50)")]
-        public int Brand { get; set; }
+        public string brand { get; set; }
 
         [Column(TypeName = "int")]
         public int? detailId { get; set; }
 
-        [Column(TypeName = "int")]
-        public int DeliveryCharges { get; set; }
+       
 
         [Column(TypeName = "bit")]
         public bool Active { get; set; }
-
-       
-
-        public string brand { get; set; }
 
         [Column(TypeName = "int")]
         public int deliveryCharges { get; set; }

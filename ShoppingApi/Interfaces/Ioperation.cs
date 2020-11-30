@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ShoppingApi.Email;
+using System.IO;
+
 namespace ShoppingApi.Interfaces
 {
     public interface Ioperation
@@ -26,5 +28,17 @@ namespace ShoppingApi.Interfaces
         bool EditAddress(EditAddress user);
         bool ActivateUser(string emailId, bool active);
         Task<List<PaymentMethod>> PaymenOpions();
+        Task<List<AddItem>> AddNewItem(AddItem item);
+        List<Supplier> GetSuppliers();
+        List<Size> GetSizes();
+        List<Menu> GetItemMenus();
+        List<Color> GetItemColors();
+
+        Task<List<AddItemRequest>> GetNewItemRequest();
+
+        Task<bool> UploadImage();
+        Task<List<Menu>> GetSubMenu(int ParentId);
+
+
     }
 }

@@ -18,16 +18,19 @@ using ShoppingApi.Interfaces;
 using ShoppingApi.Email;
 using Microsoft.Extensions.Options;
 using ShoppingApi.Common;
+using System.IO;
+using System.Net.Http.Headers;
+using Microsoft.AspNetCore.Http.Internal;
 
 namespace ShoppingApi.Controllers
 {
-   [Authorize]
+    [Authorize]
     [Produces("application/json")]
     [Route("api/")]
-   // [ValidateAntiForgeryToken]
-  //  [AutoValidateAntiforgeryToken]
-   
-    public class ItemController : Controller
+    // [ValidateAntiForgeryToken]
+    //  [AutoValidateAntiforgeryToken]
+
+    public class ItemController : ControllerBase
     {
         private IOptions<EmailSettings> _emailSettings;
         Ioperation _operations;
@@ -41,16 +44,16 @@ namespace ShoppingApi.Controllers
             _iConfiguration = iConfiguration;
         }
 
-     
-       [AllowAnonymous]
+
+        [AllowAnonymous]
         [AutoValidateAntiforgeryToken]
         [HttpGet, Route("items/AllItems/")]
         [ResponseCache(Duration = 50)]
-        public  IActionResult AllItems(int ChildMenuId, PageAndSortedQuery<ItemDetailsQuery> query)
+        public IActionResult AllItems(int ChildMenuId, PageAndSortedQuery<ItemDetailsQuery> query)
         {
             try
             {
-                return  Ok(_operations.getItems(ChildMenuId, query));
+                return Ok(_operations.getItems(ChildMenuId, query));
             }
 
             catch (Exception ex)
@@ -61,7 +64,7 @@ namespace ShoppingApi.Controllers
 
         [AllowAnonymous]
         [HttpGet, Route("items/itemDetail/")]
-              [AutoValidateAntiforgeryToken]
+        [AutoValidateAntiforgeryToken]
         //  [ValidateAntiForgeryToken]
         public Items itemDetail(int itemId)
         {
@@ -88,9 +91,9 @@ namespace ShoppingApi.Controllers
 
         [IgnoreAntiforgeryToken]
         [AllowAnonymous]
-        public AddToCart adaddCart([FromQuery]  int itemid, [FromQuery]int quantity, [FromQuery] string UserSessioin)
+        public AddToCart adaddCart([FromQuery] int itemid, [FromQuery] int quantity, [FromQuery] string UserSessioin)
         {
-           ///// string sessionId = string.Empty;
+            ///// string sessionId = string.Empty;
             AddToCart addCart = null;
             if (UserSessioin == "null" || UserSessioin == String.Empty || UserSessioin == "" || UserSessioin == null)
             {
@@ -124,20 +127,20 @@ namespace ShoppingApi.Controllers
 
         [AllowAnonymous]
         [HttpGet, Route("items/AllItemsOnPaging/")]
-             [AutoValidateAntiforgeryToken]
+        [AutoValidateAntiforgeryToken]
         //[ResponseCache(Duration = 50)]
         [Produces(typeof(PageResult<ItemMaster>))]
         public IActionResult AllItemsOnPaging(PageAndSortedQuery<ItemDetailsQuery> query)
 
-        { 
+        {
             PageResult<ItemMaster> data = null;
             try
             {
-                
-               return Ok(_operations.GetPageItemsList(query));
+
+                return Ok(_operations.GetPageItemsList(query));
             }
 
-            catch(Exception e)
+            catch (Exception e)
             {
                 return (BadRequest());
 
@@ -150,11 +153,11 @@ namespace ShoppingApi.Controllers
         {
             string authToken = null;
 
-                    
+
             var claims = new[]
                 {
                     new Claim(ClaimTypes.Name, "aaaaa")
-                    
+
                 };
             var keyname = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("cdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdc"));
             var signInCred = new SigningCredentials(keyname, SecurityAlgorithms.HmacSha256Signature);
@@ -175,9 +178,9 @@ namespace ShoppingApi.Controllers
         [AllowAnonymous]
         [HttpGet, Route("items/SearchItem/")]
         [AutoValidateAntiforgeryToken]
-        public IActionResult SearchItems(PageAndSortedQuery<ItemDetailsQuery> query,string itemSearch)
+        public IActionResult SearchItems(PageAndSortedQuery<ItemDetailsQuery> query, string itemSearch)
         {
-            return Ok(_operations.Search(itemSearch,query));
+            return Ok(_operations.Search(itemSearch, query));
         }
 
         [AllowAnonymous]
@@ -195,47 +198,47 @@ namespace ShoppingApi.Controllers
         //[ValidateAntiForgeryToken]
 
         [IgnoreAntiforgeryToken]
-        public IActionResult PaymentReceived(string UserSession,int PaymentOption ,[FromBody] User user)
+        public IActionResult PaymentReceived(string UserSession, int PaymentOption, [FromBody] User user)
         {
-         
+
             //List<UserSessionDto> sessionData = _iusersession.GetUserSession(UserSession);
 
-           // if (EmailValidator.IsValidEmail(sessionData[0].UserId))
-           // {
-                var emailsettin = new EmailSettings()
+            // if (EmailValidator.IsValidEmail(sessionData[0].UserId))
+            // {
+            var emailsettin = new EmailSettings()
 
-                {
-                    UsernameEmail = _emailSettings.Value.UsernameEmail,
-                    CcEmail = _emailSettings.Value.CcEmail,
-                    FromEmail = _emailSettings.Value.FromEmail,
-                    PrimaryDomain = _emailSettings.Value.PrimaryDomain,
-                    PrimaryPort = _emailSettings.Value.PrimaryPort,
-                    SecondaryPort = _emailSettings.Value.SecondaryPort,
-                    SecondayDomain = _emailSettings.Value.SecondayDomain,
-                    // ToEmail = sessionData[0].UserId,//_emailSettings.Value.ToEmail,
-                    ToEmail = user.emailId ,// _emailSettings.Value.ToEmail,
-                    UsernamePassword = _emailSettings.Value.UsernamePassword
-                };
+            {
+                UsernameEmail = _emailSettings.Value.UsernameEmail,
+                CcEmail = _emailSettings.Value.CcEmail,
+                FromEmail = _emailSettings.Value.FromEmail,
+                PrimaryDomain = _emailSettings.Value.PrimaryDomain,
+                PrimaryPort = _emailSettings.Value.PrimaryPort,
+                SecondaryPort = _emailSettings.Value.SecondaryPort,
+                SecondayDomain = _emailSettings.Value.SecondayDomain,
+                // ToEmail = sessionData[0].UserId,//_emailSettings.Value.ToEmail,
+                ToEmail = user.emailId,// _emailSettings.Value.ToEmail,
+                UsernamePassword = _emailSettings.Value.UsernamePassword
+            };
 
-                if (emailsettin.ToEmail == null || emailsettin.ToEmail == string.Empty || emailsettin.ToEmail == "undefined")
-                {
-                    return BadRequest("Invalid Email id.  Please login again");
-                }
-
-                bool sendEmail = Convert.ToBoolean(_iConfiguration.GetSection("SendMail").Value);
-
-                _operations.PaymentReceived(emailsettin.ToEmail,UserSession, emailsettin, user,sendEmail, PaymentOption);
-                _operations.DeActivatesAfterPaymentReceived(UserSession);
-                return Ok("Order Placed successfully.");
+            if (emailsettin.ToEmail == null || emailsettin.ToEmail == string.Empty || emailsettin.ToEmail == "undefined")
+            {
+                return BadRequest("Invalid Email id.  Please login again");
             }
-            //else
-            //{
-            //    return BadRequest("Invalid Email id.  Please login again");
 
-          //  }
-           
-            //return Ok(paymentreceived);
-          
+            bool sendEmail = Convert.ToBoolean(_iConfiguration.GetSection("SendMail").Value);
+
+            _operations.PaymentReceived(emailsettin.ToEmail, UserSession, emailsettin, user, sendEmail, PaymentOption);
+            _operations.DeActivatesAfterPaymentReceived(UserSession);
+            return Ok("Order Placed successfully.");
+        }
+        //else
+        //{
+        //    return BadRequest("Invalid Email id.  Please login again");
+
+        //  }
+
+        //return Ok(paymentreceived);
+
         //}
 
         [AllowAnonymous]
@@ -251,9 +254,9 @@ namespace ShoppingApi.Controllers
         //   [AllowAnonymous]
         [HttpPut, Route("items/EditAddress")]
         [IgnoreAntiforgeryToken]
-        public IActionResult EditAddress([FromBody]EditAddress editUserAddress)
+        public IActionResult EditAddress([FromBody] EditAddress editUserAddress)
         {
-           return Ok(_operations.EditAddress(editUserAddress));
+            return Ok(_operations.EditAddress(editUserAddress));
         }
         private string GetSessionToken()
         {
@@ -283,5 +286,99 @@ namespace ShoppingApi.Controllers
             return authToken;
 
         }
+
+
+
+        [HttpPost, Route("item/AddNewItem")]
+        [IgnoreAntiforgeryToken]
+        [Produces("application/json")]
+        [AllowAnonymous]
+        public async Task<IActionResult> AddNewItem(AddItem NewItem)
+        {
+            try
+            {
+                var file = Request.Form.Files[0];
+
+                var folderName = Path.Combine("Resources", "Images");
+                var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+                if (file.Length > 0)
+                {
+                    var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+                    var fullPath = Path.Combine(pathToSave, fileName);
+                    var dbPath = Path.Combine(folderName, fileName);
+                    using (var stream = new FileStream(fullPath, FileMode.Create))
+                    {
+                        file.CopyTo(stream);
+                    }
+                    return Ok(new { dbPath });
+                }
+                else
+                {
+                    return BadRequest();
+                }
+               
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex}");
+            }
+        
+            ///return Ok(await _operations.AddNewItem(NewItem));
+        }
+
+        [HttpGet, Route("item/AddNewItemRequest")]
+        [IgnoreAntiforgeryToken]
+        [AllowAnonymous]
+        public async Task<IActionResult> AddNewItemRequest()
+        {
+            return Ok(await _operations.GetNewItemRequest());
+        }
+
+        [HttpPost, Route("item/UploadNewItem")]
+        [IgnoreAntiforgeryToken]
+        [AllowAnonymous]
+        [HttpPost, DisableRequestSizeLimit]
+        public async Task<IActionResult> UploadNewItem()
+        {
+            try
+            {
+                var file = Request.Form.Files[0];
+
+                var folderName = Path.Combine("Resources", "Images");
+                var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+                if (file.Length > 0)
+                {
+                    var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+                    var fullPath = Path.Combine(pathToSave, fileName);
+                    var dbPath = Path.Combine(folderName, fileName);
+                    using (var stream = new FileStream(fullPath, FileMode.Create))
+                    {
+                        file.CopyTo(stream);
+                    }
+                    return Ok(new { dbPath });
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex}");
+            }
+
+        }
+        ;
+
+        [HttpGet, Route("item/SubMenu")]
+        [IgnoreAntiforgeryToken]
+        [AllowAnonymous]
+        public async Task<IActionResult> SubMenu(int ParentId)
+        {
+            return Ok(await _operations.GetSubMenu(ParentId));
+        }
+
+
     }
+
 }

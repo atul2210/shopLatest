@@ -890,7 +890,150 @@ namespace ShoppingApi.Data
 
         }
 
+        public Task<List<AddItem>> AddNewItem(AddItem item)
+        {
+            throw new NotImplementedException();
+        }
 
+        public  List<Supplier> GetSuppliers()
+        {
+            var connectionString = Startup.connectionstring;// Task<List<States>> GetStates()
+           
+            //using (var con = new ShoppingContext(connectionString))
+            // {
+            var con = new ShoppingContext(connectionString);
+           var  data = con.SupplierEntity.Where(x => x.Active == true)
+                .Select(vv => new Supplier()
+                {
+                    Active=vv.Active,
+                    City=vv.City,
+                    Pin=vv.Pin,
+                    SupplierId=vv.SupplierId,
+                    State=vv.State,
+                    SupAdd1=vv.SupAdd1,
+                    SupAdd2=vv.SupAdd2,
+                    SupAdd3=vv.SupAdd3,
+                    SupFirstName=vv.SupFirstName,
+                    SupLastName=vv.SupLastName,
+                    SupMidName =vv.SupMidName
+                    
+
+
+                }).ToList();
+            return data;
+          
+
+        }
+
+        public List<Size> GetSizes()
+        {
+            var connectionString = Startup.connectionstring;// Task<List<States>> GetStates()
+
+            //using (var con = new ShoppingContext(connectionString))
+            // {
+            var con = new ShoppingContext(connectionString);
+            var data = con.SizeMasterEntity
+                 .Select(vv => new Size()
+                 {
+                     SizeId= vv.SizeId,
+                     SizeName=vv.SizeName
+                 }).ToList();
+            return data;
+        }
+
+        public List<Menu> GetItemMenus()
+        {
+            var connectionString = Startup.connectionstring;// Task<List<States>> GetStates()
+
+            //using (var con = new ShoppingContext(connectionString))
+            // {
+            var con = new ShoppingContext(connectionString);
+            var data = con.MenuEntity.Where(ss=>ss.Status==true)
+                 .Select(vv => new Menu()
+                 {
+                    Id=vv.Id,
+                    MainMenuId=vv.MainMenuId,
+                    MainMenuName=vv.MainMenuName,
+                    MainTrigger=vv.MainTrigger,
+                    MenuName=vv.MenuName,
+                    ParentId=vv.ParentId,
+                    RouterLink=vv.RouterLink,
+                    Status=vv.Status,
+                    SubMenuId=vv.SubMenuId,
+                    SubMenuName=vv.SubMenuName,
+                    SubTrigger=vv.SubTrigger,
+                     
+                 }).ToList();
+            return data;
+
+        }
+
+        public List<Color> GetItemColors()
+        {
+            var connectionString = Startup.connectionstring;// Task<List<States>> GetStates()
+
+         
+            var con = new ShoppingContext(connectionString);
+            var data = con.ColorMasterEntity
+                 .Select(vv => new Color()
+                 {
+                   Colorid= vv.Colorid,
+                   ColorName=vv.ColorName
+
+                 }).ToList();
+            return data;
+        }
+
+        public  Task<List<AddItemRequest>> GetNewItemRequest()
+        {
+
+            var connectionString = Startup.connectionstring;// Task<List<States>> GetStates()
+
+
+            var con = new ShoppingContext(connectionString);
+            var data = con.itemMasterEntity.Where(xx => xx.Active == true)
+                .Select(vv => new AddItemRequest()
+                {
+                    Colors = GetItemColors(),
+                    Menu = GetItemMenus(),
+                    Sizes = GetSizes(),
+                    SupplierList = GetSuppliers()
+                }).ToListAsync();
+            
+            return data;
+
+        }
+
+        public Task<bool> UploadImage()
+        {
+            throw new NotImplementedException();
+        }
+
+        public  Task<List<Menu>> GetSubMenu(int ParentId)
+        {
+            var connectionString = Startup.connectionstring;// Task<List<States>> GetStates()
+
+            //using (var con = new ShoppingContext(connectionString))
+            // {
+            var con = new ShoppingContext(connectionString);
+            var data = con.MenuEntity.Where(ss => ss.Status == true && ss.ParentId==ParentId)
+                 .Select(vv => new Menu()
+                 {
+                     Id = vv.Id,
+                     MainMenuId = vv.MainMenuId,
+                     MainMenuName = vv.MainMenuName,
+                     MainTrigger = vv.MainTrigger,
+                     MenuName = vv.MenuName,
+                     ParentId = vv.ParentId,
+                     RouterLink = vv.RouterLink,
+                     Status = vv.Status,
+                     SubMenuId = vv.SubMenuId,
+                     SubMenuName = vv.SubMenuName,
+                     SubTrigger = vv.SubTrigger,
+
+                 }).ToListAsync();
+            return data;
+        }
     }
 }
 
