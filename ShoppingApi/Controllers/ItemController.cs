@@ -328,10 +328,7 @@ namespace ShoppingApi.Controllers
                 string smallImage = string.Empty;
                 
 
-                //smallImage = smallImage.Substring(0, (smallImage.LastIndexOf("#")));
-                //NewItem.ImageSmall3 = smallImage;
-                //NewItem.CreateDate = null;
-                //NewItem.UpdateDate = null;
+              
 
                 _operations.AddNewItem(NewItem, _iConfiguration.GetSection("UploadImagePath").Value,files);
 
