@@ -21,11 +21,11 @@ namespace ShoppingApi.Model
         [Column(TypeName = "int")]
         public int SupplierId { get; set; }
 
-        [Column(TypeName = "CreateDate")]
-        public DateTime CreateDate { get; set; }
+       // [Column(TypeName = "datetime")]
+        public DateTime? CreateDate { get; set; }
 
-        [Column(TypeName = "ModifyDate")]
-        public DateTime ModifyDate { get; set; }
+        //[Column(TypeName = "datetime")]
+       // public DateTime ModifyDate { get; set; }
 
         [Column(TypeName = "bit")]
         public bool Active { get; set; }

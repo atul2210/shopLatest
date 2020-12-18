@@ -11,7 +11,7 @@ namespace ShoppingApi.Model
     public int supplierId { get; set; }
     public string itemName { get; set; }
     public string itemDescription { get; set; }
-    public int sizeId { get; set; }
+    public double sizeId { get; set; }
     public string sizeName { get; set; }
     public double price { get; set; }
     public double offerPrice { get; set; }
@@ -27,13 +27,16 @@ namespace ShoppingApi.Model
     public string availableColor { get; set; }
     public int colorId { get; set; }
     public string Image1 { get; set; }
-    public string Image2 { get; set; }
-    public string Image3 { get; set; }
+    public Byte[] Image2 { get; set; }
+    public Byte[] Image3 { get; set; }
     public int GroupId { get; set; }
     ////public List<GroupMaster> AvailableSize { get; set; }
     public string ImageSmall3 { get; set; }
     public int ChileMenuId { get; set; }
     public int? DetailId { get; set; }
     public int initialQty { get; set; }
+
+    public DateTime? CreateDate { get; set; }
+    public DateTime? UpdateDate { get; set; }
     }
 }

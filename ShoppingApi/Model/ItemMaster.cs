@@ -32,9 +32,9 @@ namespace ShoppingApi.Model
 
        
         public string Image1 { get; set; }
-        public string Image2 { get; set; }
-        public string Image3 { get; set; }
-
+        public byte[] Image2 { get; set; }
+        public byte[] Image3 { get; set; }
+        public string ImageSmall3 { get; set; }
 
 
     }

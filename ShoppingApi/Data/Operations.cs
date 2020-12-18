@@ -892,7 +892,91 @@ namespace ShoppingApi.Data
 
         public Task<List<AddItem>> AddNewItem(AddItem item)
         {
-            throw new NotImplementedException();
+            var connectionString = Startup.connectionstring;// Task<List<States>> GetStates()
+
+            using (var con = new ShoppingContext(connectionString))
+            {
+
+
+                var groupItem = new GroupMasterEntity()
+                {
+                    Active = true,
+                    SupplierId = item.supplierId,
+                    CreatedBy = "N/A"
+                    
+                };
+
+                con.Add(groupItem);
+                con.SaveChanges();
+               
+                item.GroupId = groupItem.GroupId;
+
+            }
+
+
+            var itemdata = new itemMasterEntity()
+            {
+                Active = true,
+                AvailableColor = item.availableColor,
+                AvailableQty = item.availableQty,
+                brand = item.brand,
+                ChildMenuId = item.ChileMenuId,
+                //Color=item.color,
+                ColorId = item.colorId,
+                deliveryCharges = item.deliveryCharges,
+                detailId = item.DetailId,
+                Image1 = item.Image1,
+                Image2 = item.Image2,
+                Image3 = item.Image3,
+                ImageSmall3 = item.ImageSmall3,
+                InitialQty = item.initialQty,
+                ItemDescripton = item.itemDescription,
+                ItemName = item.itemName,
+                OfferPrice = item.offerPrice,
+                Price = item.price,
+                SizeId = item.sizeId,
+                GroupId=item.GroupId
+                //CreateDate = item.CreateDate,
+                //UpdateDate = item.UpdateDate
+               // si=item.sizeName
+            };
+
+           
+            using (var con = new ShoppingContext(connectionString))
+            {
+                con.Add(itemdata);
+                
+                con.SaveChanges();
+                var addedItemId = itemdata.ItemId;
+
+                var newItem = con.itemMasterEntity.Where(m => m.ItemId == addedItemId)
+                    .Select(x => new AddItem()
+                    {
+                        availableColor = x.AvailableColor,
+                        availableQty = x.AvailableQty,
+                        brand = x.brand,
+                        ChileMenuId = x.ChildMenuId,
+                        //color = x.colo,
+                        colorId = x.ColorId,
+                        deliveryCharges = x.deliveryCharges,
+                        DetailId = x.detailId,
+                        Image1 = x.Image1,
+                        Image2 = x.Image2,
+                        Image3 = x.Image3,
+                        ImageSmall3=x.ImageSmall3,
+                        initialQty = x.InitialQty,
+                        itemDescription = x.ItemDescripton,
+                        itemName = x.ItemName,
+                        offerPrice = x.OfferPrice,
+                        price = x.Price,
+                        sizeId = x.SizeId,
+                    }).ToListAsync();
+
+                return newItem;
+
+            }
+           
+            
         }
 
         public  List<Supplier> GetSuppliers()

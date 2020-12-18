@@ -297,25 +297,7 @@ namespace ShoppingApi.Controllers
         {
             try
             {
-                var file = Request.Form.Files[0];
-
-                var folderName = Path.Combine("Resources", "Images");
-                var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
-                if (file.Length > 0)
-                {
-                    var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
-                    var fullPath = Path.Combine(pathToSave, fileName);
-                    var dbPath = Path.Combine(folderName, fileName);
-                    using (var stream = new FileStream(fullPath, FileMode.Create))
-                    {
-                        file.CopyTo(stream);
-                    }
-                    return Ok(new { dbPath });
-                }
-                else
-                {
-                    return BadRequest();
-                }
+                return Ok();
                
             }
             catch (Exception ex)
@@ -334,33 +316,60 @@ namespace ShoppingApi.Controllers
             return Ok(await _operations.GetNewItemRequest());
         }
 
-        [HttpPost, Route("item/UploadNewItem")]
+        [HttpPost, Route("item/UploadNewImages")]
         [IgnoreAntiforgeryToken]
         [AllowAnonymous]
         [HttpPost, DisableRequestSizeLimit]
-        public async Task<IActionResult> UploadNewItem()
+        public IActionResult UploadNewImages(AddItem NewItem)
         {
             try
             {
-                var file = Request.Form.Files[0];
+                var files = Request.Form.Files;
+                string smallImage = string.Empty;
+                foreach (var file in files)
+                {
+                    smallImage += file.FileName + "#";
+                    // var folderName = Path.Combine("Resources", "Images");
 
-                var folderName = Path.Combine("Resources", "Images");
-                var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
-                if (file.Length > 0)
-                {
-                    var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
-                    var fullPath = Path.Combine(pathToSave, fileName);
-                    var dbPath = Path.Combine(folderName, fileName);
-                    using (var stream = new FileStream(fullPath, FileMode.Create))
+                    var pathToSave = _iConfiguration.GetSection("UploadImagePath").Value;
+                    // var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+                    if (file.Length > 0)
                     {
-                        file.CopyTo(stream);
+                        var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+                        if (System.IO.File.Exists(Path.Combine(pathToSave, fileName)))
+                        {
+                            Random r = new Random();
+                            int genRand = r.Next(1, 2);
+
+                            var filetypt = fileName.Substring(fileName.LastIndexOf(@".") + 1, ((fileName.Length - 1) - fileName.LastIndexOf(@".")));
+                            fileName = fileName.Substring(0, fileName.LastIndexOf(@".")) + genRand + 1.ToString();
+                            fileName = fileName + "." + filetypt;
+                        };
+                        var fullPath = Path.Combine(pathToSave, fileName);
+                        /// var dbPath = Path.Combine(folderName, fileName);
+                        using (var stream = new FileStream(fullPath, FileMode.Create))
+                        {
+                            file.CopyTo(stream);
+
+                            /// System.Drawing.Image myImage = System.Drawing.Image.FromFile(fullPath, true);
+
+                        }
+                        FileSaver.SaveJpeg(fullPath, pathToSave, 20);
+                       
                     }
-                    return Ok(new { dbPath });
+                    else
+                    {
+                        return BadRequest();
+                    }
                 }
-                else
-                {
-                    return BadRequest();
-                }
+
+                smallImage = smallImage.Substring(0, (smallImage.LastIndexOf("#")));
+                NewItem.ImageSmall3 = smallImage;
+                NewItem.CreateDate = null;
+                NewItem.UpdateDate = null;
+                _operations.AddNewItem(NewItem);
+
+                return Ok();
             }
             catch (Exception ex)
             {

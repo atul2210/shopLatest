@@ -78,6 +78,10 @@ namespace ShoppingApi.Model
         public Byte[] Image3 { get; set; }
         public string ImageSmall3 { get; set; }
 
+        public DateTime? CreateDate { get; set; }
+
+        public DateTime? UpdateDate { get; set; }
+
 
 
     }
