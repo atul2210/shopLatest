@@ -326,9 +326,6 @@ namespace ShoppingApi.Controllers
             {
                 var files = Request.Form.Files;
                 string smallImage = string.Empty;
-                
-
-              
 
                 _operations.AddNewItem(NewItem, _iConfiguration.GetSection("UploadImagePath").Value,files);
 
