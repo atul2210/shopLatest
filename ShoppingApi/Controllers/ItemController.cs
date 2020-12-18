@@ -326,48 +326,49 @@ namespace ShoppingApi.Controllers
             {
                 var files = Request.Form.Files;
                 string smallImage = string.Empty;
-                foreach (var file in files)
-                {
-                    smallImage += file.FileName + "#";
-                    // var folderName = Path.Combine("Resources", "Images");
+                //foreach (var file in files)
+                //{
+                //    smallImage += file.FileName + "#";
+                //    // var folderName = Path.Combine("Resources", "Images");
 
-                    var pathToSave = _iConfiguration.GetSection("UploadImagePath").Value;
-                    // var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
-                    if (file.Length > 0)
-                    {
-                        var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
-                        if (System.IO.File.Exists(Path.Combine(pathToSave, fileName)))
-                        {
-                            Random r = new Random();
-                            int genRand = r.Next(1, 2);
+                //    var pathToSave = _iConfiguration.GetSection("UploadImagePath").Value;
+                //    // var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+                //    if (file.Length > 0)
+                //    {
+                //        var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+                //        if (System.IO.File.Exists(Path.Combine(pathToSave, fileName)))
+                //        {
+                //            Random r = new Random();
+                //            int genRand = r.Next(1, 2);
 
-                            var filetypt = fileName.Substring(fileName.LastIndexOf(@".") + 1, ((fileName.Length - 1) - fileName.LastIndexOf(@".")));
-                            fileName = fileName.Substring(0, fileName.LastIndexOf(@".")) + genRand + 1.ToString();
-                            fileName = fileName + "." + filetypt;
-                        };
-                        var fullPath = Path.Combine(pathToSave, fileName);
-                        /// var dbPath = Path.Combine(folderName, fileName);
-                        using (var stream = new FileStream(fullPath, FileMode.Create))
-                        {
-                            file.CopyTo(stream);
+                //            var filetypt = fileName.Substring(fileName.LastIndexOf(@".") + 1, ((fileName.Length - 1) - fileName.LastIndexOf(@".")));
+                //            fileName = fileName.Substring(0, fileName.LastIndexOf(@".")) + genRand + 1.ToString();
+                //            fileName = fileName + "." + filetypt;
+                //        };
+                //        var fullPath = Path.Combine(pathToSave, fileName);
+                //        /// var dbPath = Path.Combine(folderName, fileName);
+                //        using (var stream = new FileStream(fullPath, FileMode.Create))
+                //        {
+                //            file.CopyTo(stream);
 
-                            /// System.Drawing.Image myImage = System.Drawing.Image.FromFile(fullPath, true);
+                //            /// System.Drawing.Image myImage = System.Drawing.Image.FromFile(fullPath, true);
 
-                        }
-                        FileSaver.SaveJpeg(fullPath, pathToSave, 20);
-                       
-                    }
-                    else
-                    {
-                        return BadRequest();
-                    }
-                }
+                //        }
+                //        FileSaver.SaveJpeg(fullPath, pathToSave, 20);
 
-                smallImage = smallImage.Substring(0, (smallImage.LastIndexOf("#")));
-                NewItem.ImageSmall3 = smallImage;
-                NewItem.CreateDate = null;
-                NewItem.UpdateDate = null;
-                _operations.AddNewItem(NewItem);
+                //    }
+                //    else
+                //    {
+                //        return BadRequest();
+                //    }
+                //}
+
+                //smallImage = smallImage.Substring(0, (smallImage.LastIndexOf("#")));
+                //NewItem.ImageSmall3 = smallImage;
+                //NewItem.CreateDate = null;
+                //NewItem.UpdateDate = null;
+
+                _operations.AddNewItem(NewItem, _iConfiguration.GetSection("UploadImagePath").Value,files);
 
                 return Ok();
             }

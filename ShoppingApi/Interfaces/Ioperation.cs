@@ -28,7 +28,7 @@ namespace ShoppingApi.Interfaces
         bool EditAddress(EditAddress user);
         bool ActivateUser(string emailId, bool active);
         Task<List<PaymentMethod>> PaymenOpions();
-        Task<List<AddItem>> AddNewItem(AddItem item);
+        Task<List<AddItem>> AddNewItem(AddItem item, string UploadImagePath,dynamic files);
         List<Supplier> GetSuppliers();
         List<Size> GetSizes();
         List<Menu> GetItemMenus();

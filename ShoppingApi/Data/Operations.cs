@@ -17,6 +17,7 @@ using ShoppingApi.Email;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
+using System.Net.Http.Headers;
 
 namespace ShoppingApi.Data
 {
@@ -890,8 +891,52 @@ namespace ShoppingApi.Data
 
         }
 
-        public Task<List<AddItem>> AddNewItem(AddItem item)
+        public Task<List<AddItem>> AddNewItem(AddItem item,string UploadImagePath, dynamic files)
         {
+            string smallImage = string.Empty;
+            foreach (var file in files)
+            {
+                smallImage += file.FileName + "#";
+                // var folderName = Path.Combine("Resources", "Images");
+
+                var pathToSave = UploadImagePath; //_iConfiguration.GetSection("UploadImagePath").Value;
+                // var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+                if (file.Length > 0)
+                {
+                    var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+                    if (System.IO.File.Exists(Path.Combine(pathToSave, fileName)))
+                    {
+                        Random r = new Random();
+                        int genRand = r.Next(1, 2);
+
+                        var filetypt = fileName.Substring(fileName.LastIndexOf(@".") + 1, ((fileName.Length - 1) - fileName.LastIndexOf(@".")));
+                        fileName = fileName.Substring(0, fileName.LastIndexOf(@".")) + genRand + 1.ToString();
+                        fileName = fileName + "." + filetypt;
+                    };
+                    var fullPath = Path.Combine(pathToSave, fileName);
+                    /// var dbPath = Path.Combine(folderName, fileName);
+                    using (var stream = new FileStream(fullPath, FileMode.Create))
+                    {
+                        file.CopyTo(stream);
+
+                        /// System.Drawing.Image myImage = System.Drawing.Image.FromFile(fullPath, true);
+
+                    }
+                    FileSaver.SaveJpeg(fullPath, pathToSave, 20);
+
+                }
+                else
+                {
+                    throw new Exception("Bad Reqest");
+                }
+            }
+
+            smallImage = UploadImagePath + "\\" + smallImage.Substring(0, (smallImage.LastIndexOf("#")));
+            item.ImageSmall3 = smallImage;
+            item.CreateDate = null;
+            item.UpdateDate = null;
+
+
             var connectionString = Startup.connectionstring;// Task<List<States>> GetStates()
 
             using (var con = new ShoppingContext(connectionString))
@@ -925,7 +970,7 @@ namespace ShoppingApi.Data
                 ColorId = item.colorId,
                 deliveryCharges = item.deliveryCharges,
                 detailId = item.DetailId,
-                Image1 = item.Image1,
+                Image1 = item.ImageSmall3.Substring(0, (item.ImageSmall3.IndexOf("#"))),
                 Image2 = item.Image2,
                 Image3 = item.Image3,
                 ImageSmall3 = item.ImageSmall3,
