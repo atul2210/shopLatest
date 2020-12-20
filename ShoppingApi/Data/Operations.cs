@@ -894,133 +894,136 @@ namespace ShoppingApi.Data
         public Task<List<AddItem>> AddNewItem(AddItem item,string UploadImagePath, dynamic files)
         {
             string smallImage = string.Empty;
-            foreach (var file in files)
-            {
-                smallImage += file.FileName + "#";
-                // var folderName = Path.Combine("Resources", "Images");
-
-                var pathToSave = UploadImagePath; //_iConfiguration.GetSection("UploadImagePath").Value;
-                // var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
-                if (file.Length > 0)
-                {
-                    var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
-                    if (System.IO.File.Exists(Path.Combine(pathToSave, fileName)))
-                    {
-                        Random r = new Random();
-                        int genRand = r.Next(1, 2);
-
-                        var filetypt = fileName.Substring(fileName.LastIndexOf(@".") + 1, ((fileName.Length - 1) - fileName.LastIndexOf(@".")));
-                        fileName = fileName.Substring(0, fileName.LastIndexOf(@".")) + genRand + 1.ToString();
-                        fileName = fileName + "." + filetypt;
-                    };
-                    var fullPath = Path.Combine(pathToSave, fileName);
-                    /// var dbPath = Path.Combine(folderName, fileName);
-                    using (var stream = new FileStream(fullPath, FileMode.Create))
-                    {
-                        file.CopyTo(stream);
-
-                        /// System.Drawing.Image myImage = System.Drawing.Image.FromFile(fullPath, true);
-
-                    }
-                    FileSaver.SaveJpeg(fullPath, pathToSave, 20);
-
-                }
-                else
-                {
-                    throw new Exception("Bad Reqest");
-                }
-            }
-
-            smallImage = UploadImagePath + "\\" + smallImage.Substring(0, (smallImage.LastIndexOf("#")));
-            item.ImageSmall3 = smallImage;
-            item.CreateDate = null;
-            item.UpdateDate = null;
-
+            int addedItemId = 0;
 
             var connectionString = Startup.connectionstring;// Task<List<States>> GetStates()
-
-            using (var con = new ShoppingContext(connectionString))
-            {
-
-
-                var groupItem = new GroupMasterEntity()
+           
+                foreach (var file in files)
                 {
-                    Active = true,
-                    SupplierId = item.supplierId,
-                    CreatedBy = "N/A"
-                    
-                };
+                    smallImage += file.FileName + "#";
+                    // var folderName = Path.Combine("Resources", "Images");
 
-                con.Add(groupItem);
-                con.SaveChanges();
-               
-                item.GroupId = groupItem.GroupId;
-
-            }
-
-
-            var itemdata = new itemMasterEntity()
-            {
-                Active = true,
-                AvailableColor = item.availableColor,
-                AvailableQty = item.availableQty,
-                brand = item.brand,
-                ChildMenuId = item.ChileMenuId,
-                //Color=item.color,
-                ColorId = item.colorId,
-                deliveryCharges = item.deliveryCharges,
-                detailId = item.DetailId,
-                Image1 = item.ImageSmall3.Substring(0, (item.ImageSmall3.IndexOf("#"))),
-                Image2 = item.Image2,
-                Image3 = item.Image3,
-                ImageSmall3 = item.ImageSmall3,
-                InitialQty = item.initialQty,
-                ItemDescripton = item.itemDescription,
-                ItemName = item.itemName,
-                OfferPrice = item.offerPrice,
-                Price = item.price,
-                SizeId = item.sizeId,
-                GroupId=item.GroupId
-                //CreateDate = item.CreateDate,
-                //UpdateDate = item.UpdateDate
-               // si=item.sizeName
-            };
-
-           
-            using (var con = new ShoppingContext(connectionString))
-            {
-                con.Add(itemdata);
-                
-                con.SaveChanges();
-                var addedItemId = itemdata.ItemId;
-
-                var newItem = con.itemMasterEntity.Where(m => m.ItemId == addedItemId)
-                    .Select(x => new AddItem()
+                    var pathToSave = UploadImagePath; //_iConfiguration.GetSection("UploadImagePath").Value;
+                                                      // var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+                    if (file.Length > 0)
                     {
-                        availableColor = x.AvailableColor,
-                        availableQty = x.AvailableQty,
-                        brand = x.brand,
-                        ChileMenuId = x.ChildMenuId,
-                        //color = x.colo,
-                        colorId = x.ColorId,
-                        deliveryCharges = x.deliveryCharges,
-                        DetailId = x.detailId,
-                        Image1 = x.Image1,
-                        Image2 = x.Image2,
-                        Image3 = x.Image3,
-                        ImageSmall3=x.ImageSmall3,
-                        initialQty = x.InitialQty,
-                        itemDescription = x.ItemDescripton,
-                        itemName = x.ItemName,
-                        offerPrice = x.OfferPrice,
-                        price = x.Price,
-                        sizeId = x.SizeId,
-                    }).ToListAsync();
+                        var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+                        if (System.IO.File.Exists(Path.Combine(pathToSave, fileName)))
+                        {
+                            Random r = new Random();
+                            int genRand = r.Next(1, 2);
 
-                return newItem;
+                            var filetypt = fileName.Substring(fileName.LastIndexOf(@".") + 1, ((fileName.Length - 1) - fileName.LastIndexOf(@".")));
+                            fileName = fileName.Substring(0, fileName.LastIndexOf(@".")) + genRand + 1.ToString();
+                            fileName = fileName + "." + filetypt;
+                        };
+                        var fullPath = Path.Combine(pathToSave, fileName);
+                        /// var dbPath = Path.Combine(folderName, fileName);
+                        using (var stream = new FileStream(fullPath, FileMode.Create))
+                        {
+                            file.CopyTo(stream);
 
+                            /// System.Drawing.Image myImage = System.Drawing.Image.FromFile(fullPath, true);
+
+                        }
+                        FileSaver.SaveJpeg(fullPath, pathToSave, 20);
+
+                    }
+                    else
+                    {
+                        throw new Exception("Bad Reqest");
+                    }
+                }
+
+                smallImage = UploadImagePath + "\\" + smallImage.Substring(0, (smallImage.LastIndexOf("#")));
+                item.ImageSmall3 = smallImage;
+                item.CreateDate = null;
+                item.UpdateDate = null;
+                using (var con = new ShoppingContext(connectionString))
+                {
+                    using (var transaction = con.Database.BeginTransaction())
+                    {
+                        try {
+                            var groupItem = new GroupMasterEntity()
+                            {
+                                Active = true,
+                                SupplierId = item.supplierId,
+                                CreatedBy = "N/A"
+
+                            };
+
+                            con.Add(groupItem);
+                            con.SaveChanges();
+
+                            item.GroupId = groupItem.GroupId;
+                            var itemdata = new itemMasterEntity()
+                            {
+                                Active = true,
+                                AvailableColor = item.availableColor,
+                                AvailableQty = item.availableQty,
+                                brand = item.brand,
+                                ChildMenuId = item.ChileMenuId,
+                                //Color=item.color,
+                                ColorId = item.colorId,
+                                deliveryCharges = item.deliveryCharges,
+                                detailId = item.DetailId,
+                               Image1 = item.ImageSmall3.IndexOf("#") == 0 || item.ImageSmall3.IndexOf("#") == -1 ? item.ImageSmall3 : item.ImageSmall3.Substring(0, (item.ImageSmall3.IndexOf("#"))),
+                              ////  Image1 = item.ImageSmall3.Substring(0, (item.ImageSmall3.IndexOf("#"))),
+
+                                Image2 = item.Image2,
+                                Image3 = item.Image3,
+                                ImageSmall3 = item.ImageSmall3,
+                                InitialQty = item.initialQty,
+                                ItemDescripton = item.itemDescription,
+                                ItemName = item.itemName,
+                                OfferPrice = item.offerPrice,
+                                Price = item.price,
+                                SizeId = item.sizeId,
+                                GroupId = item.GroupId
+                                //CreateDate = item.CreateDate,
+                                //UpdateDate = item.UpdateDate
+                                // si=item.sizeName
+                            };
+                            con.Add(itemdata);
+                            con.SaveChanges();
+                            con.Database.CommitTransaction();
+                            addedItemId = itemdata.ItemId;
+
+                        
+                    }
+                        catch(Exception ex)
+                        {
+                            con.Database.RollbackTransaction();
+                        }
+
+                    
+                }
+
+                var newitem = con.itemMasterEntity.Where(m => m.ItemId == addedItemId)
+                  .Select(x => new AddItem()
+                  {
+                      availableColor = x.AvailableColor,
+                      availableQty = x.AvailableQty,
+                      brand = x.brand,
+                      ChileMenuId = x.ChildMenuId,
+                               //color = x.colo,
+                               colorId = x.ColorId,
+                      deliveryCharges = x.deliveryCharges,
+                      DetailId = x.detailId,
+                      Image1 = x.Image1,
+                      Image2 = x.Image2,
+                      Image3 = x.Image3,
+                      ImageSmall3 = x.ImageSmall3,
+                      initialQty = x.InitialQty,
+                      itemDescription = x.ItemDescripton,
+                      itemName = x.ItemName,
+                      offerPrice = x.OfferPrice,
+                      price = x.Price,
+                      sizeId = x.SizeId,
+                  }).ToListAsync();
+                return newitem;
             }
-           
+
             
         }
 
