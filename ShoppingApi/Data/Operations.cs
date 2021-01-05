@@ -113,7 +113,7 @@ namespace ShoppingApi.Data
                     //  Image2 = x.cm.item.Image1 == null ? " " : Convert.ToBase64String(x.cm.item.Image2),
                     //  Image3 = x.cm.item.Image1 == null ? " " :  Convert.ToBase64String(x.cm.item.Image3),
 
-                    ImageSmall3 = SplitToArray( x.cm.item.ImageSmall3, '#')
+                    ImageSmall3 = x.cm.item.ImageSmall3==null?null:SplitToArray( x.cm.item.ImageSmall3, '#')
 
 
                 })
