@@ -982,10 +982,13 @@ namespace ShoppingApi.Data
                                 OfferPrice = item.offerPrice,
                                 Price = item.price,
                                 SizeId = item.sizeId,
-                                GroupId = item.GroupId
+                                GroupId = item.GroupId,
+                                SupplierId=item.supplierId
                                 //CreateDate = item.CreateDate,
                                 //UpdateDate = item.UpdateDate
                                 // si=item.sizeName
+
+                                
                             };
                             con.Add(itemdata);
                             con.SaveChanges();
