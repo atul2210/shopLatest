@@ -11,7 +11,7 @@ namespace ShoppingApi.Common
 {
     public class FileSaver
     {
-        public static void SaveJpeg(string path, string imgDirectory, long quality)
+        public static string SaveJpeg(string path, string imgDirectory, long quality)
         {
 
             System.Drawing.Image img = System.Drawing.Image.FromFile(path, true);
@@ -52,13 +52,14 @@ namespace ShoppingApi.Common
                
                 createDirectory = imgDirectory + "\\" + fileDirectory + "\\" + filename;   // createDirectory + "\\temp.jpg";
                 img.Save(createDirectory, jpegCodec, encoderParams);
+          
             }
+            return createDirectory; 
 
 
 
 
-           
-            
+
         }
 
 

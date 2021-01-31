@@ -12,3 +12,4 @@
 *.user
 /Data
 /ShoppingApi/libman.json
+/ShoppingApi/Common/ImageCodecInfo.cs

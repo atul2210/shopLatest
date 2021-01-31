@@ -34,7 +34,7 @@ namespace ShoppingApi.Interfaces
         List<Menu> GetItemMenus();
         List<Color> GetItemColors();
 
-        Task<List<AddItemRequest>> GetNewItemRequest();
+        List<AddItemRequest> GetNewItemRequest();
 
         Task<bool> UploadImage();
         Task<List<Menu>> GetSubMenu(int ParentId);

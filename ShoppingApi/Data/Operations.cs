@@ -900,7 +900,7 @@ namespace ShoppingApi.Data
            
                 foreach (var file in files)
                 {
-                    smallImage += file.FileName + "#";
+                   // smallImage += file.FileName + "#";
                     // var folderName = Path.Combine("Resources", "Images");
 
                     var pathToSave = UploadImagePath; //_iConfiguration.GetSection("UploadImagePath").Value;
@@ -926,17 +926,20 @@ namespace ShoppingApi.Data
                             /// System.Drawing.Image myImage = System.Drawing.Image.FromFile(fullPath, true);
 
                         }
-                        FileSaver.SaveJpeg(fullPath, pathToSave, 20);
-
-                    }
+                      string NewFilePath=  FileSaver.SaveJpeg(fullPath, pathToSave, 20);
+                    smallImage += NewFilePath + "#";
+                }
                     else
                     {
                         throw new Exception("Bad Reqest");
                     }
                 }
 
-                smallImage = UploadImagePath + "\\" + smallImage.Substring(0, (smallImage.LastIndexOf("#")));
-                item.ImageSmall3 = smallImage;
+//                smallImage = UploadImagePath + "\\" + smallImage.Substring(0, (smallImage.LastIndexOf("#")));
+
+            smallImage = smallImage.Substring(0, (smallImage.LastIndexOf("#")));
+
+            item.ImageSmall3 = smallImage;
                 item.CreateDate = null;
                 item.UpdateDate = null;
                 using (var con = new ShoppingContext(connectionString))
@@ -1080,7 +1083,7 @@ namespace ShoppingApi.Data
             //using (var con = new ShoppingContext(connectionString))
             // {
             var con = new ShoppingContext(connectionString);
-            var data = con.MenuEntity.Where(ss=>ss.Status==true)
+            var data = con.MenuEntity.Where(ss=>ss.Status==true && ss.ParentId==0)
                  .Select(vv => new Menu()
                  {
                     Id=vv.Id,
@@ -1116,23 +1119,32 @@ namespace ShoppingApi.Data
             return data;
         }
 
-        public  Task<List<AddItemRequest>> GetNewItemRequest()
+        public  List<AddItemRequest> GetNewItemRequest()
         {
 
             var connectionString = Startup.connectionstring;// Task<List<States>> GetStates()
 
 
             var con = new ShoppingContext(connectionString);
-            var data = con.itemMasterEntity.Where(xx => xx.Active == true)
-                .Select(vv => new AddItemRequest()
-                {
-                    Colors = GetItemColors(),
-                    Menu = GetItemMenus(),
-                    Sizes = GetSizes(),
-                    SupplierList = GetSuppliers()
-                }).ToListAsync();
-            
+            //var data = con.itemMasterEntity.Where(xx => xx.Active == true)
+            //    .Select(vv => new AddItemRequest()
+            //    {
+            //        Colors = GetItemColors(),
+            //        Menu = GetItemMenus(),
+            //        Sizes = GetSizes(),
+            //        SupplierList = GetSuppliers()
+            //    }).ToListAsync();
+            List<AddItemRequest> data = new List<AddItemRequest>();    
+            data.Add(new AddItemRequest
+            {
+                Colors = GetItemColors(),
+                Sizes = GetSizes(),
+                Menu = GetItemMenus(),
+                SupplierList = GetSuppliers()
+            });
+
             return data;
+            
 
         }
 

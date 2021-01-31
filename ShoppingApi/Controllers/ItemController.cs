@@ -311,9 +311,9 @@ namespace ShoppingApi.Controllers
         [HttpGet, Route("item/AddNewItemRequest")]
         [IgnoreAntiforgeryToken]
         [AllowAnonymous]
-        public async Task<IActionResult> AddNewItemRequest()
+        public IActionResult AddNewItemRequest()
         {
-            return Ok(await _operations.GetNewItemRequest());
+            return Ok( _operations.GetNewItemRequest());
         }
 
         [HttpPost, Route("item/UploadNewImages")]
