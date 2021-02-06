@@ -13,5 +13,15 @@ namespace ShoppingApi.Data.Enum
             Pending=2,
             Hold=3
         }
+
+        public enum OrderStatus
+        {
+            Live=1,
+            Cancel=2,
+            Shipped=3
+
+        }
+
+
     }
 }

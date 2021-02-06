@@ -19,16 +19,16 @@ namespace ShoppingApi.Interfaces
         List<checkedInItem> getCheckInItem(string usersession);
         PageResult<ItemMaster> GetPageItemsList(PageAndSortedQuery<ItemDetailsQuery> query);
         RemoveItem RemoveItems(int itemId, int returnedItemQty, string sessionId, int checkedinId);
-        (bool success, string result)addUser(User user);
+        (bool success, string result) addUser(User user);
         PageResult<ItemMaster> Search(string SearchItem, PageAndSortedQuery<ItemDetailsQuery> query);
-        bool PaymentReceived(string emailId, string UserSession, EmailSettings emailSettings,User user,bool sendEmail, int PaymentOption);
+        bool PaymentReceived(string emailId, string UserSession, EmailSettings emailSettings, User user, bool sendEmail, int PaymentOption);
         Task<List<files>> getAllImmages(string filepath);
         void DeActivatesAfterPaymentReceived(string sessionId);
         Task<User> GetAddress(string usersession);
         bool EditAddress(EditAddress user);
         bool ActivateUser(string emailId, bool active);
         Task<List<PaymentMethod>> PaymenOpions();
-        Task<List<AddItem>> AddNewItem(AddItem item, string UploadImagePath,dynamic files);
+        Task<List<AddItem>> AddNewItem(AddItem item, string UploadImagePath, dynamic files);
         List<Supplier> GetSuppliers();
         List<Size> GetSizes();
         List<Menu> GetItemMenus();
@@ -38,6 +38,11 @@ namespace ShoppingApi.Interfaces
 
         Task<bool> UploadImage();
         Task<List<Menu>> GetSubMenu(int ParentId);
+
+                                    
+        List<PaymentReceived> CancelItems(List<int> Itemids, string UserId);
+        List<PaymentReceived> GetAllISoldtems(string UserId, bool Active);
+
 
 
     }

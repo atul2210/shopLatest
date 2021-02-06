@@ -47,5 +47,10 @@ namespace ShoppingApi.Data
         public int PaymentStatus { get; set; }
 
         public string ConsignmentNum { get; set; }
+
+        [Column(TypeName = "bit")]
+        public bool Active { get; set; }
+
+        public int  OrderStatusId { get; set; }
     }
 }

@@ -631,7 +631,10 @@ namespace ShoppingApi.Data
                             PrivacyAgreed = user.PrivacyAgreed,
                             PaymentMethodType = PaymentOption,
                             PaymentStatus = (int)ShoppingApi.Data.Enum.PaymentStatus.PmtStatus.Received,
-                            ConsignmentNum = consign
+                            ConsignmentNum = consign,
+                            Active = true
+                            
+                            
 
                         });
                         deliveryCharges = Convert.ToDouble(items.chk.DeliveryCharges);
@@ -1185,6 +1188,63 @@ namespace ShoppingApi.Data
                      SubTrigger = vv.SubTrigger,
 
                  }).ToListAsync();
+            return data;
+        }
+
+        public List<PaymentReceived> CancelItems(List<int> Itemids, string UserId)
+        {
+            var connectionString = Startup.connectionstring;// Task<List<States>> GetStates()
+            var con = new ShoppingContext(connectionString);
+            var data = con.PaymentReceivedEntity.Where(user => user.ReceivedFormEmailId == UserId && user.Active == true && user.OrderStatusId != (int)ShoppingApi.Data.Enum.PaymentStatus.OrderStatus.Cancel)
+                        .Select(x => new PaymentReceived
+                        {
+                            itemId = x.itemId,
+                            Active=x.Active,
+                            OrderStatusid=x.OrderStatusId
+
+                        }).ToList();
+
+            if (data.Count > 0 || data != null)
+            {
+                foreach (var row in data)
+                {
+                    foreach (var item in Itemids)
+                    {
+                        if (item == row.itemId)
+                        {
+                            row.Active = false;
+                            row.OrderStatusid = (int)ShoppingApi.Data.Enum.PaymentStatus.OrderStatus.Cancel;
+                            con.SaveChanges();
+                        }
+                    }
+
+                }
+            }
+
+            return  con.PaymentReceivedEntity.Where(user => user.ReceivedFormEmailId == UserId && user.Active==true  && user.OrderStatusId != (int)ShoppingApi.Data.Enum.PaymentStatus.OrderStatus.Cancel)
+                       .Select(x => new PaymentReceived
+                       {
+                           itemId = x.itemId,
+                           Active = x.Active,
+                           OrderStatusid = x.OrderStatusId
+                       }).ToList();
+
+        }
+
+        public List<PaymentReceived> GetAllISoldtems(string UserId, bool Active)
+        {
+            var connectionString = Startup.connectionstring;// Task<List<States>> GetStates()
+            var con = new ShoppingContext(connectionString);
+           // var data = con.PaymentReceivedEntity.Where(user => user.ReceivedFormEmailId == UserId && user.OrderStatusId != (int)ShoppingApi.Data.Enum.PaymentStatus.OrderStatus.Cancel
+
+           var data= con.PaymentReceivedEntity.Where(user => user.ReceivedFormEmailId == UserId && user.OrderStatusId != (int)ShoppingApi.Data.Enum.PaymentStatus.OrderStatus.Cancel)
+                        .Select(x => new PaymentReceived
+                        {
+                            itemId = x.itemId,
+                            Active = x.Active,
+                            OrderStatusid = x.OrderStatusId
+
+                        }).ToList();
             return data;
         }
     }

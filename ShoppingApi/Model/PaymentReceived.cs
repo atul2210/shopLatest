@@ -13,7 +13,8 @@ namespace ShoppingApi.Model
         public double TotalPaymentAmount { get; set; }
         public double TotalOfferAmount { get; set; }
         public string ReceivedFormEmailId { get; set; }
-
+        public bool Active { get; set; }
+        public int OrderStatusid { get; set; }
     }
 
     

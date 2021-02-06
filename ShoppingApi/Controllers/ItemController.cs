@@ -347,7 +347,21 @@ namespace ShoppingApi.Controllers
             return Ok(await _operations.GetSubMenu(ParentId));
         }
 
+        [HttpGet, Route("item/GetAllISoldtems")]
+        [AutoValidateAntiforgeryToken]
+        [Authorize]
+        public  IActionResult GetAllISoldtems(string UserId, bool Active)
+        {
+            return Ok(_operations.GetAllISoldtems(UserId, Active));
+        }
 
+        [HttpGet, Route("item/CancelItems")]
+        [AutoValidateAntiforgeryToken]
+        [Authorize]
+        public IActionResult CancelItems(List<int> Itemids, string UserId)
+        {
+            return Ok(_operations.CancelItems(Itemids, UserId));
+        }
     }
 
 }
