@@ -87,9 +87,9 @@ namespace ShoppingApi.Controllers
 
 
         [HttpPost, Route("items/addCart/")]
-        //[ValidateAntiForgeryToken]
+        [ValidateAntiForgeryToken]
 
-        [IgnoreAntiforgeryToken]
+        //[IgnoreAntiforgeryToken]
         [AllowAnonymous]
         public AddToCart adaddCart([FromQuery] int itemid, [FromQuery] int quantity, [FromQuery] string UserSessioin)
         {
@@ -185,19 +185,19 @@ namespace ShoppingApi.Controllers
 
         [AllowAnonymous]
         [HttpPost, Route("items/RemoveItems/")]
-        //[ValidateAntiForgeryToken]
+        [ValidateAntiForgeryToken]
 
-        [IgnoreAntiforgeryToken]
+      //  [IgnoreAntiforgeryToken]
         public IActionResult RemoveItems(int itemId, int returnedItemQty, string sessionId, int checkedinId)
         {
             return Ok(_operations.RemoveItems(itemId, returnedItemQty, sessionId, checkedinId));
         }
 
-        [Authorize]
+        [AllowAnonymous]
         [HttpPost, Route("items/CheckoutPaymentReceived/")]
-        //[ValidateAntiForgeryToken]
+        [ValidateAntiForgeryToken]
 
-        [IgnoreAntiforgeryToken]
+        //[IgnoreAntiforgeryToken]
         public IActionResult PaymentReceived(string UserSession, int PaymentOption, [FromBody] User user)
         {
 
@@ -241,9 +241,10 @@ namespace ShoppingApi.Controllers
 
         //}
 
-        [AllowAnonymous]
+        [Authorize]
         [HttpGet, Route("items/PaymenOptions")]
         [IgnoreAntiforgeryToken]
+        
         public async Task<IActionResult> PaymenOptions()
         {
             return Ok(await _operations.PaymenOpions());
@@ -251,8 +252,11 @@ namespace ShoppingApi.Controllers
 
 
 
-        //   [AllowAnonymous]
+        [Authorize]
         [HttpPut, Route("items/EditAddress")]
+        //////// [HttpPost, Route("items/EditAddress")]
+        //////// [AutoValidateAntiforgeryToken]
+        //////// [ValidateAntiForgeryToken]
         [IgnoreAntiforgeryToken]
         public IActionResult EditAddress([FromBody] EditAddress editUserAddress)
         {
@@ -291,8 +295,9 @@ namespace ShoppingApi.Controllers
 
         [HttpPost, Route("item/AddNewItem")]
         [IgnoreAntiforgeryToken]
+        //[ValidateAntiForgeryToken]
         [Produces("application/json")]
-        [AllowAnonymous]
+        [Authorize]
         public async Task<IActionResult> AddNewItem(AddItem NewItem)
         {
             try
@@ -310,7 +315,7 @@ namespace ShoppingApi.Controllers
 
         [HttpGet, Route("item/AddNewItemRequest")]
         [IgnoreAntiforgeryToken]
-        [AllowAnonymous]
+        [Authorize]
         public IActionResult AddNewItemRequest()
         {
             return Ok( _operations.GetNewItemRequest());
@@ -318,7 +323,8 @@ namespace ShoppingApi.Controllers
 
         [HttpPost, Route("item/UploadNewImages")]
         [IgnoreAntiforgeryToken]
-        [AllowAnonymous]
+       /// [ValidateAntiForgeryToken]
+        [Authorize]
         [HttpPost, DisableRequestSizeLimit]
         public IActionResult UploadNewImages(AddItem NewItem)
         {
@@ -341,22 +347,22 @@ namespace ShoppingApi.Controllers
 
         [HttpGet, Route("item/SubMenu")]
         [IgnoreAntiforgeryToken]
-        [AllowAnonymous]
+        [Authorize]
         public async Task<IActionResult> SubMenu(int ParentId)
         {
             return Ok(await _operations.GetSubMenu(ParentId));
         }
 
         [HttpGet, Route("item/GetAllISoldtems")]
-        [AutoValidateAntiforgeryToken]
+        [IgnoreAntiforgeryToken]
         [Authorize]
         public  IActionResult GetAllISoldtems(string UserId, bool Active)
         {
             return Ok(_operations.GetAllISoldtems(UserId, Active));
         }
 
-        [HttpGet, Route("item/CancelItems")]
-        [AutoValidateAntiforgeryToken]
+        [HttpPut, Route("item/CancelItems")]
+        [IgnoreAntiforgeryToken]
         [Authorize]
         public IActionResult CancelItems(List<int> Itemids, string UserId)
         {

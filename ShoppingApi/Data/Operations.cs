@@ -551,10 +551,12 @@ namespace ShoppingApi.Data
                    ColorId = x.cm.item.ColorId,
                    SizeName = x.size.SizeName,
                    //      data:image/jpeg;base64,             Image1 = x.cm.item.Image1 == null ? " " : Convert.ToBase64String(x.cm.item.Image1),
-                   Image1 = GetBase64Image(x.cm.item.Image1)  //"data:image/jpeg;base64," + Convert.ToBase64String(File.ReadAllBytes(x.cm.item.Image1)), //x.cm.item.Image1 == null ? " " : x.cm.item.Image1,
+                   Image1 = GetBase64Image(x.cm.item.Image1),  //"data:image/jpeg;base64," + Convert.ToBase64String(File.ReadAllBytes(x.cm.item.Image1)), //x.cm.item.Image1 == null ? " " : x.cm.item.Image1,
 
                    //  Image2 = x.cm.item.Image1 == null ? " " : Convert.ToBase64String(x.cm.item.Image2),
                    //  Image3 = x.cm.item.Image1 == null ? " " :  Convert.ToBase64String(x.cm.item.Image3),
+                   
+
                })
                  .ApplySorting(query)
                  .Paging(query);
@@ -1200,7 +1202,9 @@ namespace ShoppingApi.Data
                         {
                             itemId = x.itemId,
                             Active=x.Active,
-                            OrderStatusid=x.OrderStatusId
+                            OrderStatusid=x.OrderStatusId,
+                            Quantity=x.Quantity
+                            
 
                         }).ToList();
 
@@ -1210,12 +1214,21 @@ namespace ShoppingApi.Data
                 {
                     foreach (var item in Itemids)
                     {
+                        var additems = con.itemMasterEntity
+                            .Where(x => x.ItemId == item).ToList();
+
+                        if (additems.Count > 0 || additems != null)
+                        {
+                            additems[0].AvailableQty = additems[0].AvailableQty + row.Quantity;
+                            additems[0].Active = true;
+                        }
                         if (item == row.itemId)
                         {
                             row.Active = false;
                             row.OrderStatusid = (int)ShoppingApi.Data.Enum.PaymentStatus.OrderStatus.Cancel;
-                            con.SaveChanges();
+                            
                         }
+                        con.SaveChanges();
                     }
 
                 }
@@ -1231,21 +1244,70 @@ namespace ShoppingApi.Data
 
         }
 
-        public List<PaymentReceived> GetAllISoldtems(string UserId, bool Active)
+        public List<checkedInItem> GetAllISoldtems(string UserId, bool Active)
         {
-            var connectionString = Startup.connectionstring;// Task<List<States>> GetStates()
+
+            var connectionString = Startup.connectionstring;
             var con = new ShoppingContext(connectionString);
-           // var data = con.PaymentReceivedEntity.Where(user => user.ReceivedFormEmailId == UserId && user.OrderStatusId != (int)ShoppingApi.Data.Enum.PaymentStatus.OrderStatus.Cancel
+            var data = con.itemMasterEntity.Join(con.PaymentReceivedEntity.Where(pmtRcvd => pmtRcvd.ReceivedFormEmailId == UserId && pmtRcvd.Active == true), item => item.ItemId, pmtRcvd => pmtRcvd.itemId,
+               (item, pmtRcvd)
+               => new
+               {
+                   item,
+                   pmtRcvd
+               })
+                .Join(con.ColorMasterEntity, cm => cm.item.ColorId, color1 => color1.Colorid,
+                (cm, color1) => new { cm, color1 })
+                .Select(m => new checkedInItem     //model class
+                {
+                    colorname = m.color1.ColorName,
+                    colorid = m.color1.Colorid,
+                    itemname = m.cm.item.ItemName,
+                   //// userSessionId = m.cm.checkin.UserSessionId,
+                    itemId = m.cm.pmtRcvd.itemId,
+                    quantity = m.cm.pmtRcvd.Quantity,
+                    ///checkOut = m.cm.pmtRcvd.CheckOut,
+                    /////userIp = m.cm.checkin.UserIp,
+                    price = m.cm.pmtRcvd.TotalPaymentAmount,
+                    offerprice = m.cm.pmtRcvd.TotalOfferAmount,
+                    //deliveryCharges = m.cm.pmtRcvd.DeliveryCharges,
 
-           var data= con.PaymentReceivedEntity.Where(user => user.ReceivedFormEmailId == UserId && user.OrderStatusId != (int)ShoppingApi.Data.Enum.PaymentStatus.OrderStatus.Cancel)
-                        .Select(x => new PaymentReceived
-                        {
-                            itemId = x.itemId,
-                            Active = x.Active,
-                            OrderStatusid = x.OrderStatusId
+                    brand = m.cm.item.brand,
+                    id = m.cm.pmtRcvd.PaymentId,
+                    //image1 = m.cm.item.Image1 == null ? " " : Convert.ToBase64String(m.cm.item.Image1),
+                    image1 = GetBase64Image(m.cm.item.Image1), //m.cm.item.Image1 == null ? " " : m.cm.item.Image1
+                    //  Image2 = m.cm.item.Image1 == null ? " " : Convert.ToBase64String(m.cm.item.Image2),
+                    //  Image3 = m.cm.item.Image1 == null ? " " :  Convert.ToBase64String(m.cm.item.Image3),
+                    PaidAmount = Convert.ToDouble(m.cm.pmtRcvd.TotalOfferAmount) * m.cm.pmtRcvd.Quantity,
+                }).ToList();
 
-                        }).ToList();
+            var totoalOfferAmount = data.Sum(x => x.PaidAmount);
+            var totalprice = data.Sum(x => x.price * x.quantity);
+            if (data.Count > 0)
+            {
+                data[0].TotalPaidAmunt = totoalOfferAmount;
+                data[0].TotaPrice = totalprice;
+            }
+
+
             return data;
+
+
+
+
+            //// var connectionString = Startup.connectionstring;// Task<List<States>> GetStates()
+            //// var con = new ShoppingContext(connectionString);
+            ////// var data = con.PaymentReceivedEntity.Where(user => user.ReceivedFormEmailId == UserId && user.OrderStatusId != (int)ShoppingApi.Data.Enum.PaymentStatus.OrderStatus.Cancel
+
+            ////var data= con.PaymentReceivedEntity.Where(user => user.ReceivedFormEmailId == UserId && user.OrderStatusId != (int)ShoppingApi.Data.Enum.PaymentStatus.OrderStatus.Cancel)
+            ////             .Select(x => new PaymentReceived
+            ////             {
+            ////                 itemId = x.itemId,
+            ////                 Active = x.Active,
+            ////                 OrderStatusid = x.OrderStatusId
+
+            ////             }).ToList();
+            //// return data;
         }
     }
 }

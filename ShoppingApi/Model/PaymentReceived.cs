@@ -15,6 +15,7 @@ namespace ShoppingApi.Model
         public string ReceivedFormEmailId { get; set; }
         public bool Active { get; set; }
         public int OrderStatusid { get; set; }
+        public int Quantity { get; set; }
     }
 
     

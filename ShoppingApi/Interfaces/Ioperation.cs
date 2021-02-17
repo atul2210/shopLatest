@@ -41,7 +41,7 @@ namespace ShoppingApi.Interfaces
 
                                     
         List<PaymentReceived> CancelItems(List<int> Itemids, string UserId);
-        List<PaymentReceived> GetAllISoldtems(string UserId, bool Active);
+        List<checkedInItem> GetAllISoldtems(string UserId, bool Active);
 
 
 

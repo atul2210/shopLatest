@@ -25,6 +25,8 @@ using ShoppingApi.Common;
 using Microsoft.AspNetCore.ResponseCompression;
 using System.IO.Compression;
 using ShoppingApi.Image;
+using Newtonsoft.Json.Serialization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ShoppingApi
 {
@@ -73,45 +75,17 @@ namespace ShoppingApi
                 builder =>
                 {
                     builder.WithOrigins("https://www.vidhim.com",
-                                        "http://localhost:4200")
+                                        "http://localhost:4200",
+                                        "http://localhost:82")
                                         .AllowAnyHeader()
                                         .AllowAnyMethod()
                                         .AllowCredentials()
-                                        .WithExposedHeaders("XSRF-TOKENLoLo");
+                                        .WithExposedHeaders("XSRF-TOKEN");
 
 
                 });
             });
-            //jwt 14 October 2018
-            //////services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            //////    .AddJwtBearer(options =>
-            //////    {
-            //////        options.Authority = "lowCart.com";
-            //////        options.Audience = "lowCart.com";
-            //////    });
-
-            // jwt 14 October end here 
-
-            /////////*
-            ////////            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            ////////                .AddJwtBearer(options =>
-            ////////                {
-            ////////                    options.TokenValidationParameters = new TokenValidationParameters
-            ////////                    {
-
-            ////////                        ValidateIssuer = true,
-            ////////                        ValidateAudience = false,
-            ////////                        ValidateLifetime = true,
-            ////////                        ClockSkew = TimeSpan.FromMinutes(2),
-            ////////                        ValidateIssuerSigningKey = true,
-            ////////                        ValidIssuer = "lowCart.com",
-            ////////                        ValidAudience = "lowCart.com",
-            ////////                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("abcabcabcabcabcabcabcabcabcabc"))
-            ////////                    };
-            ////////                });
-
-
-            ////////    */
+           
 
             services.AddAuthentication(opt =>
             {
@@ -127,10 +101,14 @@ namespace ShoppingApi
                 {
 
                     ValidateIssuer = true,
-                    ValidateAudience = false,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
                     ValidIssuer = "lowCart.com",
                     ValidAudience = "lowCart.com",
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("abcabcabcabcabcabcabcabcabcabc"))
+                    //IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("abcabcabcabcabcabcabcabcabcabc"))
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes("abcabcabcabcabcabcabcabcabcabc"))
+
                 };
                 opt.Events = new JwtBearerEvents
                 {
@@ -146,7 +124,7 @@ namespace ShoppingApi
 
 
             });
-
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             //xsrf AntiForgeryToken Feature
 
             services.AddAntiforgery(options =>
@@ -208,7 +186,7 @@ namespace ShoppingApi
             {
                 options.Filters.Add(new Microsoft.AspNetCore.Mvc.ValidateAntiForgeryTokenAttribute());
             });
-
+            services.AddMvcCore().AddJsonFormatters(options => options.ContractResolver = new CamelCasePropertyNamesContractResolver());
 
         }
         
@@ -221,7 +199,7 @@ namespace ShoppingApi
             {
                 app.UseDeveloperExceptionPage();
             }
-            //app.UseAuthentication(); //commented on 14 October 2018
+           //// app.UseAuthentication(); //commented on 14 October 2018
             app.UseCors(MyAllowSpecificOrigins);
             app.UseSession();
 
@@ -231,64 +209,18 @@ namespace ShoppingApi
                 options.SwaggerEndpoint(
                   "/swagger/help/swagger.json", "Safety for All API");
             });
-            //app.UseCors(
-            //   options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().AllowCredentials());
 
-
-            //app.UseCors(
-            //      options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().AllowCredentials());
-
-            //This way Angulra is ready to read/access the cookies
-            //app.Use(async (context, next) =>
-            //{
-            //    //string path = "/";
-            //    string path1 = context.Request.Path.Value;
-            //    if (path1 != null && path1.Contains("menu"))
-            //    {
-            //        // XSRF-TOKEN used by angular in the $http if provided
-            //        var tokens = antiforgery.GetAndStoreTokens(context);
-            //        context.Response.Cookies.Append("XSRF-TOKEN",
-            //          tokens.RequestToken, new CookieOptions()
-            //          {
-            //              Path = "/",
-            //              HttpOnly = false,
-            //              Expires = DateTime.Now.AddHours(10),
+            
 
 
 
-            //          }
-            //        );
-            //    }
-
-            //    await next();
-            //    //return next();      
-            //});
-
-           // app.Use(
-           //next =>
-           //{
-           //    return async context =>
-           //    {
-           //        var tokens = antiforgery.GetAndStoreTokens(context);
-           //      //  var stopWatch = new System.Diagnostics.Stopwatch();
-           //        //stopWatch.Start();
-           //        context.Response.OnStarting(
-           //            () =>
-           //            {
-           //                //stopWatch.Stop();
-           //                context.Response.Headers.Add("XSRF-TOKENLoLo", tokens.RequestToken.ToString());
-           //                return Task.CompletedTask;
-           //            });
-
-           //        await next(context);
-           //    };
-           //});
 
 
-            app.UseAuthentication();
+        
             app.UseMiddleware(typeof(ErrorHandlingMiddleware));
             app.UseMiddleware<IpCheckerMiddleware>(Configuration["AdminSafeList"]);
             app.UseResponseCompression();
+            app.UseAuthentication();
             app.UseMvc();
 
         }

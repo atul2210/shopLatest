@@ -63,15 +63,17 @@ namespace ShoppingApi.Controllers
                         new Claim (JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString())
                     };
 
-                    var keyname = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("abcabcabcabcabcabcabcabcabcabc"));
-                  
-                   
+                    ////var keyname = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("abcabcabcabcabcabcabcabcabcabc"));
+                    var keyname = new SymmetricSecurityKey(Encoding.ASCII.GetBytes("abcabcabcabcabcabcabcabcabcabc"));
+                    var signinCredentials = new SigningCredentials(keyname, SecurityAlgorithms.HmacSha256);
+
+                    
                     var token = new JwtSecurityToken(
                         issuer: "lowCart.com",
                         audience: "lowCart.com",
                         expires: DateTime.Now.AddMinutes(20),
                         claims: claims,
-                        signingCredentials: new Microsoft.IdentityModel.Tokens.SigningCredentials(keyname,SecurityAlgorithms.HmacSha256)
+                        signingCredentials: signinCredentials   // new Microsoft.IdentityModel.Tokens.SigningCredentials(keyname,SecurityAlgorithms.HmacSha256)
                         );
 
                     authToken = new JwtSecurityTokenHandler().WriteToken(token);
